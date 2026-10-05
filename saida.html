@@ -2,35 +2,56 @@
 <html lang="pt-BR">
 
 <head>
+
     <meta charset="UTF-8">
+
     <title>Saída de Mercadorias</title>
+
 </head>
 
 <body>
 
     <h1>Saída de Mercadorias</h1>
 
+
     <form id="formSaida">
 
         <label>Produto:</label><br>
 
+
         <select id="produto">
-            <option value="">Selecione um produto</option>
+
+            <option value="">
+                Selecione um produto
+            </option>
+
         </select>
 
         <br><br>
 
+
         <label>Quantidade de saída:</label><br>
 
-        <input type="number" id="quantidade" min="1">
+
+        <input
+            type="number"
+            id="quantidade"
+            min="1"
+        >
 
         <br><br>
+
 
         <label>Data da saída:</label><br>
 
-        <input type="date" id="data">
+
+        <input
+            type="date"
+            id="data"
+        >
 
         <br><br>
+
 
         <button type="submit">
             Registrar saída
@@ -41,17 +62,23 @@
 
     <h2>Saídas realizadas</h2>
 
+
     <table border="1">
 
         <thead>
 
             <tr>
+
                 <th>Produto</th>
+
                 <th>Quantidade</th>
+
                 <th>Data</th>
+
             </tr>
 
         </thead>
+
 
         <tbody id="listaSaidas">
         </tbody>
