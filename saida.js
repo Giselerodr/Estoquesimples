@@ -75,8 +75,11 @@ formulario.addEventListener("submit", function(event) {
 
     // Diminuir quantidade do estoque
 
-    produto.quantidade =
-        Number(produto.quantidade) - quantidade;
+    produto.totalSaidas =
+    Number(produto.totalSaidas || 0) + quantidade;
+
+produto.quantidade =
+    Number(produto.quantidade) - quantidade;
 
 
     // Criar registro da saída
