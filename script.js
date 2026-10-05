@@ -1,5 +1,6 @@
 const formulario = document.querySelector("form");
 const listaProdutos = document.querySelector("#listaProdutos");
+const listaAlertas = document.querySelector("#listaAlertas");
 
 let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
 
