@@ -1,65 +1,23 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<h2>Estoque atual</h2>
 
-<head>
-    <meta charset="UTF-8">
-    <title>Cadastro de Produtos</title>
-</head>
+<table border="1">
 
-<body>
+    <thead>
 
-    <h1>Cadastro de Produtos</h1>
+        <tr>
+            <th>Produto</th>
+            <th>Categoria</th>
+            <th>Estoque inicial</th>
+            <th>Entradas</th>
+            <th>Saídas</th>
+            <th>Quantidade disponível</th>
+            <th>Estoque mínimo</th>
+            <th>Validade</th>
+        </tr>
 
-    <form>
+    </thead>
 
-        <label>Nome do produto:</label><br>
-        <input type="text" name="nome"><br><br>
+    <tbody id="listaProdutos">
+    </tbody>
 
-        <label>Categoria:</label><br>
-        <input type="text" name="categoria"><br><br>
-
-        <label>Código:</label><br>
-        <input type="text" name="codigo"><br><br>
-
-        <label>Quantidade:</label><br>
-        <input type="number" name="quantidade"><br><br>
-
-        <label>Estoque mínimo:</label><br>
-        <input type="number" name="estoqueMinimo"><br><br>
-
-        <label>Data de validade:</label><br>
-        <input type="date" name="validade"><br><br>
-
-        <button type="submit">Cadastrar produto</button>
-
-    </form>
-
-
-    <h2>Produtos cadastrados</h2>
-
-    <table border="1">
-
-        <thead>
-
-            <tr>
-                <th>Nome</th>
-                <th>Categoria</th>
-                <th>Código</th>
-                <th>Quantidade</th>
-                <th>Estoque mínimo</th>
-                <th>Validade</th>
-            </tr>
-
-        </thead>
-
-        <tbody id="listaProdutos">
-        </tbody>
-
-    </table>
-
-
-    <script src="script.js"></script>
-
-</body>
-
-</html>
+</table>
