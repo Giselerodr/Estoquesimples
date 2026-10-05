@@ -80,6 +80,21 @@ function mostrarProdutos() {
         const quantidadeDisponivel =
             estoqueInicial + entradas - saidas;
 
+        const estoqueMinimo =
+            Number(produto.estoqueMinimo);
+
+        let status = "";
+
+        if (quantidadeDisponivel <= estoqueMinimo) {
+
+            status = "Estoque baixo";
+
+        } else {
+
+            status = "Normal";
+
+        }
+
         linha.innerHTML = `
             <td>${produto.nome}</td>
 
@@ -93,15 +108,15 @@ function mostrarProdutos() {
 
             <td>${quantidadeDisponivel}</td>
 
-            <td>${produto.estoqueMinimo}</td>
+            <td>${estoqueMinimo}</td>
+
+            <td>${status}</td>
 
             <td>${produto.validade}</td>
         `;
 
         listaProdutos.appendChild(linha);
 
-    });
-                            }
     });
 }
 
