@@ -4,7 +4,10 @@ const listaProdutos = document.querySelector("#listaProdutos");
 
 const listaAlertas = document.querySelector("#listaAlertas");
 
+const listaValidades = document.querySelector("#listaValidades");
+
 let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
+
 
 formulario.addEventListener("submit", function(event) {
 
@@ -28,6 +31,7 @@ formulario.addEventListener("submit", function(event) {
     const validade =
         document.querySelector('input[name="validade"]').value;
 
+
     if (
         nome === "" ||
         categoria === "" ||
@@ -41,6 +45,7 @@ formulario.addEventListener("submit", function(event) {
 
         return;
     }
+
 
     const produto = {
 
@@ -64,48 +69,78 @@ formulario.addEventListener("submit", function(event) {
 
     };
 
+
     produtos.push(produto);
+
 
     localStorage.setItem(
         "produtos",
         JSON.stringify(produtos)
     );
 
+
     alert("Produto cadastrado com sucesso!");
 
+
     formulario.reset();
+
 
     mostrarProdutos();
 
     mostrarAlertas();
 
+    mostrarValidades();
+
 });
+
+
+function calcularQuantidadeDisponivel(produto) {
+
+    const estoqueInicial =
+        Number(produto.estoqueInicial || produto.quantidade || 0);
+
+    const entradas =
+        Number(produto.totalEntradas || 0);
+
+    const saidas =
+        Number(produto.totalSaidas || 0);
+
+    return estoqueInicial + entradas - saidas;
+}
 
 
 function mostrarProdutos() {
 
     listaProdutos.innerHTML = "";
 
+
     produtos.forEach(function(produto) {
 
         const linha = document.createElement("tr");
 
+
         const estoqueInicial =
-            Number(produto.estoqueInicial || produto.quantidade);
+            Number(produto.estoqueInicial || produto.quantidade || 0);
+
 
         const entradas =
             Number(produto.totalEntradas || 0);
 
+
         const saidas =
             Number(produto.totalSaidas || 0);
 
+
         const quantidadeDisponivel =
-            estoqueInicial + entradas - saidas;
+            calcularQuantidadeDisponivel(produto);
+
 
         const estoqueMinimo =
-            Number(produto.estoqueMinimo);
+            Number(produto.estoqueMinimo || 0);
+
 
         let status = "";
+
 
         if (quantidadeDisponivel <= estoqueMinimo) {
 
@@ -117,7 +152,9 @@ function mostrarProdutos() {
 
         }
 
+
         linha.innerHTML = `
+
             <td>${produto.nome}</td>
 
             <td>${produto.categoria}</td>
@@ -135,7 +172,9 @@ function mostrarProdutos() {
             <td>${status}</td>
 
             <td>${produto.validade}</td>
+
         `;
+
 
         listaProdutos.appendChild(linha);
 
@@ -148,28 +187,25 @@ function mostrarAlertas() {
 
     listaAlertas.innerHTML = "";
 
+
     produtos.forEach(function(produto) {
 
-        const estoqueInicial =
-            Number(produto.estoqueInicial || produto.quantidade);
-
-        const entradas =
-            Number(produto.totalEntradas || 0);
-
-        const saidas =
-            Number(produto.totalSaidas || 0);
-
         const quantidadeDisponivel =
-            estoqueInicial + entradas - saidas;
+            calcularQuantidadeDisponivel(produto);
+
 
         const estoqueMinimo =
-            Number(produto.estoqueMinimo);
+            Number(produto.estoqueMinimo || 0);
+
 
         if (quantidadeDisponivel <= estoqueMinimo) {
 
-            const linha = document.createElement("tr");
+            const linha =
+                document.createElement("tr");
+
 
             linha.innerHTML = `
+
                 <td>${produto.nome}</td>
 
                 <td>${quantidadeDisponivel}</td>
@@ -177,9 +213,71 @@ function mostrarAlertas() {
                 <td>${estoqueMinimo}</td>
 
                 <td>Necessário repor estoque</td>
+
             `;
 
+
             listaAlertas.appendChild(linha);
+
+        }
+
+    });
+
+}
+
+
+function mostrarValidades() {
+
+    listaValidades.innerHTML = "";
+
+
+    const hoje = new Date();
+
+
+    produtos.forEach(function(produto) {
+
+        if (!produto.validade) {
+
+            return;
+
+        }
+
+
+        const dataValidade =
+            new Date(produto.validade + "T00:00:00");
+
+
+        const diferenca =
+            dataValidade - hoje;
+
+
+        const diasRestantes =
+            Math.ceil(
+                diferenca / (1000 * 60 * 60 * 24)
+            );
+
+
+        if (
+            diasRestantes >= 0 &&
+            diasRestantes <= 7
+        ) {
+
+            const linha =
+                document.createElement("tr");
+
+
+            linha.innerHTML = `
+
+                <td>${produto.nome}</td>
+
+                <td>${produto.validade}</td>
+
+                <td>Próximo do vencimento</td>
+
+            `;
+
+
+            listaValidades.appendChild(linha);
 
         }
 
@@ -191,4 +289,5 @@ function mostrarAlertas() {
 mostrarProdutos();
 
 mostrarAlertas();
-``
+
+mostrarValidades();
