@@ -1,31 +1,194 @@
-const produto = {
+const formulario = document.querySelector("form");
 
-    nome: nome,
+const listaProdutos = document.querySelector("#listaProdutos");
 
-    categoria: categoria,
+const listaAlertas = document.querySelector("#listaAlertas");
 
-    codigo: codigo,
+let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
 
-    quantidade: Number(quantidade),
+formulario.addEventListener("submit", function(event) {
 
-    estoqueInicial: Number(quantidade),
+    event.preventDefault();
 
-    totalEntradas: 0,
+    const nome =
+        document.querySelector('input[name="nome"]').value;
 
-    totalSaidas: 0,
+    const categoria =
+        document.querySelector('input[name="categoria"]').value;
 
-    estoqueMinimo: Number(estoqueMinimo),
+    const codigo =
+        document.querySelector('input[name="codigo"]').value;
 
-    validade: validade
+    const quantidade =
+        document.querySelector('input[name="quantidade"]').value;
 
-};
+    const estoqueMinimo =
+        document.querySelector('input[name="estoqueMinimo"]').value;
 
-produtos.push(produto);
+    const validade =
+        document.querySelector('input[name="validade"]').value;
 
-localStorage.setItem("produtos", JSON.stringify(produtos));
+    if (
+        nome === "" ||
+        categoria === "" ||
+        codigo === "" ||
+        quantidade === "" ||
+        estoqueMinimo === "" ||
+        validade === ""
+    ) {
 
-alert("Produto cadastrado com sucesso!");
+        alert("Preencha todos os campos.");
 
-formulario.reset();
+        return;
+    }
+
+    const produto = {
+
+        nome: nome,
+
+        categoria: categoria,
+
+        codigo: codigo,
+
+        quantidade: Number(quantidade),
+
+        estoqueInicial: Number(quantidade),
+
+        totalEntradas: 0,
+
+        totalSaidas: 0,
+
+        estoqueMinimo: Number(estoqueMinimo),
+
+        validade: validade
+
+    };
+
+    produtos.push(produto);
+
+    localStorage.setItem(
+        "produtos",
+        JSON.stringify(produtos)
+    );
+
+    alert("Produto cadastrado com sucesso!");
+
+    formulario.reset();
+
+    mostrarProdutos();
+
+    mostrarAlertas();
+
+});
+
+
+function mostrarProdutos() {
+
+    listaProdutos.innerHTML = "";
+
+    produtos.forEach(function(produto) {
+
+        const linha = document.createElement("tr");
+
+        const estoqueInicial =
+            Number(produto.estoqueInicial || produto.quantidade);
+
+        const entradas =
+            Number(produto.totalEntradas || 0);
+
+        const saidas =
+            Number(produto.totalSaidas || 0);
+
+        const quantidadeDisponivel =
+            estoqueInicial + entradas - saidas;
+
+        const estoqueMinimo =
+            Number(produto.estoqueMinimo);
+
+        let status = "";
+
+        if (quantidadeDisponivel <= estoqueMinimo) {
+
+            status = "Estoque baixo";
+
+        } else {
+
+            status = "Normal";
+
+        }
+
+        linha.innerHTML = `
+            <td>${produto.nome}</td>
+
+            <td>${produto.categoria}</td>
+
+            <td>${estoqueInicial}</td>
+
+            <td>${entradas}</td>
+
+            <td>${saidas}</td>
+
+            <td>${quantidadeDisponivel}</td>
+
+            <td>${estoqueMinimo}</td>
+
+            <td>${status}</td>
+
+            <td>${produto.validade}</td>
+        `;
+
+        listaProdutos.appendChild(linha);
+
+    });
+
+}
+
+
+function mostrarAlertas() {
+
+    listaAlertas.innerHTML = "";
+
+    produtos.forEach(function(produto) {
+
+        const estoqueInicial =
+            Number(produto.estoqueInicial || produto.quantidade);
+
+        const entradas =
+            Number(produto.totalEntradas || 0);
+
+        const saidas =
+            Number(produto.totalSaidas || 0);
+
+        const quantidadeDisponivel =
+            estoqueInicial + entradas - saidas;
+
+        const estoqueMinimo =
+            Number(produto.estoqueMinimo);
+
+        if (quantidadeDisponivel <= estoqueMinimo) {
+
+            const linha = document.createElement("tr");
+
+            linha.innerHTML = `
+                <td>${produto.nome}</td>
+
+                <td>${quantidadeDisponivel}</td>
+
+                <td>${estoqueMinimo}</td>
+
+                <td>Necessário repor estoque</td>
+            `;
+
+            listaAlertas.appendChild(linha);
+
+        }
+
+    });
+
+}
+
 
 mostrarProdutos();
+
+mostrarAlertas();
+``
