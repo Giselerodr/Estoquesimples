@@ -27,12 +27,26 @@ formulario.addEventListener("submit", function(event) {
     }
 
     const produto = {
-        nome: nome,
-        categoria: categoria,
-        codigo: codigo,
-        quantidade: quantidade,
-        estoqueMinimo: estoqueMinimo,
-        validade: validade
+
+    nome: nome,
+
+    categoria: categoria,
+
+    codigo: codigo,
+
+    quantidade: Number(quantidade),
+
+    estoqueInicial: Number(quantidade),
+
+    totalEntradas: 0,
+
+    totalSaidas: 0,
+
+    estoqueMinimo: Number(estoqueMinimo),
+
+    validade: validade
+
+};
     };
 
     produtos.push(produto);
@@ -54,16 +68,40 @@ function mostrarProdutos() {
 
         const linha = document.createElement("tr");
 
+        const estoqueInicial =
+            Number(produto.estoqueInicial || produto.quantidade);
+
+        const entradas =
+            Number(produto.totalEntradas || 0);
+
+        const saidas =
+            Number(produto.totalSaidas || 0);
+
+        const quantidadeDisponivel =
+            estoqueInicial + entradas - saidas;
+
         linha.innerHTML = `
             <td>${produto.nome}</td>
+
             <td>${produto.categoria}</td>
-            <td>${produto.codigo}</td>
-            <td>${produto.quantidade}</td>
+
+            <td>${estoqueInicial}</td>
+
+            <td>${entradas}</td>
+
+            <td>${saidas}</td>
+
+            <td>${quantidadeDisponivel}</td>
+
             <td>${produto.estoqueMinimo}</td>
+
             <td>${produto.validade}</td>
         `;
 
         listaProdutos.appendChild(linha);
+
+    });
+                            }
     });
 }
 
