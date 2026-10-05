@@ -1,4 +1,7 @@
 const formulario = document.querySelector("form");
+const listaProdutos = document.querySelector("#listaProdutos");
+
+let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
 
 formulario.addEventListener("submit", function(event) {
 
@@ -32,9 +35,36 @@ formulario.addEventListener("submit", function(event) {
         validade: validade
     };
 
-    localStorage.setItem("produto", JSON.stringify(produto));
+    produtos.push(produto);
+
+    localStorage.setItem("produtos", JSON.stringify(produtos));
 
     alert("Produto cadastrado com sucesso!");
 
     formulario.reset();
+
+    mostrarProdutos();
 });
+
+function mostrarProdutos() {
+
+    listaProdutos.innerHTML = "";
+
+    produtos.forEach(function(produto) {
+
+        const linha = document.createElement("tr");
+
+        linha.innerHTML = `
+            <td>${produto.nome}</td>
+            <td>${produto.categoria}</td>
+            <td>${produto.codigo}</td>
+            <td>${produto.quantidade}</td>
+            <td>${produto.estoqueMinimo}</td>
+            <td>${produto.validade}</td>
+        `;
+
+        listaProdutos.appendChild(linha);
+    });
+}
+
+mostrarProdutos();
