@@ -2,121 +2,59 @@
 <html lang="pt-BR">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Cadastro de Produtos</title>
-
+    <title>Cadastro de Produtos - Estoque Inteligente</title>
 </head>
 
 <body>
 
     <h1>Cadastro de Produtos</h1>
 
-    <form>
+    <form id="formProduto">
 
-        <label>Nome do produto:</label><br>
-        <input type="text" name="nome">
-
-        <br><br>
-
-        <label>Categoria:</label><br>
-        <input type="text" name="categoria">
+        <label for="nome">Nome do produto:</label><br>
+        <input type="text" id="nome" name="nome" required>
 
         <br><br>
 
-        <label>Código:</label><br>
-        <input type="text" name="codigo">
+        <label for="categoria">Categoria:</label><br>
+        <input type="text" id="categoria" name="categoria" required>
 
         <br><br>
 
-        <label>Quantidade:</label><br>
-        <input type="number" name="quantidade" min="0">
+        <label for="codigo">Código:</label><br>
+        <input type="text" id="codigo" name="codigo" required>
 
         <br><br>
 
-        <label>Estoque mínimo:</label><br>
-        <input type="number" name="estoqueMinimo" min="0">
+        <label for="quantidade">Quantidade:</label><br>
+        <input type="number" id="quantidade" name="quantidade" min="0" step="0.01" required>
 
         <br><br>
 
-        <label>Data de validade:</label><br>
-        <input type="date" name="validade">
+        <label for="estoqueMinimo">Estoque mínimo:</label><br>
+        <input type="number" id="estoqueMinimo" name="estoqueMinimo" min="0" step="0.01" required>
 
         <br><br>
 
-        <button type="submit">
-            Cadastrar produto
-        </button>
+        <label for="validade">Data de validade:</label><br>
+        <input type="date" id="validade" name="validade">
+
+        <br><br>
+
+        <button type="submit">Cadastrar produto</button>
 
     </form>
 
 
-    <h2>Estoque atual</h2>
-
-    <table border="1">
-
-        <thead>
-
-            <tr>
-                <th>Produto</th>
-                <th>Categoria</th>
-                <th>Estoque inicial</th>
-                <th>Entradas</th>
-                <th>Saídas</th>
-                <th>Quantidade disponível</th>
-                <th>Estoque mínimo</th>
-                <th>Status</th>
-                <th>Validade</th>
-            </tr>
-
-        </thead>
-
-        <tbody id="listaProdutos">
-        </tbody>
-
-    </table>
+    <hr>
 
 
-    <h2>Alertas de estoque</h2>
+    <h2>Produtos cadastrados</h2>
 
-    <table border="1">
-
-        <thead>
-
-            <tr>
-                <th>Produto</th>
-                <th>Quantidade disponível</th>
-                <th>Estoque mínimo</th>
-                <th>Situação</th>
-            </tr>
-
-        </thead>
-
-        <tbody id="listaAlertas">
-        </tbody>
-
-    </table>
-
-
-    <h2>Alertas de validade</h2>
-
-    <table border="1">
-
-        <thead>
-
-            <tr>
-                <th>Produto</th>
-                <th>Data de validade</th>
-                <th>Situação</th>
-            </tr>
-
-        </thead>
-
-        <tbody id="listaValidades">
-        </tbody>
-
-    </table>
+    <div id="listaProdutos"></div>
 
 
     <script src="script.js"></script>
