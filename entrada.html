@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Entrada de Mercadorias</title>
+</head>
+
+<body>
+
+    <h1>Entrada de Mercadorias</h1>
+
+    <form id="formEntrada">
+
+        <label>Produto:</label><br>
+        <select id="produto">
+            <option value="">Selecione um produto</option>
+        </select>
+
+        <br><br>
+
+        <label>Quantidade de entrada:</label><br>
+        <input type="number" id="quantidade" min="1">
+
+        <br><br>
+
+        <label>Data da entrada:</label><br>
+        <input type="date" id="data">
+
+        <br><br>
+
+        <button type="submit">Registrar entrada</button>
+
+    </form>
+
+    <h2>Entradas realizadas</h2>
+
+    <table border="1">
+
+        <thead>
+            <tr>
+                <th>Produto</th>
+                <th>Quantidade</th>
+                <th>Data</th>
+            </tr>
+        </thead>
+
+        <tbody id="listaEntradas">
+        </tbody>
+
+    </table>
+
+    <script src="entrada.js"></script>
+
+</body>
+
+</html>
