@@ -1,24 +1,122 @@
-<h2>Estoque atual</h2>
+<!DOCTYPE html>
+<html lang="pt-BR">
 
-<table border="1">
+<head>
 
-    <thead>
+    <meta charset="UTF-8">
 
-        <tr>
-            <th>Produto</th>
-            <th>Categoria</th>
-            <th>Estoque inicial</th>
-            <th>Entradas</th>
-            <th>Saídas</th>
-            <th>Quantidade disponível</th>
-            <th>Estoque mínimo</th>
-            <th>Status</th>
-            <th>Validade</th>
-        </tr>
+    <title>Cadastro de Produtos</title>
 
-    </thead>
+</head>
 
-    <tbody id="listaProdutos">
-    </tbody>
+<body>
 
-</table>
+    <h1>Cadastro de Produtos</h1>
+
+
+    <form>
+
+        <label>Nome do produto:</label><br>
+
+        <input type="text" name="nome">
+
+        <br><br>
+
+
+        <label>Categoria:</label><br>
+
+        <input type="text" name="categoria">
+
+        <br><br>
+
+
+        <label>Código:</label><br>
+
+        <input type="text" name="codigo">
+
+        <br><br>
+
+
+        <label>Quantidade:</label><br>
+
+        <input type="number" name="quantidade" min="0">
+
+        <br><br>
+
+
+        <label>Estoque mínimo:</label><br>
+
+        <input type="number" name="estoqueMinimo" min="0">
+
+        <br><br>
+
+
+        <label>Data de validade:</label><br>
+
+        <input type="date" name="validade">
+
+        <br><br>
+
+
+        <button type="submit">
+            Cadastrar produto
+        </button>
+
+    </form>
+
+
+    <h2>Estoque atual</h2>
+
+
+    <table border="1">
+
+        <thead>
+
+            <tr>
+
+                <th>Produto</th>
+
+                <th>Categoria</th>
+
+                <th>Estoque inicial</th>
+
+                <th>Entradas</th>
+
+                <th>Saídas</th>
+
+                <th>Quantidade disponível</th>
+
+                <th>Estoque mínimo</th>
+
+                <th>Status</th>
+
+                <th>Validade</th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody id="listaProdutos">
+
+        </tbody>
+
+    </table>
+
+
+    <h2>Alertas de estoque</h2>
+
+
+    <table border="1">
+
+        <thead>
+
+            <tr>
+
+                <th>Produto</th>
+
+                <th>Quantidade disponível</th>
+
+                <th>Estoque mínimo</th>
+
+                <th
