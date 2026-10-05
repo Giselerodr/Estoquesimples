@@ -1,48 +1,61 @@
-const produtos = JSON.parse(localStorage.getItem("produtos")) || [];
-
-const produtoSelect = document.querySelector("#produto");
-
-const formulario = document.querySelector("#formSaida");
-
-const listaSaidas = document.querySelector("#listaSaidas");
-
-let saidas = JSON.parse(localStorage.getItem("saidas")) || [];
+let produtos =
+    JSON.parse(localStorage.getItem("produtos")) || [];
 
 
-// Mostrar produtos no campo de seleção
+const produtoSelect =
+    document.querySelector("#produto");
+
+
+const formulario =
+    document.querySelector("#formSaida");
+
+
+const listaSaidas =
+    document.querySelector("#listaSaidas");
+
+
+let saidas =
+    JSON.parse(localStorage.getItem("saidas")) || [];
+
 
 produtos.forEach(function(produto, index) {
 
-    const opcao = document.createElement("option");
+    const opcao =
+        document.createElement("option");
+
 
     opcao.value = index;
 
+
     opcao.textContent =
-        produto.nome + " - Estoque: " + produto.quantidade;
+        produto.nome +
+        " - Estoque: " +
+        calcularEstoque(produto);
+
 
     produtoSelect.appendChild(opcao);
 
 });
 
 
-// Registrar saída
-
 formulario.addEventListener("submit", function(event) {
 
     event.preventDefault();
 
 
-    const indiceProduto = produtoSelect.value;
+    const indiceProduto =
+        produtoSelect.value;
 
-    const quantidade = Number(
-        document.querySelector("#quantidade").value
-    );
+
+    const quantidade =
+        Number(
+            document.querySelector("#quantidade").value
+        );
+
 
     const data =
         document.querySelector("#data").value;
 
-
-    // Verificar se os campos foram preenchidos
 
     if (
         indiceProduto === "" ||
@@ -57,12 +70,15 @@ formulario.addEventListener("submit", function(event) {
     }
 
 
-    const produto = produtos[indiceProduto];
+    const produto =
+        produtos[indiceProduto];
 
 
-    // Verificar se existe estoque suficiente
+    const estoqueAtual =
+        calcularEstoque(produto);
 
-    if (quantidade > Number(produto.quantidade)) {
+
+    if (quantidade > estoqueAtual) {
 
         alert(
             "Quantidade insuficiente em estoque."
@@ -73,16 +89,13 @@ formulario.addEventListener("submit", function(event) {
     }
 
 
-    // Diminuir quantidade do estoque
-
     produto.totalSaidas =
-    Number(produto.totalSaidas || 0) + quantidade;
-
-produto.quantidade =
-    Number(produto.quantidade) - quantidade;
+        Number(produto.totalSaidas || 0) + quantidade;
 
 
-    // Criar registro da saída
+    produto.quantidade =
+        estoqueAtual - quantidade;
+
 
     const saida = {
 
@@ -95,20 +108,14 @@ produto.quantidade =
     };
 
 
-    // Adicionar saída ao histórico
-
     saidas.push(saida);
 
-
-    // Salvar produtos atualizados
 
     localStorage.setItem(
         "produtos",
         JSON.stringify(produtos)
     );
 
-
-    // Salvar histórico de saídas
 
     localStorage.setItem(
         "saidas",
@@ -124,12 +131,75 @@ produto.quantidade =
     formulario.reset();
 
 
+    atualizarProdutos();
+
+
     mostrarSaidas();
 
 });
 
 
-// Mostrar histórico de saídas
+function calcularEstoque(produto) {
+
+    const estoqueInicial =
+        Number(
+            produto.estoqueInicial ||
+            produto.quantidade ||
+            0
+        );
+
+
+    const entradas =
+        Number(produto.totalEntradas || 0);
+
+
+    const saidasRegistradas =
+        Number(produto.totalSaidas || 0);
+
+
+    return estoqueInicial +
+           entradas -
+           saidasRegistradas;
+
+}
+
+
+function atualizarProdutos() {
+
+    produtos =
+        JSON.parse(
+            localStorage.getItem("produtos")
+        ) || [];
+
+
+    produtoSelect.innerHTML = `
+        <option value="">
+            Selecione um produto
+        </option>
+    `;
+
+
+    produtos.forEach(function(produto, index) {
+
+        const opcao =
+            document.createElement("option");
+
+
+        opcao.value = index;
+
+
+        opcao.textContent =
+            produto.nome +
+            " - Estoque: " +
+            calcularEstoque(produto);
+
+
+        produtoSelect.appendChild(opcao);
+
+    });
+
+}
+
 
 function mostrarSaidas() {
 
