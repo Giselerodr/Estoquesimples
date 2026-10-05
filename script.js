@@ -1,293 +1,200 @@
-const formulario = document.querySelector("form");
+// ==========================================
+// ESTOQUE INTELIGENTE
+// Controle de produtos e quantidade em estoque
+// ==========================================
 
-const listaProdutos = document.querySelector("#listaProdutos");
 
-const listaAlertas = document.querySelector("#listaAlertas");
-
-const listaValidades = document.querySelector("#listaValidades");
-
+// Pega os produtos que já estão salvos
 let produtos = JSON.parse(localStorage.getItem("produtos")) || [];
 
 
-formulario.addEventListener("submit", function(event) {
+// ==========================================
+// CADASTRAR PRODUTO
+// ==========================================
+
+function cadastrarProduto(event) {
 
     event.preventDefault();
 
-    const nome =
-        document.querySelector('input[name="nome"]').value;
-
-    const categoria =
-        document.querySelector('input[name="categoria"]').value;
-
-    const codigo =
-        document.querySelector('input[name="codigo"]').value;
-
-    const quantidade =
-        document.querySelector('input[name="quantidade"]').value;
-
-    const estoqueMinimo =
-        document.querySelector('input[name="estoqueMinimo"]').value;
-
-    const validade =
-        document.querySelector('input[name="validade"]').value;
-
-
-    if (
-        nome === "" ||
-        categoria === "" ||
-        codigo === "" ||
-        quantidade === "" ||
-        estoqueMinimo === "" ||
-        validade === ""
-    ) {
-
-        alert("Preencha todos os campos.");
-
-        return;
-    }
+    const nome = document.querySelector('[name="nome"]').value;
+    const categoria = document.querySelector('[name="categoria"]').value;
+    const codigo = document.querySelector('[name="codigo"]').value;
+    const quantidade = Number(document.querySelector('[name="quantidade"]').value);
+    const estoqueMinimo = Number(document.querySelector('[name="estoqueMinimo"]').value);
+    const validade = document.querySelector('[name="validade"]').value;
 
 
     const produto = {
-
+        id: Date.now(),
         nome: nome,
-
         categoria: categoria,
-
         codigo: codigo,
-
-        quantidade: Number(quantidade),
-
-        estoqueInicial: Number(quantidade),
-
-        totalEntradas: 0,
-
-        totalSaidas: 0,
-
-        estoqueMinimo: Number(estoqueMinimo),
-
+        quantidade: quantidade,
+        estoqueMinimo: estoqueMinimo,
         validade: validade
-
     };
 
 
     produtos.push(produto);
 
 
-    localStorage.setItem(
-        "produtos",
-        JSON.stringify(produtos)
-    );
+    // Salva os produtos no navegador
+    localStorage.setItem("produtos", JSON.stringify(produtos));
 
 
     alert("Produto cadastrado com sucesso!");
 
 
-    formulario.reset();
+    // Limpa o formulário
+    document.querySelector("form").reset();
+}
+
+
+// ==========================================
+// MOSTRAR PRODUTOS
+// ==========================================
+
+function mostrarProdutos() {
+
+    const lista = document.getElementById("listaProdutos");
+
+    if (!lista) {
+        return;
+    }
+
+
+    lista.innerHTML = "";
+
+
+    produtos.forEach(function(produto) {
+
+        let situacao = "";
+
+        if (produto.quantidade <= produto.estoqueMinimo) {
+            situacao = "ESTOQUE BAIXO";
+        } else {
+            situacao = "ESTOQUE NORMAL";
+        }
+
+
+        const item = document.createElement("div");
+
+        item.innerHTML = `
+            <h3>${produto.nome}</h3>
+
+            <p>Categoria: ${produto.categoria}</p>
+
+            <p>Código: ${produto.codigo}</p>
+
+            <p>
+                <strong>Quantidade em estoque:</strong>
+                ${produto.quantidade}
+            </p>
+
+            <p>
+                Estoque mínimo:
+                ${produto.estoqueMinimo}
+            </p>
+
+            <p>
+                Situação:
+                <strong>${situacao}</strong>
+            </p>
+
+            <hr>
+        `;
+
+
+        lista.appendChild(item);
+    });
+}
+
+
+// ==========================================
+// ALTERAR QUANTIDADE DO ESTOQUE
+// ==========================================
+
+function entradaEstoque(id, quantidade) {
+
+    const produto = produtos.find(function(item) {
+        return item.id === id;
+    });
+
+
+    if (!produto) {
+        alert("Produto não encontrado.");
+        return;
+    }
+
+
+    produto.quantidade += Number(quantidade);
+
+
+    localStorage.setItem("produtos", JSON.stringify(produtos));
+
+
+    mostrarProdutos();
+}
+
+
+// ==========================================
+// SAÍDA DE ESTOQUE
+// ==========================================
+
+function saidaEstoque(id, quantidade) {
+
+    const produto = produtos.find(function(item) {
+        return item.id === id;
+    });
+
+
+    if (!produto) {
+        alert("Produto não encontrado.");
+        return;
+    }
+
+
+    quantidade = Number(quantidade);
+
+
+    // Não permite retirar mais do que existe
+    if (quantidade > produto.quantidade) {
+
+        alert("A quantidade de saída é maior que o estoque disponível.");
+
+        return;
+    }
+
+
+    produto.quantidade -= quantidade;
+
+
+    localStorage.setItem("produtos", JSON.stringify(produtos));
+
+
+    mostrarProdutos();
+}
+
+
+// ==========================================
+// INICIAR SISTEMA
+// ==========================================
+
+document.addEventListener("DOMContentLoaded", function() {
+
+    const formulario = document.querySelector("form");
+
+
+    if (formulario) {
+
+        formulario.addEventListener(
+            "submit",
+            cadastrarProduto
+        );
+
+    }
 
 
     mostrarProdutos();
 
-    mostrarAlertas();
-
-    mostrarValidades();
-
 });
-
-
-function calcularQuantidadeDisponivel(produto) {
-
-    const estoqueInicial =
-        Number(produto.estoqueInicial || produto.quantidade || 0);
-
-    const entradas =
-        Number(produto.totalEntradas || 0);
-
-    const saidas =
-        Number(produto.totalSaidas || 0);
-
-    return estoqueInicial + entradas - saidas;
-}
-
-
-function mostrarProdutos() {
-
-    listaProdutos.innerHTML = "";
-
-
-    produtos.forEach(function(produto) {
-
-        const linha = document.createElement("tr");
-
-
-        const estoqueInicial =
-            Number(produto.estoqueInicial || produto.quantidade || 0);
-
-
-        const entradas =
-            Number(produto.totalEntradas || 0);
-
-
-        const saidas =
-            Number(produto.totalSaidas || 0);
-
-
-        const quantidadeDisponivel =
-            calcularQuantidadeDisponivel(produto);
-
-
-        const estoqueMinimo =
-            Number(produto.estoqueMinimo || 0);
-
-
-        let status = "";
-
-
-        if (quantidadeDisponivel <= estoqueMinimo) {
-
-            status = "Estoque baixo";
-
-        } else {
-
-            status = "Normal";
-
-        }
-
-
-        linha.innerHTML = `
-
-            <td>${produto.nome}</td>
-
-            <td>${produto.categoria}</td>
-
-            <td>${estoqueInicial}</td>
-
-            <td>${entradas}</td>
-
-            <td>${saidas}</td>
-
-            <td>${quantidadeDisponivel}</td>
-
-            <td>${estoqueMinimo}</td>
-
-            <td>${status}</td>
-
-            <td>${produto.validade}</td>
-
-        `;
-
-
-        listaProdutos.appendChild(linha);
-
-    });
-
-}
-
-
-function mostrarAlertas() {
-
-    listaAlertas.innerHTML = "";
-
-
-    produtos.forEach(function(produto) {
-
-        const quantidadeDisponivel =
-            calcularQuantidadeDisponivel(produto);
-
-
-        const estoqueMinimo =
-            Number(produto.estoqueMinimo || 0);
-
-
-        if (quantidadeDisponivel <= estoqueMinimo) {
-
-            const linha =
-                document.createElement("tr");
-
-
-            linha.innerHTML = `
-
-                <td>${produto.nome}</td>
-
-                <td>${quantidadeDisponivel}</td>
-
-                <td>${estoqueMinimo}</td>
-
-                <td>Necessário repor estoque</td>
-
-            `;
-
-
-            listaAlertas.appendChild(linha);
-
-        }
-
-    });
-
-}
-
-
-function mostrarValidades() {
-
-    listaValidades.innerHTML = "";
-
-
-    const hoje = new Date();
-
-
-    produtos.forEach(function(produto) {
-
-        if (!produto.validade) {
-
-            return;
-
-        }
-
-
-        const dataValidade =
-            new Date(produto.validade + "T00:00:00");
-
-
-        const diferenca =
-            dataValidade - hoje;
-
-
-        const diasRestantes =
-            Math.ceil(
-                diferenca / (1000 * 60 * 60 * 24)
-            );
-
-
-        if (
-            diasRestantes >= 0 &&
-            diasRestantes <= 7
-        ) {
-
-            const linha =
-                document.createElement("tr");
-
-
-            linha.innerHTML = `
-
-                <td>${produto.nome}</td>
-
-                <td>${produto.validade}</td>
-
-                <td>Próximo do vencimento</td>
-
-            `;
-
-
-            listaValidades.appendChild(linha);
-
-        }
-
-    });
-
-}
-
-
-mostrarProdutos();
-
-mostrarAlertas();
-
-mostrarValidades();
