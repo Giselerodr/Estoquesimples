@@ -37,8 +37,11 @@ formulario.addEventListener("submit", function(event) {
 
     const produto = produtos[indiceProduto];
 
-    produto.quantidade =
-        Number(produto.quantidade) + quantidade;
+    produto.totalEntradas =
+    Number(produto.totalEntradas || 0) + quantidade;
+
+produto.quantidade =
+    Number(produto.quantidade) + quantidade;
 
 
     const entrada = {
