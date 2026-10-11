@@ -1,0 +1,389 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Gráficos e Relatórios | Estoque Simples</title>
+
+    <style>
+        :root {
+            --azul-claro: #BFDCFF;
+            --marrom-escuro: #211E1B;
+            --bege: #F5F5DC;
+            --branco: #FFFFFF;
+            --azul-marinho: #0C0A29;
+            --preto: #000000;
+            --verde: #24784C;
+            --vermelho: #B42318;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--bege);
+            color: var(--marrom-escuro);
+        }
+
+        header {
+            background: var(--branco);
+            border-bottom: 2px solid var(--azul-claro);
+            padding: 24px 6%;
+        }
+
+        .topo {
+            max-width: 1180px;
+            margin: auto;
+        }
+
+        header h1 {
+            color: var(--azul-marinho);
+            margin: 0 0 7px;
+        }
+
+        header p {
+            margin: 0 0 18px;
+            font-size: 14px;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        nav a {
+            text-decoration: none;
+            background: var(--azul-claro);
+            color: var(--azul-marinho);
+            padding: 10px 13px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        nav a.atual {
+            background: var(--azul-marinho);
+            color: var(--branco);
+        }
+
+        main {
+            max-width: 1180px;
+            margin: auto;
+            padding: 30px 20px;
+        }
+
+        .apresentacao {
+            background: var(--azul-marinho);
+            color: var(--branco);
+            padding: 30px;
+            border-radius: 17px;
+            margin-bottom: 22px;
+        }
+
+        .apresentacao h2 {
+            margin-top: 0;
+        }
+
+        .apresentacao p {
+            line-height: 1.6;
+        }
+
+        .painel {
+            background: var(--branco);
+            padding: 24px;
+            border: 1px solid var(--azul-claro);
+            border-radius: 15px;
+            margin-bottom: 22px;
+        }
+
+        .painel h2 {
+            color: var(--azul-marinho);
+            margin-top: 0;
+            font-size: 20px;
+        }
+
+        .filtros {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #B7B7B7;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+        }
+
+        .resumo {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 22px;
+        }
+
+        .resumo-card {
+            background: var(--branco);
+            border: 1px solid var(--azul-claro);
+            border-radius: 14px;
+            padding: 22px;
+        }
+
+        .resumo-card p {
+            margin: 0 0 13px;
+            font-size: 13px;
+        }
+
+        .resumo-card strong {
+            font-size: 28px;
+            color: var(--azul-marinho);
+        }
+
+        .grade-graficos {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+        }
+
+        .grafico-largo {
+            grid-column: 1 / -1;
+        }
+
+        .grafico-container {
+            position: relative;
+            width: 100%;
+            height: 340px;
+        }
+
+        .grafico-container canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .aviso {
+            background: var(--azul-claro);
+            padding: 18px;
+            border-left: 5px solid var(--azul-marinho);
+            border-radius: 10px;
+            margin-top: 22px;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .mensagem {
+            color: #555;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        footer {
+            text-align: center;
+            padding: 24px;
+            font-size: 12px;
+        }
+
+        @media (max-width: 900px) {
+            .filtros {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .resumo {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .grade-graficos {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 520px) {
+            .filtros,
+            .resumo {
+                grid-template-columns: 1fr;
+            }
+
+            .grafico-container {
+                height: 290px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="topo">
+            <h1>Estoque Simples</h1>
+            <p>Sistema de Controle e Monitoramento de Estoque</p>
+
+            <nav>
+                <a href="index.html">Início</a>
+                <a href="produtos.html">Produtos</a>
+                <a href="entrada.html">Entradas</a>
+                <a href="saida.html">Saídas</a>
+                <a href="historico.html">Histórico</a>
+                <a href="graficos.html" class="atual">
+                    Gráficos
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+
+        <section class="apresentacao">
+            <h2>Gráficos e Relatórios</h2>
+
+            <p>
+                Analise as movimentações do estoque,
+                compare entradas e saídas e identifique
+                os produtos mais movimentados.
+            </p>
+        </section>
+
+        <!-- FILTROS -->
+
+        <section class="painel">
+            <h2>Filtros de análise</h2>
+
+            <div class="filtros">
+
+                <div>
+                    <label for="periodo">Período</label>
+                    <select id="periodo">
+                        <option value="dia">Por dia</option>
+                        <option value="mes" selected>Por mês</option>
+                        <option value="ano">Por ano</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="produto">
+                        Produto
+                    </label>
+
+                    <select id="produto">
+                        <option value="todos">
+                            Todos os produtos
+                        </option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="inicio">Data inicial</label>
+                    <input type="date" id="inicio">
+                </div>
+
+                <div>
+                    <label for="fim">Data final</label>
+                    <input type="date" id="fim">
+                </div>
+
+            </div>
+        </section>
+
+        <!-- INDICADORES -->
+
+        <section class="resumo">
+
+            <div class="resumo-card">
+                <p>Unidades recebidas</p>
+                <strong id="totalEntradas">0</strong>
+            </div>
+
+            <div class="resumo-card">
+                <p>Unidades retiradas</p>
+                <strong id="totalSaidas">0</strong>
+            </div>
+
+            <div class="resumo-card">
+                <p>Saldo das movimentações</p>
+                <strong id="saldo">0</strong>
+            </div>
+
+            <div class="resumo-card">
+                <p>Movimentações registradas</p>
+                <strong id="totalRegistros">0</strong>
+            </div>
+
+        </section>
+
+        <!-- GRÁFICOS -->
+
+        <section class="grade-graficos">
+
+            <div class="painel grafico-largo">
+                <h2>Entradas e saídas por período</h2>
+                <p class="mensagem">
+                    Compare as quantidades recebidas e
+                    retiradas em cada período.
+                </p>
+
+                <div class="grafico-container">
+                    <canvas id="graficoMovimentacoes"></canvas>
+                </div>
+            </div>
+
+            <div class="painel">
+                <h2>Distribuição das movimentações</h2>
+                <p class="mensagem">
+                    Participação das entradas e saídas
+                    na quantidade movimentada.
+                </p>
+
+                <div class="grafico-container">
+                    <canvas id="graficoDistribuicao"></canvas>
+                </div>
+            </div>
+
+            <div class="painel">
+                <h2>Produtos com mais saídas</h2>
+                <p class="mensagem">
+                    Ranking dos cinco produtos com maior
+                    quantidade retirada.
+                </p>
+
+                <div class="grafico-container">
+                    <canvas id="graficoRanking"></canvas>
+                </div>
+            </div>
+
+        </section>
+
+        <div class="aviso" id="mensagemDados">
+            Os gráficos utilizam os registros de entradas
+            e saídas salvos neste navegador.
+        </div>
+
+    </main>
+
+    <footer>
+        Estoque Simples |
+        Sistema de Controle e Monitoramento de Estoque
+    </footer>
+
+    <!-- BIBLIOTECA DE GRÁFICOS -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
+
+    <!-- CÓDIGO DO PROJETO -->
+    <script src="graficos.js"></script>
+
+</body>
+</html>
