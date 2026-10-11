@@ -1,0 +1,500 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Controle Financeiro | Estoque Simples</title>
+
+    <style>
+        :root {
+            --azul-claro: #BFDCFF;
+            --marrom: #211E1B;
+            --bege: #F5F5DC;
+            --branco: #FFFFFF;
+            --marinho: #0C0A29;
+            --verde: #24784C;
+            --vermelho: #B42318;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bege);
+            color: var(--marrom);
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        header {
+            background: var(--branco);
+            padding: 24px 6%;
+            border-bottom: 2px solid var(--azul-claro);
+        }
+
+        .topo {
+            max-width: 1180px;
+            margin: auto;
+        }
+
+        h1, h2, h3 {
+            color: var(--marinho);
+        }
+
+        header h1 {
+            margin: 0 0 8px;
+        }
+
+        header p {
+            font-size: 13px;
+            margin-bottom: 20px;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        nav a {
+            background: var(--azul-claro);
+            color: var(--marinho);
+            padding: 10px 13px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        nav a.atual {
+            background: var(--marinho);
+            color: var(--branco);
+        }
+
+        main {
+            max-width: 1180px;
+            margin: auto;
+            padding: 30px 20px;
+        }
+
+        .banner {
+            background: var(--marinho);
+            color: var(--branco);
+            border-radius: 18px;
+            padding: 32px;
+            margin-bottom: 25px;
+        }
+
+        .banner h2 {
+            color: var(--branco);
+            margin-top: 0;
+        }
+
+        .banner p {
+            line-height: 1.7;
+            font-size: 14px;
+        }
+
+        .indicadores {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .indicador {
+            background: var(--branco);
+            border: 1px solid var(--azul-claro);
+            border-radius: 14px;
+            padding: 22px;
+        }
+
+        .indicador p {
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .indicador strong {
+            display: block;
+            font-size: 23px;
+            color: var(--marinho);
+            overflow-wrap: anywhere;
+        }
+
+        .painel {
+            background: var(--branco);
+            padding: 25px;
+            border: 1px solid var(--azul-claro);
+            border-radius: 16px;
+            margin-bottom: 24px;
+        }
+
+        .painel h2 {
+            margin-top: 0;
+            font-size: 21px;
+        }
+
+        .descricao {
+            font-size: 13px;
+            line-height: 1.7;
+            color: #555;
+        }
+
+        .formulario {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 17px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #AAAAAA;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+        }
+
+        button {
+            background: var(--marinho);
+            color: var(--branco);
+            border: 0;
+            border-radius: 8px;
+            padding: 13px 20px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background: var(--marrom);
+        }
+
+        .acoes {
+            margin-top: 20px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .botao-secundario {
+            background: var(--azul-claro);
+            color: var(--marinho);
+        }
+
+        .tabela-container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 850px;
+        }
+
+        th, td {
+            padding: 13px;
+            text-align: left;
+            border-bottom: 1px solid #E5E5E5;
+            font-size: 12px;
+        }
+
+        th {
+            background: var(--azul-claro);
+            color: var(--marinho);
+        }
+
+        td strong {
+            color: var(--marinho);
+        }
+
+        .positivo {
+            color: var(--verde);
+            font-weight: bold;
+        }
+
+        .negativo {
+            color: var(--vermelho);
+            font-weight: bold;
+        }
+
+        .aviso {
+            background: var(--azul-claro);
+            border-left: 5px solid var(--marinho);
+            padding: 18px;
+            border-radius: 10px;
+            line-height: 1.7;
+            font-size: 13px;
+        }
+
+        #mensagem {
+            margin-top: 15px;
+            font-size: 13px;
+            font-weight: bold;
+            min-height: 18px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            font-size: 12px;
+        }
+
+        @media (max-width: 900px) {
+            .indicadores {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .indicadores,
+            .formulario {
+                grid-template-columns: 1fr;
+            }
+
+            .banner {
+                padding: 24px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="topo">
+            <h1>Estoque Simples</h1>
+            <p>Sistema de Controle e Monitoramento de Estoque</p>
+
+            <nav>
+                <a href="index.html">Início</a>
+                <a href="produtos.html">Produtos</a>
+                <a href="entrada.html">Entradas</a>
+                <a href="saida.html">Saídas</a>
+                <a href="historico.html">Histórico</a>
+                <a href="graficos.html">Gráficos</a>
+                <a href="financeiro.html" class="atual">
+                    Financeiro
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+
+        <section class="banner">
+            <h2>Controle Financeiro do Estoque</h2>
+            <p>
+                Cadastre preços de custo e venda, consulte
+                o valor das mercadorias armazenadas e acompanhe
+                indicadores financeiros estimados.
+            </p>
+        </section>
+
+        <!-- INDICADORES FINANCEIROS -->
+
+        <section class="indicadores">
+
+            <div class="indicador">
+                <p>Valor de custo em estoque</p>
+                <strong id="valorEstoque">R$ 0,00</strong>
+            </div>
+
+            <div class="indicador">
+                <p>Valor potencial de venda</p>
+                <strong id="valorVenda">R$ 0,00</strong>
+            </div>
+
+            <div class="indicador">
+                <p>Margem bruta estimada</p>
+                <strong id="margemGeral">—</strong>
+            </div>
+
+            <div class="indicador">
+                <p>Custo estimado das saídas</p>
+                <strong id="custoSaidas">R$ 0,00</strong>
+            </div>
+
+        </section>
+
+        <!-- CADASTRO DE PREÇOS -->
+
+        <section class="painel">
+
+            <h2>Cadastro de preços</h2>
+
+            <p class="descricao">
+                Selecione um produto já cadastrado e informe
+                o custo e o preço de venda por unidade.
+                Os preços ficam vinculados ao código do produto.
+            </p>
+
+            <form id="formPrecos">
+
+                <div class="formulario">
+
+                    <div>
+                        <label for="produto">
+                            Produto
+                        </label>
+
+                        <select id="produto" required>
+                            <option value="">
+                                Selecione um produto
+                            </option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="custo">
+                            Preço de custo (R$)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="custo"
+                            min="0"
+                            step="0.01"
+                            placeholder="Ex.: 19.90"
+                            required>
+                    </div>
+
+                    <div>
+                        <label for="venda">
+                            Preço de venda (R$)
+                        </label>
+
+                        <input
+                            type="number"
+                            id="venda"
+                            min="0"
+                            step="0.01"
+                            placeholder="Ex.: 28.90"
+                            required>
+                    </div>
+
+                </div>
+
+                <div class="acoes">
+                    <button type="submit">
+                        Salvar preços
+                    </button>
+
+                    <button
+                        type="button"
+                        class="botao-secundario"
+                        id="limparCampos">
+                        Limpar campos
+                    </button>
+                </div>
+
+                <p id="mensagem" role="status"></p>
+
+            </form>
+        </section>
+
+        <!-- RELATÓRIO FINANCEIRO -->
+
+        <section class="painel">
+
+            <h2>Relatório financeiro dos produtos</h2>
+
+            <p class="descricao">
+                Consulte as quantidades disponíveis, os preços
+                cadastrados e o valor de custo de cada produto.
+            </p>
+
+            <div class="formulario">
+                <div>
+                    <label for="pesquisa">
+                        Pesquisar produto
+                    </label>
+
+                    <input
+                        type="search"
+                        id="pesquisa"
+                        placeholder="Nome ou código">
+                </div>
+
+                <div>
+                    <label for="filtroSituacao">
+                        Situação
+                    </label>
+
+                    <select id="filtroSituacao">
+                        <option value="ativos">
+                            Produtos ativos
+                        </option>
+
+                        <option value="todos">
+                            Todos os produtos
+                        </option>
+
+                        <option value="inativos">
+                            Produtos inativos
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="tabela-container"
+                 style="margin-top: 20px;">
+
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Produto</th>
+                            <th>Código</th>
+                            <th>Estoque</th>
+                            <th>Custo unitário</th>
+                            <th>Venda unitária</th>
+                            <th>Valor em estoque</th>
+                            <th>Margem bruta</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tabelaFinanceira">
+                    </tbody>
+                </table>
+
+            </div>
+
+            <div class="acoes">
+                <button
+                    type="button"
+                    id="exportarCSV">
+                    Exportar relatório CSV
+                </button>
+            </div>
+
+        </section>
+
+        <div class="aviso" id="avisoFinanceiro">
+            Os indicadores são estimativas calculadas
+            com os preços cadastrados e as quantidades
+            registradas no sistema.
+        </div>
+
+    </main>
+
+    <footer>
+        Estoque Simples |
+        Sistema de Controle e Monitoramento de Estoque
+    </footer>
+
+    <script src="financeiro.js"></script>
+
+</body>
+</html>
