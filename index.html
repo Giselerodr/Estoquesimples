@@ -1,21 +1,547 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
-    <title>Estoque Simples</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Estoque Simples | Painel Inicial</title>
+
+    <style>
+        :root {
+            --azul-claro: #BFDCFF;
+            --marrom-escuro: #211E1B;
+            --bege: #F5F5DC;
+            --branco: #FFFFFF;
+            --azul-marinho: #0C0A29;
+            --preto: #000000;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: var(--bege);
+            color: var(--marrom-escuro);
+            min-height: 100vh;
+        }
+
+        /* CABEÇALHO */
+
+        header {
+            background-color: var(--branco);
+            padding: 20px 7%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 2px solid var(--azul-claro);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background-color: var(--azul-marinho);
+            color: var(--branco);
+            border-radius: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .logo h1 {
+            color: var(--azul-marinho);
+            font-size: 21px;
+        }
+
+        .logo p {
+            font-size: 12px;
+            color: var(--marrom-escuro);
+            margin-top: 5px;
+        }
+
+        .etiqueta-topo {
+            background-color: var(--azul-claro);
+            color: var(--azul-marinho);
+            padding: 10px 16px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        /* CONTEÚDO PRINCIPAL */
+
+        main {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 38px 25px;
+        }
+
+        /* BANNER DE APRESENTAÇÃO */
+
+        .banner {
+            background-color: var(--azul-marinho);
+            color: var(--branco);
+            padding: 42px;
+            border-radius: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 25px;
+            overflow: hidden;
+        }
+
+        .banner-texto {
+            max-width: 650px;
+        }
+
+        .banner-legenda {
+            color: var(--azul-claro);
+            font-size: 12px;
+            font-weight: bold;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            margin-bottom: 17px;
+        }
+
+        .banner h2 {
+            font-size: 35px;
+            line-height: 1.25;
+            margin-bottom: 16px;
+        }
+
+        .banner p {
+            font-size: 15px;
+            line-height: 1.8;
+            color: var(--branco);
+        }
+
+        .banner-ilustracao {
+            width: 175px;
+            min-width: 145px;
+        }
+
+        /* TÍTULOS DAS SEÇÕES */
+
+        .secao-titulo {
+            margin: 38px 0 20px;
+        }
+
+        .secao-titulo h2 {
+            color: var(--azul-marinho);
+            font-size: 22px;
+            margin-bottom: 8px;
+        }
+
+        .secao-titulo p {
+            font-size: 14px;
+            color: var(--marrom-escuro);
+        }
+
+        /* CARTÕES DE RESUMO */
+
+        .resumo {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .resumo-card {
+            background-color: var(--branco);
+            padding: 25px;
+            border-radius: 17px;
+            border: 1px solid var(--azul-claro);
+            box-shadow: 0 4px 12px rgba(12, 10, 41, 0.04);
+        }
+
+        .resumo-icone {
+            width: 42px;
+            height: 42px;
+            background-color: var(--azul-claro);
+            color: var(--azul-marinho);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+            margin-bottom: 18px;
+        }
+
+        .resumo-card .rotulo {
+            color: var(--marrom-escuro);
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .resumo-card .numero {
+            color: var(--azul-marinho);
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .resumo-card .detalhe {
+            color: var(--marrom-escuro);
+            font-size: 12px;
+            margin-top: 9px;
+        }
+
+        /* CARTÕES DE ACESSO */
+
+        .atalhos {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .atalho {
+            background-color: var(--branco);
+            border: 1px solid var(--azul-claro);
+            border-radius: 18px;
+            padding: 26px;
+            min-height: 235px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-decoration: none;
+            color: var(--marrom-escuro);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .atalho:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(12, 10, 41, 0.10);
+            border-color: var(--azul-marinho);
+        }
+
+        .atalho-icone {
+            width: 52px;
+            height: 52px;
+            background-color: var(--azul-claro);
+            color: var(--azul-marinho);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 25px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .atalho h3 {
+            font-size: 17px;
+            color: var(--azul-marinho);
+            margin-bottom: 10px;
+        }
+
+        .atalho p {
+            font-size: 13px;
+            line-height: 1.7;
+            margin-bottom: 22px;
+        }
+
+        .atalho .acessar {
+            margin-top: auto;
+            background-color: var(--azul-marinho);
+            color: var(--branco);
+            padding: 11px 15px;
+            border-radius: 9px;
+            font-size: 12px;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+
+        .atalho:hover .acessar {
+            background-color: var(--marrom-escuro);
+        }
+
+        /* AVISO INFORMATIVO */
+
+        .aviso {
+            margin-top: 30px;
+            padding: 20px 23px;
+            background-color: var(--azul-claro);
+            color: var(--azul-marinho);
+            border-left: 5px solid var(--azul-marinho);
+            border-radius: 10px;
+            font-size: 13px;
+            line-height: 1.8;
+        }
+
+        /* RODAPÉ */
+
+        footer {
+            text-align: center;
+            padding: 25px 15px;
+            color: var(--marrom-escuro);
+            font-size: 12px;
+        }
+
+        /* ADAPTAÇÃO PARA CELULARES */
+
+        @media (max-width: 750px) {
+            header {
+                padding: 17px 5%;
+            }
+
+            .etiqueta-topo {
+                display: none;
+            }
+
+            main {
+                padding: 25px 17px;
+            }
+
+            .banner {
+                padding: 29px 23px;
+            }
+
+            .banner h2 {
+                font-size: 27px;
+            }
+
+            .banner-ilustracao {
+                display: none;
+            }
+
+            .resumo,
+            .atalhos {
+                grid-template-columns: 1fr;
+            }
+
+            .atalho {
+                min-height: 210px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-    <h1>Estoque Simples</h1>
+    <header>
+        <div class="logo">
+            <div class="logo-icon">E</div>
 
-    <h2>Sistema de Controle de Estoque</h2>
+            <div>
+                <h1>Estoque Simples</h1>
+                <p>Sistema de controle de estoque</p>
+            </div>
+        </div>
 
-    <a href="produtos.html">
-        <button>Cadastrar Produtos</button>
-    </a>
+        <div class="etiqueta-topo">
+            PAINEL DE CONTROLE
+        </div>
+    </header>
+
+    <main>
+
+        <section class="banner">
+            <div class="banner-texto">
+                <div class="banner-legenda">
+                    Organização e praticidade
+                </div>
+
+                <h2>Seu estoque organizado em um só lugar.</h2>
+
+                <p>
+                    Gerencie seus produtos, registre entradas e saídas
+                    e acompanhe as quantidades disponíveis. Tudo de forma
+                    simples, visual e organizada.
+                </p>
+            </div>
+
+            <div class="banner-ilustracao">
+                <svg viewBox="0 0 180 180"
+                     xmlns="http://www.w3.org/2000/svg"
+                     fill="none">
+
+                    <rect x="15" y="78" width="67" height="65"
+                          rx="8" fill="#BFDCFF"/>
+
+                    <path d="M15 96 L48 113 L82 96"
+                          stroke="#0C0A29" stroke-width="3"/>
+
+                    <path d="M48 113 V143"
+                          stroke="#0C0A29" stroke-width="3"/>
+
+                    <rect x="89" y="52" width="73" height="91"
+                          rx="8" fill="#F5F5DC"/>
+
+                    <path d="M89 72 L125 91 L162 72"
+                          stroke="#211E1B" stroke-width="3"/>
+
+                    <path d="M125 91 V143"
+                          stroke="#211E1B" stroke-width="3"/>
+
+                    <rect x="48" y="32" width="44" height="46"
+                          rx="6" fill="#FFFFFF"/>
+
+                    <path d="M48 49 L70 61 L92 49"
+                          stroke="#0C0A29" stroke-width="2.5"/>
+
+                    <path d="M70 61 V78"
+                          stroke="#0C0A29" stroke-width="2.5"/>
+
+                    <circle cx="142" cy="32" r="18"
+                            fill="#BFDCFF"/>
+
+                    <path d="M133 32 L140 39 L151 26"
+                          stroke="#0C0A29" stroke-width="3.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"/>
+                </svg>
+            </div>
+        </section>
+
+        <section>
+            <div class="secao-titulo">
+                <h2>Visão geral</h2>
+                <p>Confira os principais números do seu estoque.</p>
+            </div>
+
+            <div class="resumo">
+
+                <div class="resumo-card">
+                    <div class="resumo-icone">▤</div>
+                    <p class="rotulo">Produtos cadastrados</p>
+                    <p class="numero" id="totalProdutos">0</p>
+                    <p class="detalhe">Produtos registrados no sistema</p>
+                </div>
+
+                <div class="resumo-card">
+                    <div class="resumo-icone">▦</div>
+                    <p class="rotulo">Unidades disponíveis</p>
+                    <p class="numero" id="totalUnidades">0</p>
+                    <p class="detalhe">Soma das quantidades em estoque</p>
+                </div>
+
+                <div class="resumo-card">
+                    <div class="resumo-icone">!</div>
+                    <p class="rotulo">Alertas de estoque</p>
+                    <p class="numero" id="totalAlertas">0</p>
+                    <p class="detalhe">Produtos que precisam de atenção</p>
+                </div>
+
+            </div>
+        </section>
+
+        <section>
+            <div class="secao-titulo">
+                <h2>Gerenciar estoque</h2>
+                <p>Selecione uma opção para continuar.</p>
+            </div>
+
+            <div class="atalhos">
+
+                <a href="produtos.html" class="atalho">
+                    <div class="atalho-icone">▤</div>
+
+                    <h3>Cadastro de produtos</h3>
+
+                    <p>
+                        Cadastre produtos, categorias, códigos,
+                        quantidades, estoque mínimo e validade.
+                    </p>
+
+                    <span class="acessar">Acessar produtos →</span>
+                </a>
+
+                <a href="entrada.html" class="atalho">
+                    <div class="atalho-icone">↓</div>
+
+                    <h3>Entrada de mercadorias</h3>
+
+                    <p>
+                        Registre os produtos recebidos e atualize
+                        as quantidades disponíveis no estoque.
+                    </p>
+
+                    <span class="acessar">Registrar entrada →</span>
+                </a>
+
+                <a href="saida.html" class="atalho">
+                    <div class="atalho-icone">↑</div>
+
+                    <h3>Saída de mercadorias</h3>
+
+                    <p>
+                        Registre retiradas de produtos e acompanhe
+                        as quantidades restantes.
+                    </p>
+
+                    <span class="acessar">Registrar saída →</span>
+                </a>
+
+            </div>
+        </section>
+
+        <div class="aviso">
+            <strong>Dica de organização:</strong>
+            mantenha os produtos e as movimentações atualizados
+            para acompanhar o estoque e identificar quando for
+            necessário realizar uma reposição.
+        </div>
+
+    </main>
+
+    <footer>
+        Estoque Simples | Sistema de Controle e Monitoramento de Estoque
+    </footer>
+
+    <script>
+        function atualizarResumo() {
+            const produtos =
+                JSON.parse(localStorage.getItem("produtos")) || [];
+
+            let totalUnidades = 0;
+            let totalAlertas = 0;
+
+            produtos.forEach(function(produto) {
+                const estoqueInicial = Number(
+                    produto.estoqueInicial ?? produto.quantidade ?? 0
+                );
+
+                const entradas = Number(produto.totalEntradas || 0);
+                const saidas = Number(produto.totalSaidas || 0);
+
+                const quantidadeDisponivel =
+                    estoqueInicial + entradas - saidas;
+
+                const estoqueMinimo =
+                    Number(produto.estoqueMinimo || 0);
+
+                totalUnidades += quantidadeDisponivel;
+
+                if (quantidadeDisponivel <= estoqueMinimo) {
+                    totalAlertas++;
+                }
+            });
+
+            document.getElementById("totalProdutos").textContent =
+                produtos.length;
+
+            document.getElementById("totalUnidades").textContent =
+                totalUnidades;
+
+            document.getElementById("totalAlertas").textContent =
+                totalAlertas;
+        }
+
+        atualizarResumo();
+    </script>
 
 </body>
-
 </html>
+```
