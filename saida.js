@@ -1,198 +1,78 @@
+
 let produtos =
     JSON.parse(localStorage.getItem("produtos")) || [];
-
 
 const produtoSelect =
     document.querySelector("#produto");
 
-
 const formulario =
     document.querySelector("#formSaida");
 
-
 const listaSaidas =
     document.querySelector("#listaSaidas");
-
 
 let saidas =
     JSON.parse(localStorage.getItem("saidas")) || [];
 
 
-produtos.forEach(function(produto, index) {
-
-    const opcao =
-        document.createElement("option");
-
-
-    opcao.value = index;
-
-
-    opcao.textContent =
-        produto.nome +
-        " - Estoque: " +
-        calcularEstoque(produto);
-
-
-    produtoSelect.appendChild(opcao);
-
-});
-
-
-formulario.addEventListener("submit", function(event) {
-
-    event.preventDefault();
-
-
-    const indiceProduto =
-        produtoSelect.value;
-
-
-    const quantidade =
-        Number(
-            document.querySelector("#quantidade").value
-        );
-
-
-    const data =
-        document.querySelector("#data").value;
-
-
-    if (
-        indiceProduto === "" ||
-        quantidade <= 0 ||
-        data === ""
-    ) {
-
-        alert("Preencha todos os campos.");
-
-        return;
-
-    }
-
-
-    const produto =
-        produtos[indiceProduto];
-
-
-    const estoqueAtual =
-        calcularEstoque(produto);
-
-
-    if (quantidade > estoqueAtual) {
-
-        alert(
-            "Quantidade insuficiente em estoque."
-        );
-
-        return;
-
-    }
-
-
-    produto.totalSaidas =
-        Number(produto.totalSaidas || 0) + quantidade;
-
-
-    produto.quantidade =
-        estoqueAtual - quantidade;
-
-
-    const saida = {
-
-        produto: produto.nome,
-
-        quantidade: quantidade,
-
-        data: data
-
-    };
-
-
-    saidas.push(saida);
-
-
-    localStorage.setItem(
-        "produtos",
-        JSON.stringify(produtos)
-    );
-
-
-    localStorage.setItem(
-        "saidas",
-        JSON.stringify(saidas)
-    );
-
-
-    alert(
-        "Saída registrada com sucesso!"
-    );
-
-
-    formulario.reset();
-
-
-    atualizarProdutos();
-
-
-    mostrarSaidas();
-
-});
-
-
-function calcularEstoque(produto) {
-
-    const estoqueInicial =
-        Number(
-            produto.estoqueInicial ||
-            produto.quantidade ||
-            0
-        );
-
-
-    const entradas =
-        Number(produto.totalEntradas || 0);
-
-
-    const saidasRegistradas =
-        Number(produto.totalSaidas || 0);
-
-
-    return estoqueInicial +
-           entradas -
-           saidasRegistradas;
-
+// Verificar se o produto está ativo
+function produtoAtivo(produto) {
+    return produto.ativo !== false;
 }
 
 
+// Calcular a quantidade disponível
+function calcularEstoque(produto) {
+
+    const estoqueInicial = Number(
+        produto.estoqueInicial ??
+        produto.quantidade ??
+        0
+    );
+
+    const totalEntradas =
+        Number(produto.totalEntradas || 0);
+
+    const totalSaidas =
+        Number(produto.totalSaidas || 0);
+
+    return estoqueInicial +
+           totalEntradas -
+           totalSaidas;
+}
+
+
+// Carregar produtos ativos
 function atualizarProdutos() {
 
     produtos =
-        JSON.parse(
-            localStorage.getItem("produtos")
-        ) || [];
+        JSON.parse(localStorage.getItem("produtos")) || [];
 
+    produtoSelect.innerHTML = "";
 
-    produtoSelect.innerHTML = `
-        <option value="">
-            Selecione um produto
-        </option>
-    `;
+    const opcaoInicial =
+        document.createElement("option");
 
+    opcaoInicial.value = "";
+    opcaoInicial.textContent = "Selecione um produto";
+
+    produtoSelect.appendChild(opcaoInicial);
 
     produtos.forEach(function(produto, index) {
+
+        if (!produtoAtivo(produto)) {
+            return;
+        }
 
         const opcao =
             document.createElement("option");
 
-
         opcao.value = index;
-
 
         opcao.textContent =
             produto.nome +
             " - Estoque: " +
             calcularEstoque(produto);
-
 
         produtoSelect.appendChild(opcao);
 
@@ -201,27 +81,157 @@ function atualizarProdutos() {
 }
 
 
+// Registrar saída
+formulario.addEventListener("submit", function(event) {
+
+    event.preventDefault();
+
+    // Buscar os dados mais recentes
+    produtos =
+        JSON.parse(localStorage.getItem("produtos")) || [];
+
+    saidas =
+        JSON.parse(localStorage.getItem("saidas")) || [];
+
+    const indiceProduto = produtoSelect.value;
+
+    const quantidade = Number(
+        document.querySelector("#quantidade").value
+    );
+
+    const data =
+        document.querySelector("#data").value;
+
+    if (
+        indiceProduto === "" ||
+        !Number.isFinite(quantidade) ||
+        quantidade <= 0 ||
+        data === ""
+    ) {
+
+        alert("Preencha todos os campos corretamente.");
+        return;
+
+    }
+
+    const produto = produtos[Number(indiceProduto)];
+
+    if (!produto) {
+        alert("Produto não encontrado.");
+        atualizarProdutos();
+        return;
+    }
+
+    if (!produtoAtivo(produto)) {
+
+        alert(
+            "Este produto está desativado e " +
+            "não pode receber novas saídas."
+        );
+
+        atualizarProdutos();
+        return;
+    }
+
+    // Preservar estoque inicial de produtos antigos
+    if (
+        produto.estoqueInicial === undefined ||
+        produto.estoqueInicial === null
+    ) {
+
+        const estoqueAtual =
+            Number(produto.quantidade || 0);
+
+        const entradasAnteriores =
+            Number(produto.totalEntradas || 0);
+
+        const saidasAnteriores =
+            Number(produto.totalSaidas || 0);
+
+        produto.estoqueInicial =
+            estoqueAtual -
+            entradasAnteriores +
+            saidasAnteriores;
+
+    }
+
+    const estoqueAtual = calcularEstoque(produto);
+
+    // Impedir estoque negativo
+    if (quantidade > estoqueAtual) {
+
+        alert(
+            "Quantidade insuficiente em estoque. " +
+            "Disponível: " + estoqueAtual
+        );
+
+        return;
+    }
+
+    // Atualizar total de saídas
+    produto.totalSaidas =
+        Number(produto.totalSaidas || 0) + quantidade;
+
+    // Atualizar campo de compatibilidade
+    produto.quantidade = calcularEstoque(produto);
+
+    // Registrar movimentação
+    const saida = {
+        produto: produto.nome,
+        codigo: produto.codigo,
+        quantidade: quantidade,
+        data: data
+    };
+
+    saidas.push(saida);
+
+    // Salvar alterações
+    localStorage.setItem(
+        "produtos",
+        JSON.stringify(produtos)
+    );
+
+    localStorage.setItem(
+        "saidas",
+        JSON.stringify(saidas)
+    );
+
+    alert("Saída registrada com sucesso!");
+
+    formulario.reset();
+
+    atualizarProdutos();
+    mostrarSaidas();
+
+});
+
+
+// Mostrar histórico de saídas
 function mostrarSaidas() {
 
     listaSaidas.innerHTML = "";
-
 
     saidas.forEach(function(saida) {
 
         const linha =
             document.createElement("tr");
 
+        const nome =
+            document.createElement("td");
 
-        linha.innerHTML = `
+        const quantidade =
+            document.createElement("td");
 
-            <td>${saida.produto}</td>
+        const data =
+            document.createElement("td");
 
-            <td>${saida.quantidade}</td>
+        nome.textContent = saida.produto;
+        quantidade.textContent = saida.quantidade;
+        data.textContent = saida.data;
 
-            <td>${saida.data}</td>
-
-        `;
-
+        linha.appendChild(nome);
+        linha.appendChild(quantidade);
+        linha.appendChild(data);
 
         listaSaidas.appendChild(linha);
 
@@ -230,4 +240,6 @@ function mostrarSaidas() {
 }
 
 
+// Iniciar página
+atualizarProdutos();
 mostrarSaidas();
