@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -5,60 +6,479 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Cadastro de Produtos - Estoque Simples</title>
+    <title>Cadastro de Produtos | Estoque Simples</title>
+
+    <style>
+        :root {
+            --azul-claro: #BFDCFF;
+            --marrom: #211E1B;
+            --bege: #F5F5DC;
+            --branco: #FFFFFF;
+            --azul-marinho: #0C0A29;
+            --preto: #000000;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: var(--bege);
+            color: var(--marrom);
+            min-height: 100vh;
+        }
+
+        header {
+            background: var(--branco);
+            padding: 20px 7%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid var(--azul-claro);
+        }
+
+        .identidade {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            width: 47px;
+            height: 47px;
+            border-radius: 13px;
+            background: var(--azul-marinho);
+            color: var(--branco);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .identidade h1 {
+            font-size: 20px;
+            color: var(--azul-marinho);
+        }
+
+        .identidade p {
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        .voltar {
+            text-decoration: none;
+            color: var(--azul-marinho);
+            background: var(--azul-claro);
+            padding: 11px 16px;
+            border-radius: 9px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .voltar:hover {
+            background: var(--azul-marinho);
+            color: var(--branco);
+        }
+
+        main {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 35px 22px 50px;
+        }
+
+        .introducao {
+            margin-bottom: 28px;
+        }
+
+        .introducao .subtitulo {
+            color: var(--azul-marinho);
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .introducao h2 {
+            font-size: 30px;
+            color: var(--azul-marinho);
+            margin-bottom: 10px;
+        }
+
+        .introducao p {
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .painel {
+            background: var(--branco);
+            border: 1px solid var(--azul-claro);
+            border-radius: 18px;
+            padding: 28px;
+            margin-bottom: 28px;
+            box-shadow: 0 5px 18px rgba(12, 10, 41, 0.04);
+        }
+
+        .painel-titulo {
+            margin-bottom: 24px;
+        }
+
+        .painel-titulo h3 {
+            font-size: 20px;
+            color: var(--azul-marinho);
+            margin-bottom: 7px;
+        }
+
+        .painel-titulo p {
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .formulario-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .campo {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .campo label {
+            font-size: 13px;
+            font-weight: bold;
+            color: var(--marrom);
+        }
+
+        .campo input {
+            width: 100%;
+            min-height: 45px;
+            padding: 12px 13px;
+            border: 1px solid #D5D9E0;
+            border-radius: 9px;
+            background: var(--branco);
+            color: var(--preto);
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .campo input:focus {
+            border-color: var(--azul-marinho);
+            box-shadow: 0 0 0 3px rgba(191, 220, 255, 0.8);
+        }
+
+        .campo input::placeholder {
+            color: #777777;
+        }
+
+        .campo-completo {
+            grid-column: 1 / -1;
+        }
+
+        .acoes {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .botao {
+            border: none;
+            border-radius: 9px;
+            padding: 13px 21px;
+            font-size: 13px;
+            font-weight: bold;
+            cursor: pointer;
+            font-family: inherit;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .botao-principal {
+            background: var(--azul-marinho);
+            color: var(--branco);
+        }
+
+        .botao-principal:hover {
+            background: var(--marrom);
+            transform: translateY(-1px);
+        }
+
+        .botao-limpar {
+            background: var(--azul-claro);
+            color: var(--azul-marinho);
+        }
+
+        .botao-limpar:hover {
+            background: #A8CEFA;
+        }
+
+        .lista-cabecalho {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .lista-cabecalho h3 {
+            color: var(--azul-marinho);
+            font-size: 20px;
+        }
+
+        .etiqueta {
+            display: inline-block;
+            padding: 8px 12px;
+            border-radius: 20px;
+            background: var(--azul-claro);
+            color: var(--azul-marinho);
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        #listaProdutos {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        #listaProdutos table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            background: var(--branco);
+        }
+
+        #listaProdutos th {
+            background: var(--azul-marinho);
+            color: var(--branco);
+            padding: 14px 12px;
+            text-align: left;
+            font-size: 12px;
+        }
+
+        #listaProdutos td {
+            padding: 13px 12px;
+            border-bottom: 1px solid #E5E8EE;
+            font-size: 13px;
+        }
+
+        #listaProdutos tr:nth-child(even) {
+            background: #F4F8FF;
+        }
+
+        #listaProdutos tr:hover {
+            background: var(--azul-claro);
+        }
+
+        footer {
+            text-align: center;
+            padding: 22px;
+            color: var(--marrom);
+            font-size: 12px;
+        }
+
+        @media (max-width: 650px) {
+            header {
+                padding: 16px 5%;
+            }
+
+            .identidade h1 {
+                font-size: 17px;
+            }
+
+            .voltar {
+                padding: 10px;
+                font-size: 12px;
+            }
+
+            main {
+                padding: 25px 15px 35px;
+            }
+
+            .introducao h2 {
+                font-size: 25px;
+            }
+
+            .painel {
+                padding: 20px 16px;
+            }
+
+            .formulario-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .campo-completo {
+                grid-column: auto;
+            }
+
+            .acoes {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .botao {
+                width: 100%;
+            }
+
+            .lista-cabecalho {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-    <h1>Cadastro de Produtos</h1>
+    <header>
+        <div class="identidade">
+            <div class="logo">E</div>
 
-    <form id="formProduto">
+            <div>
+                <h1>Estoque Simples</h1>
+                <p>Sistema de controle de estoque</p>
+            </div>
+        </div>
 
-        <label for="nome">Nome do produto:</label><br>
-        <input type="text" id="nome" name="nome" required>
+        <a href="index.html" class="voltar">← Página inicial</a>
+    </header>
 
-        <br><br>
+    <main>
 
-        <label for="categoria">Categoria:</label><br>
-        <input type="text" id="categoria" name="categoria" required>
+        <section class="introducao">
+            <p class="subtitulo">Gerenciamento de estoque</p>
+            <h2>Cadastro de Produtos</h2>
+            <p>
+                Registre e organize seus produtos em um só lugar.
+                Mantenha as informações atualizadas para facilitar
+                o acompanhamento do estoque.
+            </p>
+        </section>
 
-        <br><br>
+        <section class="painel">
 
-        <label for="codigo">Código:</label><br>
-        <input type="text" id="codigo" name="codigo" required>
+            <div class="painel-titulo">
+                <h3>Novo produto</h3>
+                <p>Preencha os campos abaixo para cadastrar um produto.</p>
+            </div>
 
-        <br><br>
+            <form id="formProduto">
 
-        <label for="quantidade">Quantidade:</label><br>
-        <input type="number" id="quantidade" name="quantidade" min="0" step="0.01" required>
+                <div class="formulario-grid">
 
-        <br><br>
+                    <div class="campo">
+                        <label for="nome">Nome do produto</label>
+                        <input
+                            type="text"
+                            id="nome"
+                            name="nome"
+                            placeholder="Ex.: Arroz"
+                            required>
+                    </div>
 
-        <label for="estoqueMinimo">Estoque mínimo:</label><br>
-        <input type="number" id="estoqueMinimo" name="estoqueMinimo" min="0" step="0.01" required>
+                    <div class="campo">
+                        <label for="categoria">Categoria</label>
+                        <input
+                            type="text"
+                            id="categoria"
+                            name="categoria"
+                            placeholder="Ex.: Alimentos"
+                            required>
+                    </div>
 
-        <br><br>
+                    <div class="campo">
+                        <label for="codigo">Código do produto</label>
+                        <input
+                            type="text"
+                            id="codigo"
+                            name="codigo"
+                            placeholder="Ex.: PROD001"
+                            required>
+                    </div>
 
-        <label for="validade">Data de validade:</label><br>
-        <input type="date" id="validade" name="validade">
+                    <div class="campo">
+                        <label for="quantidade">Quantidade inicial</label>
+                        <input
+                            type="number"
+                            id="quantidade"
+                            name="quantidade"
+                            min="0"
+                            step="0.01"
+                            placeholder="Informe a quantidade"
+                            required>
+                    </div>
 
-        <br><br>
+                    <div class="campo">
+                        <label for="estoqueMinimo">Estoque mínimo</label>
+                        <input
+                            type="number"
+                            id="estoqueMinimo"
+                            name="estoqueMinimo"
+                            min="0"
+                            step="0.01"
+                            placeholder="Quantidade mínima desejada"
+                            required>
+                    </div>
 
-        <button type="submit">Cadastrar produto</button>
+                    <div class="campo">
+                        <label for="validade">Data de validade (opcional)</label>
+                        <input
+                            type="date"
+                            id="validade"
+                            name="validade">
+                    </div>
 
-    </form>
+                </div>
 
+                <div class="acoes">
+                    <button type="submit" class="botao botao-principal">
+                        + Cadastrar produto
+                    </button>
 
-    <hr>
+                    <button type="reset" class="botao botao-limpar">
+                        Limpar campos
+                    </button>
+                </div>
 
+            </form>
 
-    <h2>Produtos cadastrados</h2>
+        </section>
 
-    <div id="listaProdutos"></div>
+        <section class="painel">
 
+            <div class="lista-cabecalho">
+                <div>
+                    <h3>Produtos cadastrados</h3>
+                    <p style="font-size: 13px; margin-top: 7px;">
+                        Consulte os produtos registrados no sistema.
+                    </p>
+                </div>
+
+                <span class="etiqueta">LISTA DE PRODUTOS</span>
+            </div>
+
+            <div id="listaProdutos"></div>
+
+        </section>
+
+    </main>
+
+    <footer>
+        Estoque Simples | Sistema de Controle e Monitoramento de Estoque
+    </footer>
 
     <script src="script.js"></script>
 
 </body>
 
 </html>
+```
