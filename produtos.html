@@ -1,484 +1,336 @@
-```html
+
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Cadastro de Produtos | Estoque Simples</title>
+    <title>Produtos - Estoque Simples</title>
 
     <style>
-        :root {
-            --azul-claro: #BFDCFF;
-            --marrom: #211E1B;
-            --bege: #F5F5DC;
-            --branco: #FFFFFF;
-            --azul-marinho: #0C0A29;
-            --preto: #000000;
-        }
-
         * {
-            margin: 0;
-            padding: 0;
             box-sizing: border-box;
         }
 
         body {
-            font-family: Arial, Helvetica, sans-serif;
-            background: var(--bege);
-            color: var(--marrom);
-            min-height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #F5F5DC;
+            color: #211E1B;
         }
 
         header {
-            background: var(--branco);
-            padding: 20px 7%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px solid var(--azul-claro);
+            background: #0C0A29;
+            color: #FFFFFF;
+            padding: 25px;
+            text-align: center;
         }
 
-        .identidade {
-            display: flex;
-            align-items: center;
-            gap: 12px;
+        header h1 {
+            margin: 0 0 10px;
         }
 
-        .logo {
-            width: 47px;
-            height: 47px;
-            border-radius: 13px;
-            background: var(--azul-marinho);
-            color: var(--branco);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            font-weight: bold;
-        }
-
-        .identidade h1 {
-            font-size: 20px;
-            color: var(--azul-marinho);
-        }
-
-        .identidade p {
-            margin-top: 5px;
-            font-size: 12px;
-        }
-
-        .voltar {
+        nav a {
+            color: #BFDCFF;
             text-decoration: none;
-            color: var(--azul-marinho);
-            background: var(--azul-claro);
-            padding: 11px 16px;
-            border-radius: 9px;
-            font-size: 13px;
-            font-weight: bold;
-        }
-
-        .voltar:hover {
-            background: var(--azul-marinho);
-            color: var(--branco);
+            margin: 0 8px;
+            display: inline-block;
+            padding: 5px;
         }
 
         main {
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 35px 22px 50px;
+            max-width: 1150px;
+            margin: 30px auto;
+            padding: 0 16px;
         }
 
-        .introducao {
-            margin-bottom: 28px;
+        .card {
+            background: #FFFFFF;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            box-shadow: 0 3px 12px #00000012;
         }
 
-        .introducao .subtitulo {
-            color: var(--azul-marinho);
-            font-size: 12px;
+        .campos {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 16px;
+        }
+
+        label {
+            display: block;
             font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 10px;
-        }
-
-        .introducao h2 {
-            font-size: 30px;
-            color: var(--azul-marinho);
-            margin-bottom: 10px;
-        }
-
-        .introducao p {
-            font-size: 14px;
-            line-height: 1.7;
-        }
-
-        .painel {
-            background: var(--branco);
-            border: 1px solid var(--azul-claro);
-            border-radius: 18px;
-            padding: 28px;
-            margin-bottom: 28px;
-            box-shadow: 0 5px 18px rgba(12, 10, 41, 0.04);
-        }
-
-        .painel-titulo {
-            margin-bottom: 24px;
-        }
-
-        .painel-titulo h3 {
-            font-size: 20px;
-            color: var(--azul-marinho);
             margin-bottom: 7px;
         }
 
-        .painel-titulo p {
-            font-size: 13px;
-            line-height: 1.6;
-        }
-
-        .formulario-grid {
-            display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 20px;
-        }
-
-        .campo {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .campo label {
-            font-size: 13px;
-            font-weight: bold;
-            color: var(--marrom);
-        }
-
-        .campo input {
+        input, select {
             width: 100%;
-            min-height: 45px;
-            padding: 12px 13px;
-            border: 1px solid #D5D9E0;
-            border-radius: 9px;
-            background: var(--branco);
-            color: var(--preto);
-            font-family: inherit;
-            font-size: 14px;
-            outline: none;
-            transition: border-color 0.2s, box-shadow 0.2s;
+            padding: 12px;
+            border: 1px solid #999;
+            border-radius: 7px;
+            font-size: 15px;
         }
 
-        .campo input:focus {
-            border-color: var(--azul-marinho);
-            box-shadow: 0 0 0 3px rgba(191, 220, 255, 0.8);
+        input:focus, select:focus {
+            outline: 2px solid #BFDCFF;
         }
 
-        .campo input::placeholder {
-            color: #777777;
-        }
-
-        .campo-completo {
-            grid-column: 1 / -1;
-        }
-
-        .acoes {
+        .botoes {
             display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-top: 25px;
             flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
         }
 
-        .botao {
-            border: none;
-            border-radius: 9px;
-            padding: 13px 21px;
-            font-size: 13px;
-            font-weight: bold;
+        button {
+            padding: 11px 15px;
+            border: 0;
+            border-radius: 7px;
             cursor: pointer;
-            font-family: inherit;
-            transition: background 0.2s, transform 0.2s;
-        }
-
-        .botao-principal {
-            background: var(--azul-marinho);
-            color: var(--branco);
-        }
-
-        .botao-principal:hover {
-            background: var(--marrom);
-            transform: translateY(-1px);
-        }
-
-        .botao-limpar {
-            background: var(--azul-claro);
-            color: var(--azul-marinho);
-        }
-
-        .botao-limpar:hover {
-            background: #A8CEFA;
-        }
-
-        .lista-cabecalho {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 15px;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-        }
-
-        .lista-cabecalho h3 {
-            color: var(--azul-marinho);
-            font-size: 20px;
-        }
-
-        .etiqueta {
-            display: inline-block;
-            padding: 8px 12px;
-            border-radius: 20px;
-            background: var(--azul-claro);
-            color: var(--azul-marinho);
-            font-size: 11px;
             font-weight: bold;
         }
 
-        #listaProdutos {
-            width: 100%;
+        .principal {
+            background: #0C0A29;
+            color: #FFFFFF;
+        }
+
+        .secundario {
+            background: #BFDCFF;
+            color: #0C0A29;
+        }
+
+        .perigo {
+            background: #B42318;
+            color: #FFFFFF;
+        }
+
+        .tabela-container {
             overflow-x: auto;
         }
 
-        #listaProdutos table {
+        table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 10px;
-            background: var(--branco);
+            min-width: 850px;
         }
 
-        #listaProdutos th {
-            background: var(--azul-marinho);
-            color: var(--branco);
-            padding: 14px 12px;
+        th, td {
+            padding: 12px;
             text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background: #0C0A29;
+            color: white;
+        }
+
+        td button {
+            margin: 3px;
             font-size: 12px;
         }
 
-        #listaProdutos td {
-            padding: 13px 12px;
-            border-bottom: 1px solid #E5E8EE;
-            font-size: 13px;
+        .baixo {
+            color: #B42318;
+            font-weight: bold;
         }
 
-        #listaProdutos tr:nth-child(even) {
-            background: #F4F8FF;
+        .normal {
+            color: #176B36;
+            font-weight: bold;
         }
 
-        #listaProdutos tr:hover {
-            background: var(--azul-claro);
+        .inativo {
+            color: #666;
+            font-weight: bold;
         }
 
-        footer {
-            text-align: center;
-            padding: 22px;
-            color: var(--marrom);
-            font-size: 12px;
+        .filtros {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .mensagem {
+            margin: 12px 0;
+            font-weight: bold;
+        }
+
+        .aviso {
+            background: #BFDCFF;
+            padding: 12px;
+            border-radius: 7px;
         }
 
         @media (max-width: 650px) {
-            header {
-                padding: 16px 5%;
-            }
-
-            .identidade h1 {
-                font-size: 17px;
-            }
-
-            .voltar {
-                padding: 10px;
-                font-size: 12px;
-            }
-
-            main {
-                padding: 25px 15px 35px;
-            }
-
-            .introducao h2 {
-                font-size: 25px;
-            }
-
-            .painel {
-                padding: 20px 16px;
-            }
-
-            .formulario-grid {
+            .campos, .filtros {
                 grid-template-columns: 1fr;
             }
 
-            .campo-completo {
-                grid-column: auto;
-            }
-
-            .acoes {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .botao {
-                width: 100%;
-            }
-
-            .lista-cabecalho {
-                align-items: flex-start;
-                flex-direction: column;
+            .card {
+                padding: 17px;
             }
         }
     </style>
 </head>
 
 <body>
-
     <header>
-        <div class="identidade">
-            <div class="logo">E</div>
+        <h1>Estoque Simples</h1>
+        <p>Gerenciamento de produtos</p>
 
-            <div>
-                <h1>Estoque Simples</h1>
-                <p>Sistema de controle de estoque</p>
-            </div>
-        </div>
-
-        <a href="index.html" class="voltar">← Página inicial</a>
+        <nav>
+            <a href="index.html">Início</a>
+            <a href="produtos.html">Produtos</a>
+            <a href="entrada.html">Entradas</a>
+            <a href="saida.html">Saídas</a>
+        </nav>
     </header>
 
     <main>
+        <section class="card">
+            <h2 id="tituloFormulario">Cadastrar produto</h2>
 
-        <section class="introducao">
-            <p class="subtitulo">Gerenciamento de estoque</p>
-            <h2>Cadastro de Produtos</h2>
             <p>
-                Registre e organize seus produtos em um só lugar.
-                Mantenha as informações atualizadas para facilitar
-                o acompanhamento do estoque.
+                Cadastre novos produtos ou edite os dados
+                dos produtos existentes.
             </p>
-        </section>
-
-        <section class="painel">
-
-            <div class="painel-titulo">
-                <h3>Novo produto</h3>
-                <p>Preencha os campos abaixo para cadastrar um produto.</p>
-            </div>
 
             <form id="formProduto">
-
-                <div class="formulario-grid">
-
-                    <div class="campo">
+                <div class="campos">
+                    <div>
                         <label for="nome">Nome do produto</label>
-                        <input
-                            type="text"
-                            id="nome"
-                            name="nome"
-                            placeholder="Ex.: Arroz"
-                            required>
+                        <input type="text" id="nome" name="nome" required>
                     </div>
 
-                    <div class="campo">
+                    <div>
                         <label for="categoria">Categoria</label>
-                        <input
-                            type="text"
-                            id="categoria"
-                            name="categoria"
-                            placeholder="Ex.: Alimentos"
-                            required>
+                        <input type="text" id="categoria" name="categoria" required>
                     </div>
 
-                    <div class="campo">
-                        <label for="codigo">Código do produto</label>
-                        <input
-                            type="text"
-                            id="codigo"
-                            name="codigo"
-                            placeholder="Ex.: PROD001"
-                            required>
+                    <div>
+                        <label for="codigo">Código</label>
+                        <input type="text" id="codigo" name="codigo" required>
                     </div>
 
-                    <div class="campo">
-                        <label for="quantidade">Quantidade inicial</label>
-                        <input
-                            type="number"
-                            id="quantidade"
-                            name="quantidade"
-                            min="0"
-                            step="0.01"
-                            placeholder="Informe a quantidade"
-                            required>
+                    <div>
+                        <label for="quantidade">Estoque inicial</label>
+                        <input type="number" id="quantidade"
+                            name="quantidade" min="0"
+                            step="0.01" required>
                     </div>
 
-                    <div class="campo">
+                    <div>
                         <label for="estoqueMinimo">Estoque mínimo</label>
-                        <input
-                            type="number"
-                            id="estoqueMinimo"
-                            name="estoqueMinimo"
-                            min="0"
-                            step="0.01"
-                            placeholder="Quantidade mínima desejada"
-                            required>
+                        <input type="number" id="estoqueMinimo"
+                            name="estoqueMinimo" min="0"
+                            step="0.01" required>
                     </div>
 
-                    <div class="campo">
-                        <label for="validade">Data de validade (opcional)</label>
-                        <input
-                            type="date"
-                            id="validade"
-                            name="validade">
+                    <div>
+                        <label for="validade">Data de validade</label>
+                        <input type="date" id="validade" name="validade">
                     </div>
-
                 </div>
 
-                <div class="acoes">
-                    <button type="submit" class="botao botao-principal">
-                        + Cadastrar produto
+                <p id="avisoEdicao" class="aviso" hidden>
+                    Você está editando um produto. O estoque inicial
+                    será mantido para preservar o histórico de
+                    entradas e saídas.
+                </p>
+
+                <div class="botoes">
+                    <button type="submit" class="principal"
+                        id="botaoSalvar">
+                        Cadastrar produto
                     </button>
 
-                    <button type="reset" class="botao botao-limpar">
-                        Limpar campos
+                    <button type="button" class="secundario"
+                        id="botaoCancelar" hidden>
+                        Cancelar edição
                     </button>
                 </div>
-
             </form>
 
+            <p id="mensagem" class="mensagem" role="status"></p>
         </section>
 
-        <section class="painel">
+        <section class="card">
+            <h2>Produtos cadastrados</h2>
 
-            <div class="lista-cabecalho">
+            <div class="filtros">
                 <div>
-                    <h3>Produtos cadastrados</h3>
-                    <p style="font-size: 13px; margin-top: 7px;">
-                        Consulte os produtos registrados no sistema.
-                    </p>
+                    <label for="pesquisa">Pesquisar produto</label>
+                    <input type="search" id="pesquisa"
+                        placeholder="Nome, categoria ou código">
                 </div>
 
-                <span class="etiqueta">LISTA DE PRODUTOS</span>
+                <div>
+                    <label for="filtroSituacao">Situação</label>
+                    <select id="filtroSituacao">
+                        <option value="todos">Todos</option>
+                        <option value="ativos">Ativos</option>
+                        <option value="inativos">Desativados</option>
+                        <option value="baixo">Estoque baixo</option>
+                    </select>
+                </div>
             </div>
 
-            <div id="listaProdutos"></div>
-
+            <div class="tabela-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Produto</th>
+                            <th>Categoria</th>
+                            <th>Código</th>
+                            <th>Disponível</th>
+                            <th>Mínimo</th>
+                            <th>Validade</th>
+                            <th>Situação</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="listaProdutos"></tbody>
+                </table>
+            </div>
         </section>
 
+        <section class="card">
+            <h2>Alertas de estoque</h2>
+            <div class="tabela-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Produto</th>
+                            <th>Disponível</th>
+                            <th>Mínimo</th>
+                            <th>Alerta</th>
+                        </tr>
+                    </thead>
+                    <tbody id="listaAlertas"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Alertas de validade</h2>
+            <div class="tabela-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Produto</th>
+                            <th>Validade</th>
+                            <th>Situação</th>
+                        </tr>
+                    </thead>
+                    <tbody id="listaValidades"></tbody>
+                </table>
+            </div>
+        </section>
     </main>
 
-    <footer>
-        Estoque Simples | Sistema de Controle e Monitoramento de Estoque
-    </footer>
-
     <script src="script.js"></script>
-
 </body>
-
 </html>
-```
