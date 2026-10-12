@@ -6,8 +6,10 @@ const CHAVES = [
     "entradas",
     "saidas",
     "precosFinanceiros",
-    "inventarios"
+    "inventarios",
+    "lotes"
 ];
+
 
 let backupValidado = null;
 
