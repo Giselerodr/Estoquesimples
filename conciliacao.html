@@ -2,295 +2,1351 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Conciliação de Lotes | Estoque Simples</title>
-<style>
-* {
-    box-sizing: border-box;
-}
-body {
-    margin: 0;
-    background: #F5F5DC;
-    color: #211E1B;
-    font: 16px Arial, sans-serif;
-}
-header {
-    background: #0C0A29;
-    color: white;
-    padding: 24px;
-}
-main {
-    max-width: 1000px;
-    margin: 24px auto;
-    padding: 0 16px;
-}
-.painel {
-    background: white;
-    padding: 22px;
-    border-radius: 12px;
-    margin: 16px 0;
-}
-label {
-    display: block;
-    margin: 14px 0 6px;
-    font-weight: bold;
-}
-input, select, textarea, button {
-    font: inherit;
-    padding: 11px;
-    border-radius: 7px;
-}
-input, select, textarea {
-    width: 100%;
-    border: 1px solid #aaa;
-}
-button {
-    border: 0;
-    background: #0C0A29;
-    color: white;
-    cursor: pointer;
-    margin: 12px 8px 0 0;
-}
-button:disabled {
-    opacity: .5;
-    cursor: not-allowed;
-}
-.aviso {
-    background: #BFDCFF;
-    padding: 14px;
-    border-radius: 8px;
-    line-height: 1.5;
-}
-.tabela {
-    overflow-x: auto;
-}
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-th, td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-th {
-    background: #BFDCFF;
-}
-.erro {
-    color: #a21b1b;
-}
-.ok {
-    color: #14642a;
-}
-.campos {
-    display: grid;
-    grid-template-columns:
-        repeat(auto-fit, minmax(220px, 1fr));
-    gap: 0 16px;
-}
-a {
-    color: #0C0A29;
-}
-#resumo {
-    white-space: pre-line;
-    line-height: 1.6;
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Conciliação de Lotes | Estoque Simples</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy: #0C0A29;
+      --ink: #211E1B;
+      --paper: #F8F7F2;
+      --white: #FFFFFF;
+      --gold: #B69B65;
+      --muted: #78756F;
+      --border: #E9E6DF;
+      --blue: #BFDCFF;
+      --green: #287356;
+      --red: #AD4545;
+      --orange: #A66C2C;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "DM Sans", sans-serif;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button, input, select, textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    h1, h2, h3, p {
+      margin-top: 0;
+    }
+
+    h1, h2, h3 {
+      font-family: "Playfair Display", serif;
+    }
+
+    /* MENU LATERAL */
+
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      width: 258px;
+      padding: 30px 19px;
+      background: var(--navy);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      z-index: 10;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 0 11px 30px;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+    }
+
+    .brand-mark {
+      width: 43px;
+      height: 43px;
+      border: 1px solid rgba(255,255,255,.35);
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      color: #DCC28F;
+      font: 25px "Playfair Display", serif;
+    }
+
+    .brand strong {
+      display: block;
+      font: 600 19px "Playfair Display", serif;
+    }
+
+    .brand small {
+      display: block;
+      margin-top: 4px;
+      color: #A9A7BE;
+      font-size: 9px;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+    }
+
+    .nav-label {
+      margin: 26px 12px 10px;
+      color: #9997B1;
+      font-size: 10px;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      margin: 2px 0;
+      border-radius: 9px;
+      color: #D3D1DF;
+      font-size: 12px;
+      transition: .2s;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      background: rgba(255,255,255,.11);
+      color: white;
+    }
+
+    .nav-link.active {
+      border-left: 3px solid #D6B779;
+    }
+
+    .nav-icon {
+      width: 21px;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      padding: 25px 12px 0;
+      color: #9997B1;
+      font-size: 10px;
+      line-height: 1.8;
+    }
+
+    /* ÁREA PRINCIPAL */
+
+    .main-area {
+      margin-left: 258px;
+      min-height: 100vh;
+    }
+
+    .topbar {
+      height: 76px;
+      padding: 0 48px;
+      background: rgba(255,255,255,.88);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .breadcrumb {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .breadcrumb strong {
+      color: var(--ink);
+    }
+
+    .browser-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+    }
+
+    .content {
+      max-width: 1500px;
+      padding: 44px 48px 70px;
+      margin: auto;
+    }
+
+    .eyebrow {
+      color: var(--gold);
+      font: 500 10px "DM Mono", monospace;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .page-heading {
+      margin-bottom: 30px;
+    }
+
+    .page-heading h1 {
+      font-size: clamp(35px, 4vw, 55px);
+      font-weight: 500;
+      letter-spacing: -1.6px;
+      margin: 13px 0;
+      line-height: 1.2;
+    }
+
+    .page-heading h1 span {
+      color: var(--gold);
+    }
+
+    .page-heading p {
+      max-width: 680px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.9;
+      margin: 0;
+    }
+
+    /* BANNER */
+
+    .hero {
+      background: var(--navy);
+      color: white;
+      border-radius: 15px;
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      min-height: 220px;
+      overflow: hidden;
+      margin-bottom: 35px;
+    }
+
+    .hero-content {
+      padding: 39px 41px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h2 {
+      font-size: clamp(27px, 3vw, 39px);
+      font-weight: 500;
+      line-height: 1.2;
+      margin: 13px 0;
+    }
+
+    .hero p {
+      max-width: 470px;
+      color: #C8C6D6;
+      font-size: 12px;
+      line-height: 1.9;
+      margin: 0;
+    }
+
+    .hero-art {
+      position: relative;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .hero-art::before,
+    .hero-art::after {
+      content: "";
+      position: absolute;
+      width: 240px;
+      height: 240px;
+      border: 1px solid rgba(214,183,121,.35);
+      border-radius: 50%;
+    }
+
+    .hero-art::after {
+      width: 155px;
+      height: 155px;
+      border-color: rgba(214,183,121,.6);
+    }
+
+    .hero-symbol {
+      position: relative;
+      z-index: 1;
+      color: #D7BE8E;
+      font: 500 105px "Playfair Display", serif;
+      line-height: 1;
+    }
+
+    /* SEÇÕES */
+
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 35px 0 17px;
+    }
+
+    .section-heading h2 {
+      font-size: 27px;
+      font-weight: 500;
+      margin: 7px 0 0;
+    }
+
+    .section-heading p {
+      color: var(--muted);
+      font-size: 11px;
+      margin: 0;
+    }
+
+    .painel {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 29px;
+      margin-bottom: 20px;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 15px;
+      margin-bottom: 24px;
+    }
+
+    .panel-header h3 {
+      font-size: 25px;
+      font-weight: 500;
+      margin: 8px 0;
+    }
+
+    .panel-header p {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.9;
+      margin: 0;
+    }
+
+    .panel-tag {
+      border: 1px solid var(--border);
+      background: var(--paper);
+      border-radius: 7px;
+      padding: 8px 10px;
+      color: var(--muted);
+      font: 10px "DM Mono", monospace;
+      white-space: nowrap;
+    }
+
+    /* AVISOS */
+
+    .aviso {
+      display: flex;
+      gap: 14px;
+      align-items: start;
+      background: #F0F4F9;
+      border: 1px solid #DDE8F4;
+      padding: 19px 21px;
+      border-radius: 10px;
+      margin-bottom: 23px;
+    }
+
+    .aviso-icon {
+      color: #527CA8;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .aviso p {
+      color: #526477;
+      font-size: 12px;
+      line-height: 1.9;
+      margin: 0;
+    }
+
+    /* BOTÕES */
+
+    .btn {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 9px;
+      padding: 13px 19px;
+      min-height: 45px;
+      background: var(--navy);
+      color: white;
+      border: 1px solid var(--navy);
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 600;
+      transition: .2s;
+    }
+
+    .btn:hover:not(:disabled) {
+      background: #242041;
+    }
+
+    .btn:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+    }
+
+    .btn.secondary {
+      background: white;
+      color: var(--navy);
+      border-color: #D9D5CA;
+    }
+
+    .btn.secondary:hover:not(:disabled) {
+      background: #F5F3EE;
+    }
+
+    /* TABELAS */
+
+    .tabela {
+      overflow-x: auto;
+      margin-top: 21px;
+    }
+
+    table {
+      width: 100%;
+      min-width: 780px;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th {
+      background: #F8F7F3;
+      padding: 15px 12px;
+      color: #77736C;
+      border-bottom: 1px solid var(--border);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+    }
+
+    td {
+      padding: 16px 12px;
+      border-bottom: 1px solid #F0EEE9;
+      color: #57534D;
+      font-size: 12px;
+      line-height: 1.7;
+      vertical-align: middle;
+    }
+
+    tbody tr:hover {
+      background: #FBFAF7;
+    }
+
+    td:first-child {
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .erro {
+      color: var(--red);
+      font-weight: 600;
+    }
+
+    .ok {
+      color: var(--green);
+      font-weight: 600;
+    }
+
+    /* FORMULÁRIO */
+
+    .form-intro {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.9;
+      margin-bottom: 25px;
+    }
+
+    .campos {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 18px;
+    }
+
+    .field {
+      min-width: 0;
+      margin-bottom: 19px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 9px;
+      color: #625E58;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    input:not([type="checkbox"]),
+    select,
+    textarea {
+      display: block;
+      width: 100%;
+      min-width: 0;
+      padding: 14px 15px;
+      background: #FCFBF8;
+      color: var(--ink);
+      border: 1px solid #E4E1DA;
+      border-radius: 9px;
+      font-size: 12px;
+      outline: none;
+      transition: .2s;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: #9DB8D9;
+      box-shadow: 0 0 0 3px rgba(191,220,255,.25);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+      line-height: 1.7;
+    }
+
+    .subpanel {
+      margin: 17px 0 24px;
+      padding: 22px;
+      background: #FAF9F5;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+    }
+
+    .subpanel[hidden] {
+      display: none;
+    }
+
+    .subpanel h3 {
+      font-size: 21px;
+      font-weight: 500;
+      margin-bottom: 9px;
+    }
+
+    .subpanel p {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+
+    /* RESUMO DINÂMICO */
+
+    #resumo {
+      white-space: pre-line;
+      line-height: 1.9;
+      color: #526477;
+      font-size: 12px;
+      overflow-wrap: anywhere;
+      margin: 23px 0;
+    }
+
+    #resumo:empty {
+      display: none;
+    }
+
+    /* CONFIRMAÇÃO */
+
+    .confirmacao-box {
+      display: flex;
+      align-items: start;
+      gap: 12px;
+      padding: 19px;
+      background: #F9F7F0;
+      border: 1px solid #E8E0CF;
+      border-radius: 10px;
+      margin: 7px 0 23px;
+    }
+
+    .confirmacao-box input {
+      width: 17px;
+      height: 17px;
+      margin: 2px 0 0;
+      accent-color: var(--navy);
+      flex-shrink: 0;
+      cursor: pointer;
+    }
+
+    .confirmacao-box label {
+      color: #665D50;
+      font-size: 12px;
+      line-height: 1.8;
+      cursor: pointer;
+    }
+
+    #mensagem {
+      margin: 19px 0 0;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.8;
+      overflow-wrap: anywhere;
+    }
+
+    #mensagem:empty {
+      display: none;
+    }
+
+    /* ETAPAS */
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: 15px;
+    }
+
+    .step-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 23px;
+    }
+
+    .step-number {
+      color: var(--gold);
+      font: 500 12px "DM Mono", monospace;
+      letter-spacing: 1px;
+    }
+
+    .step-card h3 {
+      font-size: 19px;
+      font-weight: 500;
+      margin: 13px 0 10px;
+    }
+
+    .step-card p {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.9;
+      margin: 0;
+    }
+
+    /* LINKS RÁPIDOS */
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: 15px;
+    }
+
+    .quick-link {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 22px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      font-size: 12px;
+      font-weight: 600;
+      transition: .2s;
+    }
+
+    .quick-link:hover {
+      transform: translateY(-2px);
+      border-color: #B9B6C2;
+    }
+
+    .quick-link span:last-child {
+      color: var(--gold);
+      font-size: 19px;
+    }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      margin-top: 38px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      color: #96928C;
+      font-size: 10px;
+    }
+
+    /* RESPONSIVIDADE */
+
+    @media (max-width: 1100px) {
+      .steps-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 850px) {
+      .sidebar {
+        position: relative;
+        width: 100%;
+        padding: 15px;
+      }
+
+      .brand {
+        padding-bottom: 15px;
+      }
+
+      .nav-label,
+      .sidebar-bottom {
+        display: none;
+      }
+
+      .sidebar nav {
+        display: flex;
+        gap: 5px;
+        overflow-x: auto;
+        margin-top: 10px;
+      }
+
+      .nav-link {
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
+      .main-area {
+        margin-left: 0;
+      }
+
+      .topbar {
+        height: 62px;
+        padding: 0 22px;
+      }
+
+      .content {
+        padding: 30px 20px 45px;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-content {
+        padding: 30px;
+      }
+
+      .hero-art {
+        display: none;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .campos,
+      .quick-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-heading,
+      .panel-header,
+      footer {
+        flex-direction: column;
+        align-items: start;
+      }
+
+      .painel {
+        padding: 19px;
+      }
+
+      .browser-status {
+        display: none;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
-<header>
-    <h1>Conciliação de Lotes</h1>
-    <p>Estoque Simples — Etapa 15</p>
-</header>
+  <!-- MENU LATERAL -->
 
-<main>
+  <aside class="sidebar">
+    <a class="brand" href="index.html">
+      <div class="brand-mark">E.</div>
+      <div>
+        <strong>Estoque Simples</strong>
+        <small>Atelier de Gestão</small>
+      </div>
+    </a>
 
-<p>
-    <a href="index.html">Voltar ao início</a> |
-    <a href="lotes.html">Consultar lotes</a> |
-    <a href="backup.html">Fazer backup</a>
-</p>
+    <nav>
+      <div class="nav-label">Principal</div>
 
-<section class="painel">
+      <a class="nav-link" href="index.html">
+        <span class="nav-icon">⌂</span>
+        Página inicial
+      </a>
 
-    <h2>Conferência de saldos</h2>
+      <a class="nav-link" href="dashboard.html">
+        <span class="nav-icon">◫</span>
+        Dashboard Gerencial
+      </a>
 
-    <p class="aviso">
-        Este módulo não altera o estoque principal.
-        Ele permite corrigir o saldo de um lote
-        após conferência física, somente quando
-        a soma final dos lotes for igual ao estoque
-        principal. Não utilize para registrar compras
-        ou vendas: use Entrada e Saída.
-    </p>
+      <div class="nav-label">Operações</div>
 
-    <button type="button" id="atualizar">
-        Atualizar conferência
-    </button>
+      <a class="nav-link" href="produtos.html">
+        <span class="nav-icon">▦</span>
+        Produtos
+      </a>
 
-    <div class="tabela">
-        <table>
-            <thead>
-                <tr>
-                    <th>Produto</th>
-                    <th>Estoque principal</th>
-                    <th>Soma dos lotes</th>
-                    <th>Diferença</th>
-                    <th>Situação</th>
-                </tr>
-            </thead>
+      <a class="nav-link" href="entrada.html">
+        <span class="nav-icon">↘</span>
+        Entradas
+      </a>
 
-            <tbody id="tabelaConferencia"></tbody>
-        </table>
+      <a class="nav-link" href="saida.html">
+        <span class="nav-icon">↗</span>
+        Saídas
+      </a>
+
+      <a class="nav-link" href="historico.html">
+        <span class="nav-icon">≡</span>
+        Histórico
+      </a>
+
+      <div class="nav-label">Monitoramento</div>
+
+      <a class="nav-link" href="alertas.html">
+        <span class="nav-icon">◇</span>
+        Alertas Inteligentes
+      </a>
+
+      <a class="nav-link" href="inventario.html">
+        <span class="nav-icon">☷</span>
+        Inventário
+      </a>
+
+      <a class="nav-link" href="lotes.html">
+        <span class="nav-icon">▤</span>
+        Lotes
+      </a>
+
+      <a class="nav-link active" href="conciliacao.html">
+        <span class="nav-icon">⇄</span>
+        Conciliação de Lotes
+      </a>
+
+      <div class="nav-label">Inteligência</div>
+
+      <a class="nav-link" href="graficos.html">
+        <span class="nav-icon">▥</span>
+        Gráficos
+      </a>
+
+      <a class="nav-link" href="financeiro.html">
+        <span class="nav-icon">◈</span>
+        Financeiro
+      </a>
+
+      <a class="nav-link" href="relatorios.html">
+        <span class="nav-icon">▧</span>
+        Relatórios
+      </a>
+
+      <div class="nav-label">Administração</div>
+
+      <a class="nav-link" href="backup.html">
+        <span class="nav-icon">↥</span>
+        Backup
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      ESTOQUE SIMPLES<br>
+      Gestão e Inteligência de Estoque
     </div>
+  </aside>
 
-</section>
+  <!-- ÁREA PRINCIPAL -->
 
-<section class="painel">
+  <div class="main-area">
 
-    <h2>Regularizar lote após conferência física</h2>
+    <header class="topbar">
+      <div class="breadcrumb">
+        Estoque Simples &nbsp; / &nbsp;
+        <strong>Conciliação de Lotes</strong>
+      </div>
 
-    <p>
-        Selecione o produto e o lote a corrigir.
-        Para cadastrar um lote ainda não identificado,
-        selecione "Novo lote".
-        O sistema calcula a quantidade necessária
-        para igualar os saldos.
-        Confirme esse número somente se corresponder
-        à contagem física.
-    </p>
+      <div class="browser-status">
+        <span class="status-dot"></span>
+        Dados deste navegador
+      </div>
+    </header>
 
-    <form id="formConciliacao">
+    <main class="content">
 
-        <label for="produto">Produto</label>
-        <select id="produto" required></select>
+      <!-- TÍTULO -->
 
-        <label for="lote">Lote a conferir</label>
-        <select id="lote" required></select>
+      <section class="page-heading">
+        <div class="eyebrow">
+          Monitoramento · Auditoria de estoque
+        </div>
 
-        <div id="camposNovo" hidden>
+        <h1>Conciliação de Lotes<span>.</span></h1>
+
+        <p>
+          Compare os saldos do estoque principal com
+          as quantidades registradas por lote,
+          identifique divergências e documente
+          regularizações após conferência física.
+        </p>
+      </section>
+
+      <!-- BANNER -->
+
+      <section class="hero">
+        <div class="hero-content">
+          <div class="eyebrow">
+            Controle e consistência de dados
+          </div>
+
+          <h2>
+            Cada lote conferido.<br>
+            Cada saldo justificado.
+          </h2>
+
+          <p>
+            Uma visão organizada das diferenças
+            entre estoque e lotes, com registro
+            de responsáveis e justificativas
+            para acompanhar os ajustes realizados.
+          </p>
+        </div>
+
+        <div class="hero-art" aria-hidden="true">
+          <div class="hero-symbol">⇄</div>
+        </div>
+      </section>
+
+      <!-- CONFERÊNCIA DE SALDOS -->
+
+      <section>
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">01 / Diagnóstico</div>
+            <h2>Conferência de saldos</h2>
+          </div>
+
+          <p>
+            Comparação entre estoque principal e lotes.
+          </p>
+        </div>
+
+        <div class="painel">
+          <div class="panel-header">
+            <div>
+              <div class="eyebrow">
+                Verificação de consistência
+              </div>
+
+              <h3>Panorama dos produtos</h3>
+
+              <p>
+                Identifique produtos com diferenças
+                entre o saldo principal e a soma
+                das quantidades registradas por lote.
+              </p>
+            </div>
+
+            <span class="panel-tag">AUDITORIA</span>
+          </div>
+
+          <div class="aviso">
+            <div class="aviso-icon">ⓘ</div>
+            <p>
+              Este módulo não altera o estoque principal.
+              Ele permite regularizar o saldo de um lote
+              após conferência física, somente quando
+              a soma final dos lotes corresponder ao
+              estoque principal. Para registrar compras
+              e vendas, utilize os módulos Entrada e Saída.
+            </p>
+          </div>
+
+          <button
+            type="button"
+            id="atualizar"
+            class="btn"
+          >
+            ↻ &nbsp; Atualizar conferência
+          </button>
+
+          <div class="tabela">
+            <table>
+              <thead>
+                <tr>
+                  <th>Produto</th>
+                  <th>Estoque principal</th>
+                  <th>Soma dos lotes</th>
+                  <th>Diferença</th>
+                  <th>Situação</th>
+                </tr>
+              </thead>
+
+              <tbody id="tabelaConferencia"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- FORMULÁRIO DE CONCILIAÇÃO -->
+
+      <section>
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">02 / Regularização</div>
+            <h2>Registrar conciliação</h2>
+          </div>
+
+          <p>
+            Ajuste documentado após contagem física.
+          </p>
+        </div>
+
+        <div class="painel">
+          <div class="panel-header">
+            <div>
+              <div class="eyebrow">
+                Conferência física
+              </div>
+
+              <h3>Regularizar lote</h3>
+
+              <p>
+                Selecione o produto e o lote a conferir.
+                Caso exista um lote ainda não identificado,
+                escolha a opção "Novo lote".
+              </p>
+            </div>
+
+            <span class="panel-tag">REGISTRO</span>
+          </div>
+
+          <p class="form-intro">
+            O sistema calcula a quantidade necessária
+            para igualar os saldos. Confirme o ajuste
+            somente quando a quantidade corresponder
+            à contagem física realizada.
+          </p>
+
+          <form id="formConciliacao">
+
+            <div class="campos">
+              <div class="field">
+                <label for="produto">
+                  Produto
+                </label>
+
+                <select id="produto" required></select>
+              </div>
+
+              <div class="field">
+                <label for="lote">
+                  Lote a conferir
+                </label>
+
+                <select id="lote" required></select>
+              </div>
+            </div>
+
+            <!-- NOVO LOTE -->
+
+            <div id="camposNovo" class="subpanel" hidden>
+              <h3>Informações do novo lote</h3>
+
+              <p>
+                Preencha os dados de identificação
+                do lote encontrado durante a conferência.
+              </p>
+
+              <div class="campos">
+
+                <div class="field">
+                  <label for="codigoNovo">
+                    Código do novo lote
+                  </label>
+
+                  <input
+                    id="codigoNovo"
+                    maxlength="80"
+                  >
+                </div>
+
+                <div class="field">
+                  <label for="entradaNovo">
+                    Data de entrada do novo lote
+                  </label>
+
+                  <input
+                    id="entradaNovo"
+                    type="date"
+                  >
+                </div>
+
+                <div class="field">
+                  <label for="validadeNovo">
+                    Validade do novo lote
+                  </label>
+
+                  <input
+                    id="validadeNovo"
+                    type="date"
+                  >
+                </div>
+
+              </div>
+            </div>
+
+            <!-- RESUMO GERADO PELO JAVASCRIPT -->
+
+            <div id="resumo" class="aviso"></div>
 
             <div class="campos">
 
-                <div>
-                    <label for="codigoNovo">
-                        Código do novo lote
-                    </label>
-                    <input
-                        id="codigoNovo"
-                        maxlength="80"
-                    >
-                </div>
+              <div class="field">
+                <label for="quantidadeFisica">
+                  Quantidade efetivamente conferida neste lote
+                </label>
 
-                <div>
-                    <label for="entradaNovo">
-                        Data de entrada do novo lote
-                    </label>
-                    <input
-                        id="entradaNovo"
-                        type="date"
-                    >
-                </div>
+                <input
+                  id="quantidadeFisica"
+                  type="number"
+                  min="0"
+                  step="0.001"
+                  required
+                >
+              </div>
 
-                <div>
-                    <label for="validadeNovo">
-                        Validade do novo lote
-                    </label>
-                    <input
-                        id="validadeNovo"
-                        type="date"
-                    >
-                </div>
+              <div class="field">
+                <label for="responsavel">
+                  Responsável pela conferência
+                </label>
+
+                <input
+                  id="responsavel"
+                  maxlength="100"
+                  required
+                  placeholder="Nome do responsável"
+                >
+              </div>
 
             </div>
 
-        </div>
+            <div class="field">
+              <label for="justificativa">
+                Justificativa do ajuste
+              </label>
 
-        <p id="resumo" class="aviso"></p>
+              <textarea
+                id="justificativa"
+                rows="3"
+                minlength="10"
+                maxlength="500"
+                required
+                placeholder="Ex.: contagem física realizada; lote não lançado anteriormente"
+              ></textarea>
+            </div>
 
-        <label for="quantidadeFisica">
-            Quantidade efetivamente conferida neste lote
-        </label>
-        <input
-            id="quantidadeFisica"
-            type="number"
-            min="0"
-            step="0.001"
-            required
-        >
-
-        <label for="responsavel">
-            Responsável pela conferência
-        </label>
-        <input
-            id="responsavel"
-            maxlength="100"
-            required
-        >
-
-        <label for="justificativa">
-            Justificativa do ajuste
-        </label>
-        <textarea
-            id="justificativa"
-            rows="3"
-            minlength="10"
-            maxlength="500"
-            required
-            placeholder="Ex.: contagem física realizada; lote não lançado anteriormente"
-        ></textarea>
-
-        <label>
-            <input
+            <div class="confirmacao-box">
+              <input
                 id="confirmacao"
                 type="checkbox"
                 required
-                style="width:auto"
-            >
-            Confirmo que contei fisicamente este lote
-            e que os dados estão corretos.
-        </label>
+              >
 
-        <button type="submit">
-            Registrar conciliação
-        </button>
+              <label for="confirmacao">
+                Confirmo que realizei a contagem física
+                deste lote e que as informações
+                registradas correspondem ao que
+                foi efetivamente conferido.
+              </label>
+            </div>
 
-    </form>
+            <button type="submit" class="btn">
+              ✓ &nbsp; Registrar conciliação
+            </button>
 
-    <p id="mensagem" role="status"></p>
+          </form>
 
-</section>
+          <p id="mensagem" role="status" aria-live="polite"></p>
+        </div>
+      </section>
 
-<section class="painel">
+      <!-- HISTÓRICO -->
 
-    <h2>Histórico de conciliações</h2>
+      <section>
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">03 / Rastreabilidade</div>
+            <h2>Histórico de conciliações</h2>
+          </div>
 
-    <div class="tabela">
-        <table>
-            <thead>
+          <p>
+            Acompanhamento dos ajustes realizados.
+          </p>
+        </div>
+
+        <div class="painel">
+          <div class="panel-header">
+            <div>
+              <div class="eyebrow">
+                Registros de auditoria
+              </div>
+
+              <h3>Conciliações anteriores</h3>
+
+              <p>
+                Consulte os ajustes registrados,
+                incluindo saldos anteriores e posteriores,
+                responsável e justificativa.
+              </p>
+            </div>
+
+            <span class="panel-tag">HISTÓRICO</span>
+          </div>
+
+          <div class="tabela">
+            <table>
+              <thead>
                 <tr>
-                    <th>Data</th>
-                    <th>Produto</th>
-                    <th>Lote</th>
-                    <th>Antes</th>
-                    <th>Depois</th>
-                    <th>Responsável</th>
-                    <th>Justificativa</th>
+                  <th>Data</th>
+                  <th>Produto</th>
+                  <th>Lote</th>
+                  <th>Antes</th>
+                  <th>Depois</th>
+                  <th>Responsável</th>
+                  <th>Justificativa</th>
                 </tr>
-            </thead>
+              </thead>
 
-            <tbody id="historico"></tbody>
-        </table>
-    </div>
+              <tbody id="historico"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
 
-</section>
+      <!-- ORIENTAÇÕES -->
 
-</main>
+      <section>
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">04 / Boas práticas</div>
+            <h2>Como realizar a conciliação</h2>
+          </div>
 
-<script src="conciliacao.js"></script>
+          <p>
+            Etapas recomendadas para uma conferência segura.
+          </p>
+        </div>
+
+        <div class="steps-grid">
+
+          <article class="step-card">
+            <div class="step-number">ETAPA 01</div>
+
+            <h3>Identifique a diferença</h3>
+
+            <p>
+              Compare a quantidade do estoque principal
+              com a soma dos lotes e identifique
+              o produto que apresenta divergência.
+            </p>
+          </article>
+
+          <article class="step-card">
+            <div class="step-number">ETAPA 02</div>
+
+            <h3>Confira fisicamente</h3>
+
+            <p>
+              Localize o lote e verifique a quantidade
+              existente. Não registre um ajuste
+              apenas para eliminar uma diferença
+              sem realizar a conferência.
+            </p>
+          </article>
+
+          <article class="step-card">
+            <div class="step-number">ETAPA 03</div>
+
+            <h3>Documente o ajuste</h3>
+
+            <p>
+              Informe o responsável, registre
+              uma justificativa e confirme os dados.
+              O histórico permitirá consultar
+              as conciliações realizadas.
+            </p>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- ACESSOS RÁPIDOS -->
+
+      <section>
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">05 / Navegação</div>
+            <h2>Continuar no sistema</h2>
+          </div>
+
+          <p>
+            Acesse módulos relacionados à conferência.
+          </p>
+        </div>
+
+        <div class="quick-grid">
+
+          <a href="lotes.html" class="quick-link">
+            <span>Consultar lotes</span>
+            <span>↗</span>
+          </a>
+
+          <a href="inventario.html" class="quick-link">
+            <span>Inventário físico</span>
+            <span>↗</span>
+          </a>
+
+          <a href="backup.html" class="quick-link">
+            <span>Fazer backup</span>
+            <span>↗</span>
+          </a>
+
+        </div>
+      </section>
+
+      <footer>
+        <span>
+          Estoque Simples · Gestão e Inteligência de Estoque
+        </span>
+
+        <span>
+          Conciliação e Auditoria de Lotes
+        </span>
+      </footer>
+
+    </main>
+  </div>
+
+  <!-- MANTER O JAVASCRIPT ORIGINAL -->
+
+  <script src="conciliacao.js"></script>
 
 </body>
 </html>
