@@ -2,442 +2,1229 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Relatórios Gerenciais | Estoque Simples</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Relatórios Gerenciais | Estoque Simples</title>
 
-    <style>
-        :root {
-            --azul: #BFDCFF;
-            --marrom: #211E1B;
-            --bege: #F5F5DC;
-            --branco: #FFFFFF;
-            --marinho: #0C0A29;
-        }
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
 
-        * {
-            box-sizing: border-box;
-        }
+<style>
+:root {
+  --navy: #0C0A29;
+  --ink: #211E1B;
+  --paper: #F8F7F2;
+  --gold: #B69B65;
+  --muted: #78756F;
+  --border: #E9E6DF;
+  --green: #287356;
+}
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: var(--bege);
-            color: var(--marrom);
-        }
+* { box-sizing: border-box; }
 
-        header {
-            background: var(--branco);
-            border-bottom: 2px solid var(--azul);
-            padding: 22px 7%;
-        }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "DM Sans", sans-serif;
+}
 
-        header h1 {
-            color: var(--marinho);
-            margin: 0 0 7px;
-        }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; cursor: pointer; }
+h1, h2, h3 { font-family: "Playfair Display", serif; }
 
-        nav {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-top: 18px;
-        }
+/* MENU LATERAL */
 
-        nav a {
-            color: var(--marinho);
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 13px;
-        }
+.sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: 258px;
+  background: var(--navy);
+  color: white;
+  padding: 30px 19px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  z-index: 10;
+}
 
-        main {
-            max-width: 1150px;
-            margin: auto;
-            padding: 30px 20px;
-        }
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 0 11px 30px;
+  border-bottom: 1px solid #ffffff20;
+}
 
-        .apresentacao {
-            background: var(--marinho);
-            color: white;
-            padding: 30px;
-            border-radius: 18px;
-            margin-bottom: 22px;
-        }
+.brand-mark {
+  width: 43px;
+  height: 43px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #ffffff55;
+  border-radius: 12px;
+  color: #DCC28F;
+  font: 25px "Playfair Display", serif;
+}
 
-        .apresentacao h2 {
-            margin-top: 0;
-        }
+.brand strong {
+  display: block;
+  font: 600 19px "Playfair Display", serif;
+}
 
-        .apresentacao p {
-            line-height: 1.7;
-        }
+.brand small {
+  display: block;
+  margin-top: 4px;
+  font-size: 9px;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: #A9A7BE;
+}
 
-        .acoes {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 22px;
-        }
+.nav-label {
+  margin: 26px 12px 10px;
+  color: #9997B1;
+  font-size: 10px;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+}
 
-        button {
-            border: none;
-            background: var(--marinho);
-            color: white;
-            border-radius: 9px;
-            padding: 13px 18px;
-            font-size: 14px;
-            cursor: pointer;
-        }
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 2px 0;
+  padding: 12px 14px;
+  border-radius: 9px;
+  color: #D3D1DF;
+  font-size: 12px;
+  transition: .2s;
+}
 
-        button:hover {
-            background: var(--marrom);
-        }
+.nav-link:hover,
+.nav-link.active {
+  background: #ffffff1c;
+  color: white;
+}
 
-        .documento {
-            background: white;
-            padding: 35px;
-            border: 1px solid var(--azul);
-            border-radius: 16px;
-        }
+.nav-link.active {
+  border-left: 3px solid #D6B779;
+}
 
-        .cabecalho-relatorio {
-            border-bottom: 3px solid var(--marinho);
-            padding-bottom: 20px;
-            margin-bottom: 25px;
-        }
+.nav-icon {
+  width: 21px;
+  text-align: center;
+  font-size: 16px;
+}
 
-        .cabecalho-relatorio h2 {
-            margin: 0 0 8px;
-            color: var(--marinho);
-        }
+.sidebar-bottom {
+  margin-top: auto;
+  padding: 25px 12px 0;
+  color: #9997B1;
+  font-size: 10px;
+  line-height: 1.8;
+}
 
-        .cabecalho-relatorio p {
-            margin: 5px 0;
-            font-size: 13px;
-        }
+/* ESTRUTURA PRINCIPAL */
 
-        .secao {
-            margin-top: 30px;
-            break-inside: avoid;
-        }
+.main-area {
+  margin-left: 258px;
+  min-height: 100vh;
+}
 
-        .secao h3 {
-            background: var(--azul);
-            color: var(--marinho);
-            padding: 12px;
-            border-radius: 7px;
-            font-size: 16px;
-        }
+.topbar {
+  height: 76px;
+  padding: 0 48px;
+  background: #ffffffea;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
 
-        .indicadores {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 12px;
-        }
+.breadcrumb {
+  font-size: 12px;
+  color: var(--muted);
+}
 
-        .indicador {
-            border: 1px solid #dddddd;
-            border-radius: 9px;
-            padding: 15px;
-        }
+.breadcrumb strong { color: var(--ink); }
 
-        .indicador span {
-            display: block;
-            font-size: 12px;
-            margin-bottom: 10px;
-        }
+.browser-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 11px;
+}
 
-        .indicador strong {
-            font-size: 21px;
-            color: var(--marinho);
-            overflow-wrap: anywhere;
-        }
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+}
 
-        .tabela-container {
-            overflow-x: auto;
-        }
+main {
+  max-width: 1500px;
+  margin: auto;
+  padding: 44px 48px 70px;
+}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 12px;
-        }
+.eyebrow {
+  color: var(--gold);
+  font: 500 10px "DM Mono", monospace;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
 
-        th, td {
-            padding: 10px;
-            border: 1px solid #dddddd;
-            text-align: left;
-            font-size: 11px;
-        }
+.page-heading {
+  margin-bottom: 30px;
+}
 
-        th {
-            background: #e8f2ff;
-            color: var(--marinho);
-        }
+.page-heading h1 {
+  margin: 13px 0;
+  font-size: clamp(35px, 4vw, 55px);
+  font-weight: 500;
+  letter-spacing: -1.6px;
+}
 
-        .observacao {
-            background: #f5f7fb;
-            padding: 18px;
-            border-radius: 9px;
-            font-size: 13px;
-            line-height: 1.7;
-        }
+.page-heading h1 span { color: var(--gold); }
 
-        .rodape-relatorio {
-            margin-top: 35px;
-            padding-top: 15px;
-            border-top: 1px solid #cccccc;
-            text-align: center;
-            font-size: 11px;
-        }
+.page-heading p {
+  max-width: 700px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.9;
+}
 
-        footer {
-            text-align: center;
-            padding: 25px;
-            font-size: 12px;
-        }
+/* APRESENTAÇÃO */
 
-        @media (max-width: 700px) {
-            .documento {
-                padding: 18px;
-            }
+.apresentacao {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  min-height: 225px;
+  margin-bottom: 30px;
+  background: var(--navy);
+  color: white;
+  border-radius: 15px;
+  overflow: hidden;
+}
 
-            .indicadores {
-                grid-template-columns: 1fr;
-            }
-        }
+.hero-content {
+  padding: 39px 41px;
+  position: relative;
+  z-index: 1;
+}
 
-        @media print {
-            @page {
-                size: A4;
-                margin: 12mm;
-            }
+.apresentacao h2 {
+  margin: 13px 0;
+  font-size: clamp(27px, 3vw, 39px);
+  font-weight: 500;
+  line-height: 1.2;
+}
 
-            body {
-                background: white;
-                color: black;
-            }
+.apresentacao p {
+  max-width: 490px;
+  margin: 0;
+  color: #C8C6D6;
+  font-size: 12px;
+  line-height: 1.9;
+}
 
-            header,
-            .apresentacao,
-            .acoes,
-            footer {
-                display: none !important;
-            }
+.hero-art {
+  display: grid;
+  place-items: center;
+  position: relative;
+}
 
-            main {
-                max-width: none;
-                padding: 0;
-            }
+.hero-art::before,
+.hero-art::after {
+  content: "";
+  position: absolute;
+  width: 240px;
+  height: 240px;
+  border: 1px solid #d6b77955;
+  border-radius: 50%;
+}
 
-            .documento {
-                border: none;
-                border-radius: 0;
-                padding: 0;
-            }
+.hero-art::after {
+  width: 155px;
+  height: 155px;
+  border-color: #d6b77999;
+}
 
-            .tabela-container {
-                overflow: visible;
-            }
+.hero-symbol {
+  position: relative;
+  z-index: 1;
+  color: #D7BE8E;
+  font: 100px "Playfair Display", serif;
+}
 
-            table {
-                width: 100%;
-            }
+/* AÇÕES */
 
-            thead {
-                display: table-header-group;
-            }
+.action-panel {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 25px;
+  margin-bottom: 30px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+}
 
-            tr {
-                break-inside: avoid;
-            }
+.action-panel h3 {
+  margin: 8px 0;
+  font-size: 22px;
+  font-weight: 500;
+}
 
-            .secao h3,
-            th {
-                print-color-adjust: exact;
-                -webkit-print-color-adjust: exact;
-            }
+.action-panel p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.8;
+}
 
-            .indicadores {
-                grid-template-columns: repeat(3, 1fr);
-            }
-        }
-    </style>
+.acoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 11px;
+}
+
+button {
+  min-height: 45px;
+  padding: 12px 18px;
+  background: var(--navy);
+  color: white;
+  border: 1px solid var(--navy);
+  border-radius: 9px;
+  font-size: 12px;
+  font-weight: 700;
+  transition: .2s;
+}
+
+button:hover { background: #242041; }
+
+.botao-secundario {
+  background: white;
+  color: var(--navy);
+  border-color: #D9D5CA;
+}
+
+.botao-secundario:hover {
+  background: #F5F3EE;
+}
+
+/* TÍTULO DA SEÇÃO */
+
+.section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  gap: 16px;
+  margin: 35px 0 17px;
+}
+
+.section-heading h2 {
+  margin: 7px 0 0;
+  font-size: 27px;
+  font-weight: 500;
+}
+
+.section-heading p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+/* DOCUMENTO GERENCIAL */
+
+.documento {
+  padding: 38px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 13px;
+}
+
+.cabecalho-relatorio {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  gap: 20px;
+  padding-bottom: 25px;
+  border-bottom: 2px solid var(--navy);
+}
+
+.cabecalho-relatorio h2 {
+  margin: 12px 0;
+  color: var(--navy);
+  font-size: 30px;
+  font-weight: 500;
+}
+
+.cabecalho-relatorio p {
+  margin: 7px 0;
+  color: #6C6963;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.cabecalho-relatorio p strong {
+  color: var(--ink);
+}
+
+.documento-selo {
+  padding: 12px;
+  border: 1px solid #E4D7BE;
+  border-radius: 8px;
+  color: #8E774C;
+  font: 10px "DM Mono", monospace;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+
+.secao {
+  margin-top: 34px;
+}
+
+.secao h3 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 19px;
+  padding-bottom: 13px;
+  border-bottom: 1px solid var(--border);
+  color: var(--navy);
+  font-size: 21px;
+  font-weight: 500;
+}
+
+.secao h3::before {
+  content: "";
+  width: 4px;
+  height: 22px;
+  flex-shrink: 0;
+  border-radius: 3px;
+  background: var(--gold);
+}
+
+/* INDICADORES */
+
+.indicadores {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 15px;
+}
+
+.indicador {
+  min-width: 0;
+  padding: 22px;
+  background: #FCFBF8;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+}
+
+.indicador span {
+  display: block;
+  min-height: 32px;
+  margin-bottom: 14px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.indicador strong {
+  display: block;
+  color: var(--navy);
+  font: 500 clamp(20px, 2vw, 30px) "Playfair Display", serif;
+  overflow-wrap: anywhere;
+}
+
+.indicador::after {
+  content: "";
+  display: block;
+  width: 30px;
+  height: 2px;
+  margin-top: 19px;
+  background: var(--gold);
+}
+
+/* TABELA */
+
+.tabela-container {
+  width: 100%;
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 5px;
+}
+
+th {
+  padding: 14px 11px;
+  background: #F8F7F3;
+  color: #77736C;
+  border-bottom: 1px solid var(--border);
+  text-align: left;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+td {
+  padding: 13px 11px;
+  border-bottom: 1px solid #F0EEE9;
+  color: #57534D;
+  font-size: 11px;
+  line-height: 1.6;
+  text-align: left;
+}
+
+tbody tr:hover {
+  background: #FBFAF7;
+}
+
+td:first-child {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+/* OBSERVAÇÕES */
+
+.observacao {
+  padding: 23px;
+  background: #F3F5F8;
+  border-left: 3px solid #A4B7CF;
+  border-radius: 9px;
+  color: #4E5C6B;
+  font-size: 12px;
+  line-height: 1.9;
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.rodape-relatorio {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  color: #8D8983;
+  text-align: center;
+  font-size: 10px;
+  line-height: 1.8;
+}
+
+.aviso {
+  display: flex;
+  gap: 15px;
+  margin-top: 25px;
+  padding: 22px;
+  background: #F0F4F9;
+  border: 1px solid #DDE8F4;
+  border-radius: 11px;
+  color: #526477;
+  font-size: 12px;
+  line-height: 1.9;
+}
+
+.aviso strong {
+  color: var(--navy);
+}
+
+/* NAVEGAÇÃO RÁPIDA */
+
+.quick-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 15px;
+}
+
+.quick-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding: 22px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 11px;
+  font-size: 12px;
+  font-weight: 600;
+  transition: .2s;
+}
+
+.quick-link:hover {
+  transform: translateY(-2px);
+  border-color: #B9B6C2;
+}
+
+.quick-link span:last-child {
+  color: var(--gold);
+  font-size: 19px;
+}
+
+footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 38px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+  color: #96928C;
+  font-size: 10px;
+}
+
+/* RESPONSIVIDADE */
+
+@media (max-width: 1200px) {
+  .action-panel {
+    flex-direction: column;
+    align-items: start;
+  }
+}
+
+@media (max-width: 850px) {
+  .sidebar {
+    position: relative;
+    width: 100%;
+    padding: 15px;
+  }
+
+  .brand { padding-bottom: 15px; }
+
+  .nav-label,
+  .sidebar-bottom { display: none; }
+
+  .sidebar nav {
+    display: flex;
+    gap: 5px;
+    overflow-x: auto;
+    margin-top: 10px;
+  }
+
+  .nav-link {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  .main-area { margin-left: 0; }
+
+  .topbar {
+    height: 62px;
+    padding: 0 22px;
+  }
+
+  main { padding: 30px 20px 45px; }
+
+  .apresentacao {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-content { padding: 30px; }
+  .hero-art { display: none; }
+}
+
+@media (max-width: 650px) {
+  .indicadores,
+  .quick-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .documento { padding: 20px; }
+
+  .cabecalho-relatorio {
+    flex-direction: column;
+  }
+
+  .documento-selo { display: none; }
+
+  .browser-status { display: none; }
+
+  .section-heading,
+  footer {
+    flex-direction: column;
+    align-items: start;
+  }
+}
+
+/* IMPRESSÃO E PDF */
+
+@media print {
+  @page {
+    size: A4;
+    margin: 12mm;
+  }
+
+  body {
+    background: white !important;
+    color: black;
+    font-family: Arial, sans-serif;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .sidebar,
+  .topbar,
+  .page-heading,
+  .apresentacao,
+  .action-panel,
+  .section-heading,
+  .aviso,
+  .quick-grid,
+  footer {
+    display: none !important;
+  }
+
+  .main-area {
+    margin: 0 !important;
+    min-height: 0;
+  }
+
+  main {
+    max-width: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .documento {
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    margin: 0;
+  }
+
+  .cabecalho-relatorio {
+    padding-bottom: 12px;
+    margin-bottom: 10px;
+  }
+
+  .cabecalho-relatorio h2 {
+    font-size: 21px;
+  }
+
+  .documento-selo {
+    display: block;
+  }
+
+  .secao {
+    margin-top: 18px;
+  }
+
+  .secao h3 {
+    font-size: 15px;
+    padding-bottom: 8px;
+    margin-bottom: 12px;
+  }
+
+  .indicadores {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .indicador {
+    padding: 11px;
+    border-radius: 5px;
+    break-inside: avoid;
+  }
+
+  .indicador span {
+    font-size: 9px;
+    min-height: 24px;
+    margin-bottom: 6px;
+  }
+
+  .indicador strong {
+    font-size: 16px;
+  }
+
+  .indicador::after {
+    margin-top: 8px;
+  }
+
+  .tabela-container {
+    overflow: visible;
+  }
+
+  table {
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  th, td {
+    font-size: 8px;
+    padding: 7px 5px;
+    overflow-wrap: anywhere;
+  }
+
+  thead {
+    display: table-header-group;
+  }
+
+  tr {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+
+  .secao h3 {
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+
+  .observacao {
+    padding: 13px;
+    font-size: 10px;
+  }
+
+  .rodape-relatorio {
+    margin-top: 20px;
+  }
+}
+</style>
 </head>
 
 <body>
-    <header>
-        <h1>Estoque Simples</h1>
-        <p>Relatórios Gerenciais</p>
 
-        <nav>
-            <a href="index.html">Início</a>
-            <a href="produtos.html">Produtos</a>
-            <a href="entrada.html">Entradas</a>
-            <a href="saida.html">Saídas</a>
-            <a href="historico.html">Histórico</a>
-            <a href="graficos.html">Gráficos</a>
-            <a href="financeiro.html">Financeiro</a>
-            <a href="alertas.html">Alertas</a>
-            <a href="dashboard.html">Dashboard</a>
-            <a href="backup.html">Backup</a>
-        </nav>
-    </header>
+<!-- MENU LATERAL -->
 
-    <main>
-        <section class="apresentacao">
-            <h2>Relatório Gerencial do Estoque</h2>
-            <p>
-                Gere um documento com a situação atual
-                dos produtos, movimentações e indicadores
-                financeiros do estabelecimento.
-            </p>
-        </section>
+<aside class="sidebar">
+  <a class="brand" href="index.html">
+    <div class="brand-mark">E.</div>
+    <div>
+      <strong>Estoque Simples</strong>
+      <small>Atelier de Gestão</small>
+    </div>
+  </a>
 
-        <div class="acoes">
-            <button type="button" id="atualizarRelatorio">
-                Atualizar relatório
-            </button>
+  <nav>
+    <div class="nav-label">Principal</div>
 
-            <button type="button" id="imprimirRelatorio">
-                Imprimir / Salvar em PDF
-            </button>
+    <a class="nav-link" href="index.html">
+      <span class="nav-icon">⌂</span>
+      Página inicial
+    </a>
+
+    <a class="nav-link" href="dashboard.html">
+      <span class="nav-icon">◫</span>
+      Dashboard Gerencial
+    </a>
+
+    <div class="nav-label">Operações</div>
+
+    <a class="nav-link" href="produtos.html">
+      <span class="nav-icon">▦</span>
+      Produtos
+    </a>
+
+    <a class="nav-link" href="entrada.html">
+      <span class="nav-icon">↘</span>
+      Entradas
+    </a>
+
+    <a class="nav-link" href="saida.html">
+      <span class="nav-icon">↗</span>
+      Saídas
+    </a>
+
+    <a class="nav-link" href="historico.html">
+      <span class="nav-icon">≡</span>
+      Histórico
+    </a>
+
+    <a class="nav-link" href="importacao.html">
+      <span class="nav-icon">⇩</span>
+      Importação
+    </a>
+
+    <div class="nav-label">Monitoramento</div>
+
+    <a class="nav-link" href="alertas.html">
+      <span class="nav-icon">◇</span>
+      Alertas Inteligentes
+    </a>
+
+    <a class="nav-link" href="inventario.html">
+      <span class="nav-icon">☷</span>
+      Inventário
+    </a>
+
+    <a class="nav-link" href="lotes.html">
+      <span class="nav-icon">▤</span>
+      Lotes
+    </a>
+
+    <a class="nav-link" href="conciliacao.html">
+      <span class="nav-icon">⇄</span>
+      Conciliação
+    </a>
+
+    <div class="nav-label">Inteligência</div>
+
+    <a class="nav-link" href="graficos.html">
+      <span class="nav-icon">▥</span>
+      Gráficos
+    </a>
+
+    <a class="nav-link" href="financeiro.html">
+      <span class="nav-icon">◈</span>
+      Financeiro
+    </a>
+
+    <a class="nav-link active" href="relatorios.html">
+      <span class="nav-icon">▧</span>
+      Relatórios
+    </a>
+
+    <div class="nav-label">Administração</div>
+
+    <a class="nav-link" href="backup.html">
+      <span class="nav-icon">↥</span>
+      Backup e Restauração
+    </a>
+  </nav>
+
+  <div class="sidebar-bottom">
+    ESTOQUE SIMPLES<br>
+    Gestão e Inteligência de Estoque
+  </div>
+</aside>
+
+<!-- ÁREA PRINCIPAL -->
+
+<div class="main-area">
+
+  <header class="topbar">
+    <div class="breadcrumb">
+      Estoque Simples &nbsp; / &nbsp;
+      <strong>Relatórios Gerenciais</strong>
+    </div>
+
+    <div class="browser-status">
+      <span class="status-dot"></span>
+      Dados deste navegador
+    </div>
+  </header>
+
+  <main>
+
+    <!-- TÍTULO -->
+
+    <section class="page-heading">
+      <div class="eyebrow">
+        Inteligência · Análise Gerencial
+      </div>
+
+      <h1>Relatórios Gerenciais<span>.</span></h1>
+
+      <p>
+        Transforme os registros do estoque em um documento
+        organizado para acompanhamento, conferência
+        e análise da operação.
+      </p>
+    </section>
+
+    <!-- BANNER -->
+
+    <section class="apresentacao">
+      <div class="hero-content">
+        <div class="eyebrow">
+          Informações para decisões
         </div>
 
-        <article class="documento" id="documentoRelatorio">
-            <div class="cabecalho-relatorio">
-                <h2>RELATÓRIO GERENCIAL DE ESTOQUE</h2>
-                <p><strong>Sistema:</strong> Estoque Simples</p>
-                <p>
-                    <strong>Emissão:</strong>
-                    <span id="dataEmissao">-</span>
-                </p>
-                <p>
-                    <strong>Tipo:</strong>
-                    Relatório consolidado de estoque
-                </p>
-            </div>
+        <h2>
+          Dados organizados.<br>
+          Decisões mais claras.
+        </h2>
 
-            <section class="secao">
-                <h3>1. Indicadores gerais</h3>
+        <p>
+          Consulte indicadores de estoque, movimentações
+          e valores financeiros em um relatório consolidado,
+          disponível para impressão ou salvamento em PDF.
+        </p>
+      </div>
 
-                <div class="indicadores">
-                    <div class="indicador">
-                        <span>Produtos ativos</span>
-                        <strong id="totalProdutos">0</strong>
-                    </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="hero-symbol">▧</div>
+      </div>
+    </section>
 
-                    <div class="indicador">
-                        <span>Unidades disponíveis</span>
-                        <strong id="totalUnidades">0</strong>
-                    </div>
+    <!-- AÇÕES -->
 
-                    <div class="indicador">
-                        <span>Produtos com estoque baixo</span>
-                        <strong id="totalBaixo">0</strong>
-                    </div>
+    <section class="action-panel">
+      <div>
+        <div class="eyebrow">Central de emissão</div>
 
-                    <div class="indicador">
-                        <span>Produtos vencidos</span>
-                        <strong id="totalVencidos">0</strong>
-                    </div>
+        <h3>Gerenciar relatório</h3>
 
-                    <div class="indicador">
-                        <span>Próximos do vencimento</span>
-                        <strong id="totalProximos">0</strong>
-                    </div>
+        <p>
+          Atualize os dados antes de imprimir
+          ou salvar uma cópia do documento.
+        </p>
+      </div>
 
-                    <div class="indicador">
-                        <span>Produtos com algum alerta</span>
-                        <strong id="totalAlertas">0</strong>
-                    </div>
-                </div>
-            </section>
+      <div class="acoes">
+        <button
+          type="button"
+          id="atualizarRelatorio"
+          class="botao-secundario"
+        >
+          ↻ &nbsp; Atualizar relatório
+        </button>
 
-            <section class="secao">
-                <h3>2. Indicadores financeiros</h3>
+        <button
+          type="button"
+          id="imprimirRelatorio"
+        >
+          ↓ &nbsp; Imprimir / Salvar em PDF
+        </button>
+      </div>
+    </section>
 
-                <div class="indicadores">
-                    <div class="indicador">
-                        <span>Valor de custo em estoque</span>
-                        <strong id="valorCusto">R$ 0,00</strong>
-                    </div>
+    <!-- VISUALIZAÇÃO -->
 
-                    <div class="indicador">
-                        <span>Valor potencial de venda</span>
-                        <strong id="valorVenda">R$ 0,00</strong>
-                    </div>
+    <div class="section-heading">
+      <div>
+        <div class="eyebrow">01 / Documento</div>
+        <h2>Prévia do relatório</h2>
+      </div>
 
-                    <div class="indicador">
-                        <span>Diferença potencial</span>
-                        <strong id="diferencaPotencial">R$ 0,00</strong>
-                    </div>
-                </div>
-            </section>
+      <p>Documento consolidado de estoque.</p>
+    </div>
 
-            <section class="secao">
-                <h3>3. Movimentações registradas</h3>
+    <!-- DOCUMENTO ORIGINAL PRESERVADO -->
 
-                <div class="indicadores">
-                    <div class="indicador">
-                        <span>Registros de entrada</span>
-                        <strong id="totalEntradas">0</strong>
-                    </div>
+    <article class="documento" id="documentoRelatorio">
 
-                    <div class="indicador">
-                        <span>Registros de saída</span>
-                        <strong id="totalSaidas">0</strong>
-                    </div>
+      <div class="cabecalho-relatorio">
+        <div>
+          <div class="eyebrow">
+            Estoque Simples · Documento Gerencial
+          </div>
 
-                    <div class="indicador">
-                        <span>Unidades movimentadas</span>
-                        <strong id="unidadesMovimentadas">0</strong>
-                    </div>
-                </div>
-            </section>
+          <h2>Relatório Gerencial de Estoque</h2>
 
-            <section class="secao">
-                <h3>4. Situação detalhada dos produtos</h3>
+          <p>
+            <strong>Sistema:</strong>
+            Estoque Simples
+          </p>
 
-                <div class="tabela-container">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>Produto</th>
-                                <th>Código</th>
-                                <th>Estoque</th>
-                                <th>Mínimo</th>
-                                <th>Validade</th>
-                                <th>Situação</th>
-                            </tr>
-                        </thead>
+          <p>
+            <strong>Emissão:</strong>
+            <span id="dataEmissao">-</span>
+          </p>
 
-                        <tbody id="tabelaProdutos"></tbody>
-                    </table>
-                </div>
-            </section>
+          <p>
+            <strong>Tipo:</strong>
+            Relatório consolidado de estoque
+          </p>
+        </div>
 
-            <section class="secao">
-                <h3>5. Análise e observações</h3>
+        <div class="documento-selo">
+          RELATÓRIO GERENCIAL
+        </div>
+      </div>
 
-                <div class="observacao" id="observacoes">
-                    Aguardando análise dos registros.
-                </div>
-            </section>
+      <!-- INDICADORES GERAIS -->
 
-            <div class="rodape-relatorio">
-                Documento gerado pelo Estoque Simples.
-                Os dados representam os registros disponíveis
-                no navegador no momento da emissão.
-            </div>
-        </article>
-    </main>
+      <section class="secao">
+        <h3>1. Indicadores gerais</h3>
+
+        <div class="indicadores">
+
+          <div class="indicador">
+            <span>Produtos ativos</span>
+            <strong id="totalProdutos">0</strong>
+          </div>
+
+          <div class="indicador">
+            <span>Unidades disponíveis</span>
+            <strong id="totalUnidades">0</strong>
+          </div>
+
+          <div class="indicador">
+            <span>Produtos com estoque baixo</span>
+            <strong id="totalBaixo">0</strong>
+          </div>
+
+          <div class="indicador">
+            <span>Produtos vencidos</span>
+            <strong id="totalVencidos">0</strong>
+          </div>
+
+          <div class="indicador">
+            <span>Próximos do vencimento</span>
+            <strong id="totalProximos">0</strong>
+          </div>
+
+          <div class="indicador">
+            <span>Produtos com algum alerta</span>
+            <strong id="totalAlertas">0</strong>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- INDICADORES FINANCEIROS -->
+
+      <section class="secao">
+        <h3>2. Indicadores financeiros</h3>
+
+        <div class="indicadores">
+
+          <div class="indicador">
+            <span>Valor de custo em estoque</span>
+            <strong id="valorCusto">R$ 0,00</strong>
+          </div>
+
+          <div class="indicador">
+            <span>Valor potencial de venda</span>
+            <strong id="valorVenda">R$ 0,00</strong>
+          </div>
+
+          <div class="indicador">
+            <span>Diferença potencial</span>
+            <strong id="diferencaPotencial">R$ 0,00</strong>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- MOVIMENTAÇÕES -->
+
+      <section class="secao">
+        <h3>3. Movimentações registradas</h3>
+
+        <div class="indicadores">
+
+          <div class="indicador">
+            <span>Registros de entrada</span>
+            <strong id="totalEntradas">0</strong>
+          </div>
+
+          <div class="indicador">
+            <span>Registros de saída</span>
+            <strong id="totalSaidas">0</strong>
+          </div>
+
+          <div class="indicador">
+            <span>Unidades movimentadas</span>
+            <strong id="unidadesMovimentadas">0</strong>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- SITUAÇÃO DOS PRODUTOS -->
+
+      <section class="secao">
+        <h3>4. Situação detalhada dos produtos</h3>
+
+        <div class="tabela-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Produto</th>
+                <th>Código</th>
+                <th>Estoque</th>
+                <th>Mínimo</th>
+                <th>Validade</th>
+                <th>Situação</th>
+              </tr>
+            </thead>
+
+            <tbody id="tabelaProdutos"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- OBSERVAÇÕES -->
+
+      <section class="secao">
+        <h3>5. Análise e observações</h3>
+
+        <div class="observacao" id="observacoes">
+          Aguardando análise dos registros.
+        </div>
+      </section>
+
+      <!-- RODAPÉ DO DOCUMENTO -->
+
+      <div class="rodape-relatorio">
+        Documento gerado pelo Estoque Simples.
+        Os dados representam os registros disponíveis
+        no navegador no momento da emissão.
+      </div>
+
+    </article>
+
+    <!-- AVISO -->
+
+    <div class="aviso">
+      <span aria-hidden="true">ⓘ</span>
+
+      <div>
+        <strong>Sobre os dados do relatório:</strong>
+        as informações são obtidas dos registros
+        armazenados neste navegador. Antes de gerar
+        um documento definitivo, confira se os produtos,
+        as movimentações e os valores financeiros
+        estão atualizados.
+      </div>
+    </div>
+
+    <!-- ACESSOS RÁPIDOS -->
+
+    <section>
+      <div class="section-heading">
+        <div>
+          <div class="eyebrow">02 / Navegação</div>
+          <h2>Continuar no sistema</h2>
+        </div>
+
+        <p>Acesse os módulos relacionados.</p>
+      </div>
+
+      <div class="quick-grid">
+
+        <a href="dashboard.html" class="quick-link">
+          <span>Dashboard Gerencial</span>
+          <span>↗</span>
+        </a>
+
+        <a href="graficos.html" class="quick-link">
+          <span>Análise de Gráficos</span>
+          <span>↗</span>
+        </a>
+
+        <a href="financeiro.html" class="quick-link">
+          <span>Controle Financeiro</span>
+          <span>↗</span>
+        </a>
+
+      </div>
+    </section>
 
     <footer>
-        Estoque Simples | Sistema de Controle e Monitoramento
+      <span>
+        Estoque Simples · Gestão e Inteligência de Estoque
+      </span>
+
+      <span>
+        Relatórios Gerenciais
+      </span>
     </footer>
 
-    <script src="relatorios.js"></script>
+  </main>
+</div>
+
+<!-- JAVASCRIPT ORIGINAL -->
+
+<script src="relatorios.js"></script>
+
 </body>
 </html>
