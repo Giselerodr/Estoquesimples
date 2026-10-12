@@ -1,28 +1,35 @@
 
 "use strict";
 
+// Dados que serão incluídos no backup
 const CHAVES = [
     "produtos",
     "entradas",
     "saidas",
     "precosFinanceiros",
     "inventarios",
-    "lotes"
+    "lotes",
+    "conciliacoes"
 ];
-
 
 let backupValidado = null;
 
+
+// Ler informações armazenadas
 function lerDados(chave) {
     const texto = localStorage.getItem(chave);
 
-  if (texto === null) {
-    return chave === "precosFinanceiros" ? {} : [];
+    if (texto === null) {
+        return chave === "precosFinanceiros"
+            ? {}
+            : [];
+    }
+
+    return JSON.parse(texto);
 }
 
-return JSON.parse(texto);
-}
 
+// Atualizar resumo da página
 function atualizarResumo() {
     try {
         const produtos = lerDados("produtos");
@@ -30,11 +37,14 @@ function atualizarResumo() {
         const saidas = lerDados("saidas");
 
         document.getElementById("totalProdutos").textContent =
-            Array.isArray(produtos) ? produtos.length : 0;
+            Array.isArray(produtos)
+                ? produtos.length
+                : 0;
 
         document.getElementById("totalMovimentacoes").textContent =
             (Array.isArray(entradas) ? entradas.length : 0) +
             (Array.isArray(saidas) ? saidas.length : 0);
+
     } catch (erro) {
         mostrarMensagem(
             "mensagemExportacao",
@@ -44,14 +54,20 @@ function atualizarResumo() {
     }
 }
 
+
+// Exibir mensagens
 function mostrarMensagem(id, texto, sucesso) {
     const elemento = document.getElementById(id);
 
     elemento.textContent = texto;
+
     elemento.className =
-        "mensagem " + (sucesso ? "sucesso" : "erro");
+        "mensagem " +
+        (sucesso ? "sucesso" : "erro");
 }
 
+
+// Gerar estrutura do backup
 function gerarBackup() {
     const dados = {};
 
@@ -67,6 +83,8 @@ function gerarBackup() {
     };
 }
 
+
+// Exportar backup em JSON
 function exportarBackup() {
     try {
         const backup = gerarBackup();
@@ -79,7 +97,9 @@ function exportarBackup() {
 
         const arquivo = new Blob(
             [conteudo],
-            { type: "application/json" }
+            {
+                type: "application/json"
+            }
         );
 
         const url = URL.createObjectURL(arquivo);
@@ -90,66 +110,102 @@ function exportarBackup() {
             .slice(0, 10);
 
         link.href = url;
-        link.download = "estoque_simples_backup_" +
-            data + ".json";
+
+        link.download =
+            "estoque_simples_backup_" +
+            data +
+            ".json";
 
         document.body.appendChild(link);
+
         link.click();
+
         link.remove();
 
-        URL.revokeObjectURL(url);
+        setTimeout(() => {
+            URL.revokeObjectURL(url);
+        }, 1000);
 
         mostrarMensagem(
             "mensagemExportacao",
             "Arquivo de backup gerado com sucesso.",
             true
         );
+
     } catch (erro) {
         mostrarMensagem(
             "mensagemExportacao",
-            "Erro ao gerar backup: " + erro.message,
+            "Erro ao gerar backup: " +
+            erro.message,
             false
         );
     }
 }
 
+
+// Verificar se é um objeto válido
 function objetoSimples(valor) {
     return valor !== null &&
         typeof valor === "object" &&
         !Array.isArray(valor);
 }
 
+
+// Validar arquivo de backup
 function validarBackup(backup) {
     if (!objetoSimples(backup)) {
-        throw new Error("O arquivo não contém um backup válido.");
+        throw new Error(
+            "O arquivo não contém um backup válido."
+        );
     }
 
-    if (backup.aplicativo !== "Estoque Simples" ||
-        backup.versaoBackup !== 1) {
+    if (
+        backup.aplicativo !== "Estoque Simples" ||
+        backup.versaoBackup !== 1
+    ) {
         throw new Error(
             "O arquivo não pertence a uma versão compatível."
         );
     }
 
     if (!objetoSimples(backup.dados)) {
-        throw new Error("Os dados do backup estão ausentes.");
+        throw new Error(
+            "Os dados do backup estão ausentes."
+        );
     }
 
-if (!Object.prototype.hasOwnProperty.call(
-    backup.dados, "inventarios"
-)) {
-    backup.dados.inventarios = [];
-}
+    // Compatibilidade com backups antigos
+    // que ainda não tinham inventários
+    if (!Object.prototype.hasOwnProperty.call(
+        backup.dados,
+        "inventarios"
+    )) {
+        backup.dados.inventarios = [];
+    }
 
-if (!Object.prototype.hasOwnProperty.call(
-    backup.dados, "lotes"
-)) {
-    backup.dados.lotes = [];
-}
+    // Compatibilidade com backups antigos
+    // que ainda não tinham lotes
+    if (!Object.prototype.hasOwnProperty.call(
+        backup.dados,
+        "lotes"
+    )) {
+        backup.dados.lotes = [];
+    }
 
+    // Compatibilidade com backups anteriores
+    // à criação da conciliação de lotes
+    if (!Object.prototype.hasOwnProperty.call(
+        backup.dados,
+        "conciliacoes"
+    )) {
+        backup.dados.conciliacoes = [];
+    }
+
+    // Conferir todas as propriedades
     for (const chave of CHAVES) {
         if (!Object.prototype.hasOwnProperty.call(
-            backup.dados, chave
+            backup.dados,
+            chave
         )) {
             throw new Error(
                 "O backup não contém: " + chave
@@ -157,15 +213,15 @@ if (!Object.prototype.hasOwnProperty.call(
         }
     }
 
-  
-for (const chave of [
-    "produtos",
-    "entradas",
-    "saidas",
-    "inventarios",
-    "lotes"
-]) {
-
+    // Validar as listas
+    for (const chave of [
+        "produtos",
+        "entradas",
+        "saidas",
+        "inventarios",
+        "lotes",
+        "conciliacoes"
+    ]) {
         const lista = backup.dados[chave];
 
         if (!Array.isArray(lista)) {
@@ -176,11 +232,13 @@ for (const chave of [
 
         if (!lista.every(objetoSimples)) {
             throw new Error(
-                "Existem registros inválidos em: " + chave
+                "Existem registros inválidos em: " +
+                chave
             );
         }
     }
 
+    // Validar preços financeiros
     if (!objetoSimples(
         backup.dados.precosFinanceiros
     )) {
@@ -189,10 +247,13 @@ for (const chave of [
         );
     }
 
+    // Validar data do backup
     const data = new Date(backup.criadoEm);
 
-    if (!backup.criadoEm ||
-        Number.isNaN(data.getTime())) {
+    if (
+        !backup.criadoEm ||
+        Number.isNaN(data.getTime())
+    ) {
         throw new Error(
             "A data de criação do backup é inválida."
         );
@@ -201,6 +262,8 @@ for (const chave of [
     return backup;
 }
 
+
+// Limpar validação anterior
 function limparValidacao() {
     backupValidado = null;
 
@@ -217,10 +280,15 @@ function limparValidacao() {
     ).textContent = "";
 }
 
+
+// Verificar arquivo selecionado
 async function verificarArquivo() {
     limparValidacao();
 
-    const input = document.getElementById("arquivoBackup");
+    const input = document.getElementById(
+        "arquivoBackup"
+    );
+
     const arquivo = input.files[0];
 
     if (!arquivo) {
@@ -229,6 +297,7 @@ async function verificarArquivo() {
             "Selecione um arquivo JSON primeiro.",
             false
         );
+
         return;
     }
 
@@ -238,39 +307,57 @@ async function verificarArquivo() {
             "O arquivo excede o limite de 10 MB.",
             false
         );
+
         return;
     }
 
     try {
         const texto = await arquivo.text();
-        const backup = validarBackup(JSON.parse(texto));
+
+        const backup = validarBackup(
+            JSON.parse(texto)
+        );
 
         backupValidado = backup;
 
         const dados = backup.dados;
+
         const informacoes = document.getElementById(
             "informacoesBackup"
         );
 
         const totalMovimentacoes =
-            dados.entradas.length + dados.saidas.length;
-
-        
+            dados.entradas.length +
+            dados.saidas.length;
 
         informacoes.textContent =
             "Backup criado em: " +
-            new Date(backup.criadoEm).toLocaleString("pt-BR") +
-            "\nProdutos: " + dados.produtos.length +
-            "\nMovimentações: " + totalMovimentacoes +
+            new Date(backup.criadoEm)
+                .toLocaleString("pt-BR") +
+
+            "\nProdutos: " +
+            dados.produtos.length +
+
+            "\nMovimentações: " +
+            totalMovimentacoes +
+
             "\nInventários registrados: " +
             dados.inventarios.length +
+
             "\nLotes cadastrados: " +
             dados.lotes.length +
+
+            "\nConciliações registradas: " +
+            dados.conciliacoes.length +
+
             "\nPreços cadastrados: " +
-            Object.keys(dados.precosFinanceiros).length;
+            Object.keys(
+                dados.precosFinanceiros
+            ).length;
 
+        informacoes.style.whiteSpace =
+            "pre-line";
 
-        informacoes.style.whiteSpace = "pre-line";
         informacoes.hidden = false;
 
         document.getElementById(
@@ -282,6 +369,7 @@ async function verificarArquivo() {
             "Arquivo verificado. Confira os dados antes de restaurar.",
             true
         );
+
     } catch (erro) {
         mostrarMensagem(
             "mensagemRestauracao",
@@ -292,6 +380,8 @@ async function verificarArquivo() {
     }
 }
 
+
+// Restaurar dados do backup
 function restaurarDados() {
     if (!backupValidado) {
         return;
@@ -313,17 +403,18 @@ function restaurarDados() {
     try {
         const novosDados = {};
 
+        // Preparar dados antes da gravação
         CHAVES.forEach(chave => {
             anteriores[chave] =
                 localStorage.getItem(chave);
 
-            novosDados[chave] = JSON.stringify(
-                backupValidado.dados[chave]
-            );
+            novosDados[chave] =
+                JSON.stringify(
+                    backupValidado.dados[chave]
+                );
         });
 
-        // Aplica os novos dados somente após
-        // preparar todos os valores.
+        // Restaurar todos os conjuntos
         CHAVES.forEach(chave => {
             localStorage.setItem(
                 chave,
@@ -346,13 +437,15 @@ function restaurarDados() {
             "restaurados quando forem abertas novamente.",
             true
         );
+
     } catch (erro) {
-        // Tenta recuperar os dados anteriores
-        // se a gravação falhar.
+        // Tentar recuperar dados anteriores
+        // caso ocorra uma falha
         try {
             CHAVES.forEach(chave => {
                 if (!Object.prototype.hasOwnProperty.call(
-                    anteriores, chave
+                    anteriores,
+                    chave
                 )) {
                     return;
                 }
@@ -366,6 +459,7 @@ function restaurarDados() {
                     );
                 }
             });
+
         } catch (erroRecuperacao) {
             console.error(
                 "Falha ao recuperar dados:",
@@ -383,18 +477,35 @@ function restaurarDados() {
     }
 }
 
+
+// Eventos da página
 document.getElementById("baixarBackup")
-    .addEventListener("click", exportarBackup);
+    .addEventListener(
+        "click",
+        exportarBackup
+    );
 
 document.getElementById("arquivoBackup")
-    .addEventListener("change", limparValidacao);
+    .addEventListener(
+        "change",
+        limparValidacao
+    );
 
 document.getElementById("verificarBackup")
-    .addEventListener("click", verificarArquivo);
+    .addEventListener(
+        "click",
+        verificarArquivo
+    );
 
 document.getElementById("restaurarBackup")
-    .addEventListener("click", restaurarDados);
+    .addEventListener(
+        "click",
+        restaurarDados
+    );
 
-window.addEventListener("pageshow", atualizarResumo);
+window.addEventListener(
+    "pageshow",
+    atualizarResumo
+);
 
 atualizarResumo();
