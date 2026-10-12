@@ -2,323 +2,1166 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Alertas Inteligentes | Estoque Simples</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alertas Inteligentes | Estoque Simples</title>
 
-    <style>
-        :root {
-            --azul-claro: #BFDCFF;
-            --marrom: #211E1B;
-            --bege: #F5F5DC;
-            --branco: #FFFFFF;
-            --marinho: #0C0A29;
-        }
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-        * {
-            box-sizing: border-box;
-        }
+  <style>
+    :root {
+      --navy: #0C0A29;
+      --ink: #211E1B;
+      --paper: #F8F7F2;
+      --white: #FFFFFF;
+      --blue: #BFDCFF;
+      --gold: #B69B65;
+      --muted: #78756F;
+      --border: #E9E6DF;
+      --red: #AD4545;
+      --orange: #A66C2C;
+      --green: #287356;
+    }
 
-        body {
-            margin: 0;
-            font-family: Arial, sans-serif;
-            background: var(--bege);
-            color: var(--marrom);
-        }
+    * {
+      box-sizing: border-box;
+    }
 
-        header {
-            background: var(--branco);
-            padding: 22px 7%;
-            border-bottom: 2px solid var(--azul-claro);
-        }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "DM Sans", sans-serif;
+    }
 
-        header h1 {
-            margin: 0 0 8px;
-            color: var(--marinho);
-        }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
 
-        nav {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
-            margin-top: 15px;
-        }
+    button, input, select {
+      font: inherit;
+    }
 
-        nav a {
-            color: var(--marinho);
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 13px;
-        }
+    button {
+      cursor: pointer;
+    }
 
-        main {
-            max-width: 1200px;
-            margin: auto;
-            padding: 30px 20px;
-        }
+    /* MENU LATERAL */
 
-        .apresentacao {
-            background: var(--marinho);
-            color: white;
-            padding: 30px;
-            border-radius: 18px;
-            margin-bottom: 25px;
-        }
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 258px;
+      padding: 30px 19px;
+      background: var(--navy);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      z-index: 10;
+    }
 
-        .apresentacao h2 {
-            margin-top: 0;
-        }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 0 11px 30px;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+    }
 
-        .indicadores {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-bottom: 25px;
-        }
+    .brand-mark {
+      width: 43px;
+      height: 43px;
+      border: 1px solid rgba(255,255,255,.35);
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      color: #DCC28F;
+      font: 25px "Playfair Display", serif;
+    }
 
-        .indicador, .painel {
-            background: white;
-            padding: 22px;
-            border-radius: 15px;
-            border: 1px solid var(--azul-claro);
-        }
+    .brand strong {
+      display: block;
+      font: 600 19px "Playfair Display", serif;
+    }
 
-        .indicador p {
-            font-size: 13px;
-            margin: 0 0 12px;
-        }
+    .brand small {
+      display: block;
+      color: #A9A7BE;
+      font-size: 9px;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
 
-        .indicador strong {
-            font-size: 30px;
-            color: var(--marinho);
-        }
+    .nav-label {
+      margin: 26px 12px 10px;
+      color: #9997B1;
+      font-size: 10px;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+    }
 
-        .painel {
-            margin-bottom: 22px;
-        }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      margin: 2px 0;
+      border-radius: 9px;
+      color: #D3D1DF;
+      font-size: 12px;
+      transition: .2s;
+    }
 
-        .painel h2 {
-            color: var(--marinho);
-            margin-top: 0;
-        }
+    .nav-link:hover,
+    .nav-link.active {
+      color: white;
+      background: rgba(255,255,255,.11);
+    }
 
-        .filtros {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
+    .nav-link.active {
+      border-left: 3px solid #D6B779;
+    }
 
-        input, select, button {
-            padding: 12px;
-            border-radius: 9px;
-            border: 1px solid #cccccc;
-            font-size: 14px;
-        }
+    .nav-icon {
+      width: 21px;
+      font-size: 16px;
+      text-align: center;
+    }
 
-        input {
-            flex: 2;
-            min-width: 200px;
-        }
+    .sidebar-bottom {
+      margin-top: auto;
+      padding: 25px 12px 0;
+      color: #9997B1;
+      font-size: 10px;
+      line-height: 1.8;
+    }
 
-        select {
-            flex: 1;
-            min-width: 180px;
-        }
+    /* CONTEÚDO PRINCIPAL */
 
-        button {
-            background: var(--marinho);
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
+    .main-area {
+      margin-left: 258px;
+      min-height: 100vh;
+    }
 
-        button:hover {
-            background: var(--marrom);
-        }
+    .topbar {
+      height: 76px;
+      padding: 0 48px;
+      background: rgba(255,255,255,.88);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
 
-        .tabela-container {
-            overflow-x: auto;
-        }
+    .breadcrumb {
+      color: var(--muted);
+      font-size: 12px;
+    }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 780px;
-        }
+    .breadcrumb strong {
+      color: var(--ink);
+    }
 
-        th, td {
-            text-align: left;
-            padding: 14px 10px;
-            border-bottom: 1px solid #dddddd;
-            font-size: 13px;
-        }
+    .browser-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 11px;
+    }
 
-        th {
-            background: var(--azul-claro);
-            color: var(--marinho);
-        }
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+    }
 
-        .situacao {
-            display: inline-block;
-            padding: 7px 10px;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 12px;
-        }
+    .content {
+      max-width: 1600px;
+      padding: 44px 48px 70px;
+      margin: auto;
+    }
 
-        .critico {
-            background: #ffd9d9;
-            color: #8b1616;
-        }
+    .eyebrow {
+      color: var(--gold);
+      font: 500 10px "DM Mono", monospace;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
 
-        .atencao {
-            background: #fff0c2;
-            color: #775100;
-        }
+    h1, h2, h3, p {
+      margin-top: 0;
+    }
 
-        .normal {
-            background: #def2df;
-            color: #206329;
-        }
+    h1, h2, h3 {
+      font-family: "Playfair Display", serif;
+    }
 
-        .aviso {
-            background: var(--azul-claro);
-            padding: 20px;
-            border-radius: 12px;
-            line-height: 1.7;
-            font-size: 14px;
-        }
+    .page-heading {
+      margin-bottom: 30px;
+    }
 
-        footer {
-            text-align: center;
-            padding: 25px;
-            font-size: 12px;
-        }
+    .page-heading h1 {
+      font-size: clamp(35px, 4vw, 55px);
+      font-weight: 500;
+      letter-spacing: -1.6px;
+      margin: 13px 0;
+      line-height: 1.2;
+    }
 
-        @media (max-width: 800px) {
-            .indicadores {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
+    .page-heading h1 span {
+      color: var(--gold);
+    }
 
-        @media (max-width: 480px) {
-            .indicadores {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    .page-heading p {
+      max-width: 670px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.9;
+      margin: 0;
+    }
+
+    /* APRESENTAÇÃO */
+
+    .hero {
+      background: var(--navy);
+      color: white;
+      border-radius: 15px;
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      overflow: hidden;
+      min-height: 220px;
+      margin-bottom: 35px;
+    }
+
+    .hero-content {
+      padding: 39px 41px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h2 {
+      font-size: clamp(27px, 3vw, 39px);
+      font-weight: 500;
+      line-height: 1.2;
+      margin: 13px 0;
+    }
+
+    .hero p {
+      max-width: 470px;
+      color: #C8C6D6;
+      font-size: 12px;
+      line-height: 1.9;
+      margin-bottom: 0;
+    }
+
+    .hero-art {
+      position: relative;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .hero-art::before,
+    .hero-art::after {
+      content: "";
+      position: absolute;
+      width: 240px;
+      height: 240px;
+      border: 1px solid rgba(214,183,121,.35);
+      border-radius: 50%;
+    }
+
+    .hero-art::after {
+      width: 155px;
+      height: 155px;
+      border-color: rgba(214,183,121,.6);
+    }
+
+    .hero-symbol {
+      position: relative;
+      z-index: 1;
+      font: 500 105px "Playfair Display", serif;
+      color: #D7BE8E;
+      line-height: 1;
+    }
+
+    /* TÍTULOS DAS SEÇÕES */
+
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
+      margin: 35px 0 17px;
+    }
+
+    .section-heading h2 {
+      font-size: 27px;
+      font-weight: 500;
+      margin: 7px 0 0;
+    }
+
+    .section-heading p {
+      font-size: 11px;
+      color: var(--muted);
+      margin: 0;
+    }
+
+    /* INDICADORES */
+
+    .indicadores {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: 15px;
+    }
+
+    .indicador {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px 22px;
+      min-width: 0;
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .indicador:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px rgba(12,10,41,.06);
+    }
+
+    .indicador-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .indicador p {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.6;
+      margin: 0;
+    }
+
+    .indicador-icon {
+      width: 37px;
+      height: 37px;
+      border-radius: 9px;
+      background: #F2F5FA;
+      display: grid;
+      place-items: center;
+      font-size: 18px;
+    }
+
+    .indicador strong {
+      display: block;
+      font: 500 39px "Playfair Display", serif;
+      margin: 19px 0 8px;
+      color: var(--navy);
+      line-height: 1.2;
+    }
+
+    .indicador small {
+      display: block;
+      color: #939089;
+      font-size: 10px;
+      line-height: 1.6;
+    }
+
+    .indicador.red strong {
+      color: var(--red);
+    }
+
+    .indicador.orange strong {
+      color: var(--orange);
+    }
+
+    /* PAINÉIS */
+
+    .painel {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 28px;
+      margin-bottom: 20px;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 16px;
+      margin-bottom: 25px;
+    }
+
+    .panel-header h2 {
+      font-size: 25px;
+      font-weight: 500;
+      margin: 7px 0;
+    }
+
+    .panel-header p {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.8;
+      margin: 0;
+    }
+
+    .panel-tag {
+      border: 1px solid var(--border);
+      background: var(--paper);
+      border-radius: 7px;
+      padding: 8px 10px;
+      color: var(--muted);
+      font: 10px "DM Mono", monospace;
+      white-space: nowrap;
+    }
+
+    /* FILTROS */
+
+    .filtros {
+      display: grid;
+      grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto;
+      gap: 13px;
+      align-items: end;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 9px;
+      min-width: 0;
+    }
+
+    .field label {
+      font-size: 11px;
+      font-weight: 600;
+      color: #66615B;
+    }
+
+    input, select {
+      width: 100%;
+      min-width: 0;
+      padding: 14px 15px;
+      border: 1px solid #E4E1DA;
+      border-radius: 9px;
+      background: #FCFBF8;
+      color: var(--ink);
+      font-size: 12px;
+      outline: none;
+      transition: .2s;
+    }
+
+    input:focus, select:focus {
+      border-color: #9DB8D9;
+      box-shadow: 0 0 0 3px rgba(191,220,255,.25);
+    }
+
+    input::placeholder {
+      color: #A5A29C;
+    }
+
+    .btn-exportar {
+      min-height: 45px;
+      padding: 13px 19px;
+      background: var(--navy);
+      border: 1px solid var(--navy);
+      color: white;
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .btn-exportar:hover {
+      background: #242041;
+    }
+
+    /* TABELA */
+
+    .tabela-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      min-width: 850px;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th {
+      padding: 15px 12px;
+      border-bottom: 1px solid var(--border);
+      background: #F8F7F3;
+      color: #77736C;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+    }
+
+    td {
+      padding: 17px 12px;
+      border-bottom: 1px solid #F0EEE9;
+      font-size: 12px;
+      color: #57534D;
+      line-height: 1.7;
+      vertical-align: middle;
+    }
+
+    tbody tr:hover {
+      background: #FBFAF7;
+    }
+
+    td:first-child {
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .situacao {
+      display: inline-block;
+      padding: 7px 10px;
+      border-radius: 7px;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1.5;
+      white-space: normal;
+    }
+
+    .critico {
+      color: #9F3838;
+      background: #FCECEC;
+    }
+
+    .atencao {
+      color: #93601F;
+      background: #FFF2DE;
+    }
+
+    .normal {
+      color: #286B4D;
+      background: #E8F5ED;
+    }
+
+    /* EXPLICAÇÃO */
+
+    .aviso {
+      display: flex;
+      align-items: start;
+      gap: 15px;
+      padding: 24px;
+      background: #F0EFE8;
+      border: 1px solid #E5E2D8;
+      border-radius: 12px;
+      margin-top: 22px;
+    }
+
+    .aviso-icon {
+      color: var(--gold);
+      font-size: 23px;
+      flex-shrink: 0;
+    }
+
+    .aviso h3 {
+      font-size: 20px;
+      font-weight: 500;
+      margin: 0 0 9px;
+    }
+
+    .aviso p {
+      color: #69655E;
+      font-size: 12px;
+      line-height: 1.9;
+      margin: 0;
+    }
+
+    /* ACESSOS RÁPIDOS */
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 15px;
+    }
+
+    .quick-link {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 22px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      transition: .2s;
+    }
+
+    .quick-link:hover {
+      transform: translateY(-2px);
+      border-color: #B9B6C2;
+    }
+
+    .quick-link span:last-child {
+      color: var(--gold);
+      font-size: 19px;
+    }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      margin-top: 37px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      color: #96928C;
+      font-size: 10px;
+    }
+
+    /* RESPONSIVIDADE */
+
+    @media (max-width: 1200px) {
+      .indicadores {
+        grid-template-columns: repeat(2, minmax(0,1fr));
+      }
+
+      .filtros {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .btn-exportar {
+        grid-column: 1 / -1;
+      }
+    }
+
+    @media (max-width: 850px) {
+      .sidebar {
+        position: relative;
+        width: 100%;
+        padding: 15px;
+      }
+
+      .brand {
+        padding-bottom: 15px;
+      }
+
+      .nav-label, .sidebar-bottom {
+        display: none;
+      }
+
+      .sidebar nav {
+        display: flex;
+        gap: 5px;
+        overflow-x: auto;
+        margin-top: 10px;
+      }
+
+      .nav-link {
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
+      .main-area {
+        margin-left: 0;
+      }
+
+      .topbar {
+        height: 62px;
+        padding: 0 22px;
+      }
+
+      .content {
+        padding: 30px 20px 45px;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-content {
+        padding: 30px;
+      }
+
+      .hero-art {
+        display: none;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .indicadores,
+      .filtros,
+      .quick-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .btn-exportar {
+        grid-column: auto;
+      }
+
+      .section-heading,
+      .panel-header,
+      footer {
+        align-items: start;
+        flex-direction: column;
+      }
+
+      .painel {
+        padding: 19px;
+      }
+
+      .browser-status {
+        display: none;
+      }
+    }
+  </style>
 </head>
 
 <body>
-    <header>
-        <h1>Estoque Simples</h1>
-        <p>Central de Alertas Inteligentes e Reposição</p>
 
-        <nav>
-            <a href="index.html">Início</a>
-            <a href="produtos.html">Produtos</a>
-            <a href="entrada.html">Entradas</a>
-            <a href="saida.html">Saídas</a>
-            <a href="historico.html">Histórico</a>
-            <a href="graficos.html">Gráficos</a>
-            <a href="financeiro.html">Financeiro</a>
-        </nav>
-    </header>
+  <!-- MENU LATERAL -->
 
-    <main>
-        <section class="apresentacao">
-            <h2>Alertas Inteligentes</h2>
-            <p>
-                Acompanhe produtos com estoque insuficiente,
-                mercadorias vencidas e itens próximos do
-                vencimento. Consulte também as quantidades
-                sugeridas para reposição.
-            </p>
-        </section>
+  <aside class="sidebar">
+    <a class="brand" href="index.html">
+      <div class="brand-mark">E.</div>
+      <div>
+        <strong>Estoque Simples</strong>
+        <small>Atelier de Gestão</small>
+      </div>
+    </a>
 
-        <section class="indicadores">
-            <div class="indicador">
-                <p>Estoque baixo</p>
-                <strong id="totalBaixo">0</strong>
+    <nav>
+      <div class="nav-label">Principal</div>
+
+      <a class="nav-link" href="index.html">
+        <span class="nav-icon">⌂</span>
+        Página inicial
+      </a>
+
+      <a class="nav-link" href="dashboard.html">
+        <span class="nav-icon">◫</span>
+        Dashboard Gerencial
+      </a>
+
+      <div class="nav-label">Operações</div>
+
+      <a class="nav-link" href="produtos.html">
+        <span class="nav-icon">▦</span>
+        Produtos
+      </a>
+
+      <a class="nav-link" href="entrada.html">
+        <span class="nav-icon">↘</span>
+        Entradas
+      </a>
+
+      <a class="nav-link" href="saida.html">
+        <span class="nav-icon">↗</span>
+        Saídas
+      </a>
+
+      <a class="nav-link" href="historico.html">
+        <span class="nav-icon">≡</span>
+        Histórico
+      </a>
+
+      <div class="nav-label">Monitoramento</div>
+
+      <a class="nav-link active" href="alertas.html">
+        <span class="nav-icon">◇</span>
+        Alertas Inteligentes
+      </a>
+
+      <a class="nav-link" href="inventario.html">
+        <span class="nav-icon">☷</span>
+        Inventário
+      </a>
+
+      <a class="nav-link" href="lotes.html">
+        <span class="nav-icon">▤</span>
+        Lotes
+      </a>
+
+      <a class="nav-link" href="conciliacao.html">
+        <span class="nav-icon">⇄</span>
+        Conciliação
+      </a>
+
+      <div class="nav-label">Inteligência</div>
+
+      <a class="nav-link" href="graficos.html">
+        <span class="nav-icon">▥</span>
+        Gráficos
+      </a>
+
+      <a class="nav-link" href="financeiro.html">
+        <span class="nav-icon">◈</span>
+        Financeiro
+      </a>
+
+      <a class="nav-link" href="relatorios.html">
+        <span class="nav-icon">▧</span>
+        Relatórios
+      </a>
+
+      <div class="nav-label">Administração</div>
+
+      <a class="nav-link" href="backup.html">
+        <span class="nav-icon">↥</span>
+        Backup
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      ESTOQUE SIMPLES<br>
+      Gestão e Inteligência de Estoque
+    </div>
+  </aside>
+
+  <!-- CONTEÚDO -->
+
+  <div class="main-area">
+
+    <div class="topbar">
+      <div class="breadcrumb">
+        Estoque Simples &nbsp; / &nbsp;
+        <strong>Alertas Inteligentes</strong>
+      </div>
+
+      <div class="browser-status">
+        <span class="status-dot"></span>
+        Dados deste navegador
+      </div>
+    </div>
+
+    <main class="content">
+
+      <!-- TÍTULO -->
+
+      <section class="page-heading">
+        <div class="eyebrow">
+          Monitoramento · Gestão preventiva
+        </div>
+
+        <h1>Alertas Inteligentes<span>.</span></h1>
+
+        <p>
+          Acompanhe as condições do seu estoque, identifique
+          mercadorias que exigem atenção e organize suas
+          decisões de reposição com informações claras.
+        </p>
+      </section>
+
+      <!-- DESTAQUE -->
+
+      <section class="hero">
+        <div class="hero-content">
+          <div class="eyebrow">
+            Central de monitoramento
+          </div>
+
+          <h2>
+            Antecipe problemas.<br>
+            Preserve seu estoque.
+          </h2>
+
+          <p>
+            Monitore quantidades insuficientes, produtos
+            vencidos e mercadorias próximas do vencimento.
+            Utilize os indicadores para acompanhar prioridades
+            e reduzir riscos de perdas.
+          </p>
+        </div>
+
+        <div class="hero-art" aria-hidden="true">
+          <div class="hero-symbol">!</div>
+        </div>
+      </section>
+
+      <!-- INDICADORES -->
+
+      <section>
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">01 / Visão preventiva</div>
+            <h2>Indicadores de atenção</h2>
+          </div>
+
+          <p>
+            Situação atual dos produtos cadastrados.
+          </p>
+        </div>
+
+        <div class="indicadores">
+
+          <article class="indicador orange">
+            <div class="indicador-top">
+              <p>Estoque baixo</p>
+              <span class="indicador-icon">▤</span>
             </div>
 
-            <div class="indicador">
-                <p>Produtos vencidos</p>
-                <strong id="totalVencidos">0</strong>
+            <strong id="totalBaixo">0</strong>
+            <small>
+              Produtos no limite mínimo ou abaixo dele
+            </small>
+          </article>
+
+          <article class="indicador red">
+            <div class="indicador-top">
+              <p>Produtos vencidos</p>
+              <span class="indicador-icon">◷</span>
             </div>
 
-            <div class="indicador">
-                <p>Próximos do vencimento</p>
-                <strong id="totalProximos">0</strong>
+            <strong id="totalVencidos">0</strong>
+            <small>
+              Mercadorias com prazo de validade expirado
+            </small>
+          </article>
+
+          <article class="indicador orange">
+            <div class="indicador-top">
+              <p>Próximos do vencimento</p>
+              <span class="indicador-icon">◇</span>
             </div>
 
-            <div class="indicador">
-                <p>Produtos com alertas</p>
-                <strong id="totalAlertas">0</strong>
+            <strong id="totalProximos">0</strong>
+            <small>
+              Produtos que exigem acompanhamento da validade
+            </small>
+          </article>
+
+          <article class="indicador">
+            <div class="indicador-top">
+              <p>Produtos com alertas</p>
+              <span class="indicador-icon">!</span>
             </div>
-        </section>
 
-        <section class="painel">
-            <h2>Pesquisar e filtrar produtos</h2>
+            <strong id="totalAlertas">0</strong>
+            <small>
+              Produtos com pelo menos uma situação de atenção
+            </small>
+          </article>
 
-            <div class="filtros">
-                <input
-                    type="search"
-                    id="pesquisa"
-                    placeholder="Pesquisar nome, categoria ou código"
-                >
+        </div>
+      </section>
 
-                <select id="filtroSituacao">
-                    <option value="todos">Todos os produtos</option>
-                    <option value="baixo">Estoque baixo</option>
-                    <option value="vencido">Vencidos</option>
-                    <option value="proximo">Próximos do vencimento</option>
-                    <option value="normal">Sem alertas</option>
-                </select>
+      <!-- PESQUISA E FILTROS -->
 
-                <button type="button" id="exportarCSV">
-                    Exportar CSV
-                </button>
+      <section>
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">02 / Consulta direcionada</div>
+            <h2>Pesquisa e filtros</h2>
+          </div>
+
+          <p>
+            Encontre rapidamente os produtos desejados.
+          </p>
+        </div>
+
+        <div class="painel">
+          <div class="panel-header">
+            <div>
+              <div class="eyebrow">
+                Ferramentas de consulta
+              </div>
+
+              <h2>Localizar mercadorias</h2>
+
+              <p>
+                Pesquise por nome, código ou categoria
+                e selecione a situação que deseja consultar.
+              </p>
             </div>
-        </section>
 
-        <section class="painel">
+            <span class="panel-tag">FILTROS</span>
+          </div>
+
+          <div class="filtros">
+
+            <div class="field">
+              <label for="pesquisa">
+                Pesquisar produto
+              </label>
+
+              <input
+                type="search"
+                id="pesquisa"
+                placeholder="Nome, categoria ou código..."
+              >
+            </div>
+
+            <div class="field">
+              <label for="filtroSituacao">
+                Situação do produto
+              </label>
+
+              <select id="filtroSituacao">
+                <option value="todos">
+                  Todos os produtos
+                </option>
+
+                <option value="baixo">
+                  Estoque baixo
+                </option>
+
+                <option value="vencido">
+                  Vencidos
+                </option>
+
+                <option value="proximo">
+                  Próximos do vencimento
+                </option>
+
+                <option value="normal">
+                  Sem alertas
+                </option>
+              </select>
+            </div>
+
+            <button
+              type="button"
+              id="exportarCSV"
+              class="btn-exportar"
+            >
+              ↓ &nbsp; Exportar CSV
+            </button>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- TABELA -->
+
+      <section>
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">03 / Análise de produtos</div>
             <h2>Central de acompanhamento</h2>
+          </div>
 
-            <div class="tabela-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Produto</th>
-                            <th>Código</th>
-                            <th>Quantidade</th>
-                            <th>Estoque mínimo</th>
-                            <th>Validade</th>
-                            <th>Reposição sugerida</th>
-                            <th>Situação</th>
-                        </tr>
-                    </thead>
+          <p>
+            Informações detalhadas para tomada de decisão.
+          </p>
+        </div>
 
-                    <tbody id="tabelaAlertas"></tbody>
-                </table>
+        <div class="painel">
+          <div class="panel-header">
+            <div>
+              <div class="eyebrow">
+                Monitoramento de mercadorias
+              </div>
+
+              <h2>Situação do estoque</h2>
+
+              <p>
+                Consulte as quantidades disponíveis,
+                os limites mínimos, as datas de validade
+                e as sugestões de reposição.
+              </p>
             </div>
-        </section>
 
-        <div class="aviso">
-            <strong>Como funciona a reposição sugerida?</strong>
-            O sistema calcula quantas unidades faltam
-            para alcançar o estoque mínimo cadastrado.
-            Essa quantidade é uma referência inicial,
-            não uma previsão automática de demanda.
+            <span class="panel-tag">CONTROLE</span>
+          </div>
+
+          <div class="tabela-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Produto</th>
+                  <th>Código</th>
+                  <th>Quantidade</th>
+                  <th>Estoque mínimo</th>
+                  <th>Validade</th>
+                  <th>Reposição sugerida</th>
+                  <th>Situação</th>
+                </tr>
+              </thead>
+
+              <tbody id="tabelaAlertas"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- EXPLICAÇÃO -->
+
+      <section class="aviso">
+        <div class="aviso-icon">ⓘ</div>
+
+        <div>
+          <h3>Como funciona a reposição sugerida?</h3>
+
+          <p>
+            O sistema calcula a quantidade necessária para
+            alcançar o estoque mínimo definido no cadastro.
+            Essa informação serve como referência inicial
+            para o planejamento de compras e não representa
+            uma previsão automática de demanda.
             Produtos vencidos devem ser avaliados
             separadamente e não devem ser comercializados.
+          </p>
         </div>
+      </section>
+
+      <!-- ACESSOS RÁPIDOS -->
+
+      <section>
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">04 / Continuidade operacional</div>
+            <h2>Próximas ações</h2>
+          </div>
+
+          <p>
+            Acesse os módulos relacionados ao monitoramento.
+          </p>
+        </div>
+
+        <div class="quick-grid">
+          <a href="produtos.html" class="quick-link">
+            <span>Consultar produtos</span>
+            <span>↗</span>
+          </a>
+
+          <a href="entrada.html" class="quick-link">
+            <span>Registrar reposição</span>
+            <span>↗</span>
+          </a>
+
+          <a href="dashboard.html" class="quick-link">
+            <span>Dashboard Gerencial</span>
+            <span>↗</span>
+          </a>
+        </div>
+      </section>
+
+      <footer>
+        <span>
+          Estoque Simples · Gestão e Inteligência de Estoque
+        </span>
+
+        <span>
+          Central de Alertas Inteligentes
+        </span>
+      </footer>
+
     </main>
+  </div>
 
-    <footer>
-        Estoque Simples | Controle e Monitoramento de Estoque
-    </footer>
+  <!-- MANTÉM O JAVASCRIPT ORIGINAL -->
 
-    <script src="alertas.js"></script>
+  <script src="alertas.js"></script>
+
 </body>
 </html>
