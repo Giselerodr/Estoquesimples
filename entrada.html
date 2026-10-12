@@ -1,85 +1,151 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <title>Entrada de Mercadorias</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Entrada de Mercadorias | Estoque Simples</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #F5F5DC;
+            color: #211E1B;
+        }
+        header {
+            background: #0C0A29;
+            color: white;
+            padding: 22px;
+        }
+        main {
+            max-width: 960px;
+            margin: 25px auto;
+            padding: 0 16px;
+        }
+        .painel {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin: 15px 0 6px;
+            font-weight: bold;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 7px;
+            font-size: 15px;
+        }
+        input, select { border: 1px solid #aaa; }
+        button {
+            background: #0C0A29;
+            color: white;
+            border: none;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+        button:hover { background: #211E1B; }
+        a { color: #0C0A29; }
+        .aviso {
+            background: #BFDCFF;
+            padding: 14px;
+            border-radius: 8px;
+            line-height: 1.5;
+        }
+        .tabela {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 11px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        th { background: #BFDCFF; }
+    </style>
 </head>
-
 <body>
 
+<header>
     <h1>Entrada de Mercadorias</h1>
+    <p>Estoque Simples — Controle de lotes</p>
+</header>
 
+<main>
+    <p><a href="index.html">Voltar ao início</a></p>
 
-    <form id="formEntrada">
+    <section class="painel">
+        <h2>Registrar entrada</h2>
 
-        <label>Produto:</label><br>
+        <p class="aviso">
+            A entrada atualiza o estoque principal e o lote
+            correspondente. Se o produto já possui estoque,
+            seus lotes precisam estar conferidos antes
+            da primeira movimentação integrada.
+        </p>
 
-        <select id="produto">
+        <form id="formEntrada">
 
-            <option value="">
-                Selecione um produto
-            </option>
+            <label for="produto">Produto</label>
+            <select id="produto" required>
+                <option value="">Selecione um produto</option>
+            </select>
 
-        </select>
+            <p id="situacaoProduto"></p>
 
-        <br><br>
+            <label for="quantidade">Quantidade recebida</label>
+            <input
+                type="number"
+                id="quantidade"
+                min="0.001"
+                step="0.001"
+                required
+            >
 
+            <label for="data">Data da entrada</label>
+            <input type="date" id="data" required>
 
-        <label>Quantidade de entrada:</label><br>
+            <label for="codigoLote">Código do lote</label>
+            <input
+                type="text"
+                id="codigoLote"
+                maxlength="80"
+                placeholder="Ex.: LAT001-A"
+                required
+            >
 
-        <input
-            type="number"
-            id="quantidade"
-            min="1"
-        >
+            <label for="validade">Validade do lote</label>
+            <input type="date" id="validade" required>
 
-        <br><br>
+            <button type="submit">Registrar entrada</button>
+        </form>
+    </section>
 
+    <section class="painel">
+        <h2>Entradas realizadas</h2>
+        <div class="tabela">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Lote</th>
+                        <th>Quantidade</th>
+                        <th>Data</th>
+                    </tr>
+                </thead>
+                <tbody id="listaEntradas"></tbody>
+            </table>
+        </div>
+    </section>
+</main>
 
-        <label>Data da entrada:</label><br>
-
-        <input
-            type="date"
-            id="data"
-        >
-
-        <br><br>
-
-
-        <button type="submit">
-            Registrar entrada
-        </button>
-
-    </form>
-
-
-    <h2>Entradas realizadas</h2>
-
-
-    <table border="1">
-
-        <thead>
-
-            <tr>
-                <th>Produto</th>
-                <th>Quantidade</th>
-                <th>Data</th>
-            </tr>
-
-        </thead>
-
-        <tbody id="listaEntradas">
-        </tbody>
-
-    </table>
-
-
-    <script src="entrada.js"></script>
-
+<script src="entrada.js"></script>
 </body>
-
 </html>
