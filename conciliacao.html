@@ -1,0 +1,296 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conciliação de Lotes | Estoque Simples</title>
+<style>
+* {
+    box-sizing: border-box;
+}
+body {
+    margin: 0;
+    background: #F5F5DC;
+    color: #211E1B;
+    font: 16px Arial, sans-serif;
+}
+header {
+    background: #0C0A29;
+    color: white;
+    padding: 24px;
+}
+main {
+    max-width: 1000px;
+    margin: 24px auto;
+    padding: 0 16px;
+}
+.painel {
+    background: white;
+    padding: 22px;
+    border-radius: 12px;
+    margin: 16px 0;
+}
+label {
+    display: block;
+    margin: 14px 0 6px;
+    font-weight: bold;
+}
+input, select, textarea, button {
+    font: inherit;
+    padding: 11px;
+    border-radius: 7px;
+}
+input, select, textarea {
+    width: 100%;
+    border: 1px solid #aaa;
+}
+button {
+    border: 0;
+    background: #0C0A29;
+    color: white;
+    cursor: pointer;
+    margin: 12px 8px 0 0;
+}
+button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+.aviso {
+    background: #BFDCFF;
+    padding: 14px;
+    border-radius: 8px;
+    line-height: 1.5;
+}
+.tabela {
+    overflow-x: auto;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+th {
+    background: #BFDCFF;
+}
+.erro {
+    color: #a21b1b;
+}
+.ok {
+    color: #14642a;
+}
+.campos {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(220px, 1fr));
+    gap: 0 16px;
+}
+a {
+    color: #0C0A29;
+}
+#resumo {
+    white-space: pre-line;
+    line-height: 1.6;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <h1>Conciliação de Lotes</h1>
+    <p>Estoque Simples — Etapa 15</p>
+</header>
+
+<main>
+
+<p>
+    <a href="index.html">Voltar ao início</a> |
+    <a href="lotes.html">Consultar lotes</a> |
+    <a href="backup.html">Fazer backup</a>
+</p>
+
+<section class="painel">
+
+    <h2>Conferência de saldos</h2>
+
+    <p class="aviso">
+        Este módulo não altera o estoque principal.
+        Ele permite corrigir o saldo de um lote
+        após conferência física, somente quando
+        a soma final dos lotes for igual ao estoque
+        principal. Não utilize para registrar compras
+        ou vendas: use Entrada e Saída.
+    </p>
+
+    <button type="button" id="atualizar">
+        Atualizar conferência
+    </button>
+
+    <div class="tabela">
+        <table>
+            <thead>
+                <tr>
+                    <th>Produto</th>
+                    <th>Estoque principal</th>
+                    <th>Soma dos lotes</th>
+                    <th>Diferença</th>
+                    <th>Situação</th>
+                </tr>
+            </thead>
+
+            <tbody id="tabelaConferencia"></tbody>
+        </table>
+    </div>
+
+</section>
+
+<section class="painel">
+
+    <h2>Regularizar lote após conferência física</h2>
+
+    <p>
+        Selecione o produto e o lote a corrigir.
+        Para cadastrar um lote ainda não identificado,
+        selecione "Novo lote".
+        O sistema calcula a quantidade necessária
+        para igualar os saldos.
+        Confirme esse número somente se corresponder
+        à contagem física.
+    </p>
+
+    <form id="formConciliacao">
+
+        <label for="produto">Produto</label>
+        <select id="produto" required></select>
+
+        <label for="lote">Lote a conferir</label>
+        <select id="lote" required></select>
+
+        <div id="camposNovo" hidden>
+
+            <div class="campos">
+
+                <div>
+                    <label for="codigoNovo">
+                        Código do novo lote
+                    </label>
+                    <input
+                        id="codigoNovo"
+                        maxlength="80"
+                    >
+                </div>
+
+                <div>
+                    <label for="entradaNovo">
+                        Data de entrada do novo lote
+                    </label>
+                    <input
+                        id="entradaNovo"
+                        type="date"
+                    >
+                </div>
+
+                <div>
+                    <label for="validadeNovo">
+                        Validade do novo lote
+                    </label>
+                    <input
+                        id="validadeNovo"
+                        type="date"
+                    >
+                </div>
+
+            </div>
+
+        </div>
+
+        <p id="resumo" class="aviso"></p>
+
+        <label for="quantidadeFisica">
+            Quantidade efetivamente conferida neste lote
+        </label>
+        <input
+            id="quantidadeFisica"
+            type="number"
+            min="0"
+            step="0.001"
+            required
+        >
+
+        <label for="responsavel">
+            Responsável pela conferência
+        </label>
+        <input
+            id="responsavel"
+            maxlength="100"
+            required
+        >
+
+        <label for="justificativa">
+            Justificativa do ajuste
+        </label>
+        <textarea
+            id="justificativa"
+            rows="3"
+            minlength="10"
+            maxlength="500"
+            required
+            placeholder="Ex.: contagem física realizada; lote não lançado anteriormente"
+        ></textarea>
+
+        <label>
+            <input
+                id="confirmacao"
+                type="checkbox"
+                required
+                style="width:auto"
+            >
+            Confirmo que contei fisicamente este lote
+            e que os dados estão corretos.
+        </label>
+
+        <button type="submit">
+            Registrar conciliação
+        </button>
+
+    </form>
+
+    <p id="mensagem" role="status"></p>
+
+</section>
+
+<section class="painel">
+
+    <h2>Histórico de conciliações</h2>
+
+    <div class="tabela">
+        <table>
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Produto</th>
+                    <th>Lote</th>
+                    <th>Antes</th>
+                    <th>Depois</th>
+                    <th>Responsável</th>
+                    <th>Justificativa</th>
+                </tr>
+            </thead>
+
+            <tbody id="historico"></tbody>
+        </table>
+    </div>
+
+</section>
+
+</main>
+
+<script src="conciliacao.js"></script>
+
+</body>
+</html>
