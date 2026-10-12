@@ -4,6 +4,7 @@
 let produtosCarregados = [];
 let contagens = new Map();
 let versaoProdutos = null;
+let versaoLotes = null;
 
 const $ = id => document.getElementById(id);
 
@@ -46,6 +47,7 @@ function mostrarMensagem(texto) {
 function carregarProdutos() {
     try {
         versaoProdutos = localStorage.getItem("produtos");
+        versaoLotes = localStorage.getItem("lotes");
         const lista = lerLista("produtos");
 
         produtosCarregados = lista
@@ -262,6 +264,38 @@ function confirmarInventario() {
             throw new Error(
                 "O estoque mudou desde o início da contagem. " +
                 "Recarregue os produtos e confira novamente."
+            );
+        }
+
+        // Evita alterar o estoque principal de produtos que possuem
+        // lotes, sem atualizar a distribuição desses lotes.
+        if (localStorage.getItem("lotes") !== versaoLotes) {
+            throw new Error(
+                "Os lotes mudaram durante a contagem. " +
+                "Atualize a lista e confira novamente."
+            );
+        }
+
+        const lotes = lerLista("lotes");
+        const codigosComLotes = new Set(
+            lotes.map(lote =>
+                String(lote.codigoProduto ?? "").trim().toLowerCase()
+            )
+        );
+
+        const bloqueados = divergentes.filter(item =>
+            codigosComLotes.has(
+                String(item.produto.codigo ?? "").trim().toLowerCase()
+            )
+        );
+
+        if (bloqueados.length > 0) {
+            throw new Error(
+                "Ajuste bloqueado para produto(s) com lotes: " +
+                bloqueados.map(item => item.produto.nome).join(", ") +
+                ". Confira os lotes e resolva a divergência " +
+                "antes de alterar o estoque principal. " +
+                "Nenhum ajuste foi salvo."
             );
         }
 
