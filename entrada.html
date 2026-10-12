@@ -2,150 +2,1157 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Entrada de Mercadorias | Estoque Simples</title>
-    <style>
-        * { box-sizing: border-box; }
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            background: #F5F5DC;
-            color: #211E1B;
-        }
-        header {
-            background: #0C0A29;
-            color: white;
-            padding: 22px;
-        }
-        main {
-            max-width: 960px;
-            margin: 25px auto;
-            padding: 0 16px;
-        }
-        .painel {
-            background: white;
-            padding: 24px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin: 15px 0 6px;
-            font-weight: bold;
-        }
-        input, select, button {
-            width: 100%;
-            padding: 12px;
-            border-radius: 7px;
-            font-size: 15px;
-        }
-        input, select { border: 1px solid #aaa; }
-        button {
-            background: #0C0A29;
-            color: white;
-            border: none;
-            margin-top: 20px;
-            cursor: pointer;
-        }
-        button:hover { background: #211E1B; }
-        a { color: #0C0A29; }
-        .aviso {
-            background: #BFDCFF;
-            padding: 14px;
-            border-radius: 8px;
-            line-height: 1.5;
-        }
-        .tabela {
-            overflow-x: auto;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 11px;
-            border-bottom: 1px solid #ddd;
-            text-align: left;
-        }
-        th { background: #BFDCFF; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Entrada de Mercadorias | Estoque Simples</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy: #0C0A29;
+      --ink: #211E1B;
+      --paper: #F8F7F2;
+      --white: #FFFFFF;
+      --gold: #B69B65;
+      --muted: #78756F;
+      --border: #E9E6DF;
+      --green: #287356;
+      --red: #AD4545;
+      --blue: #BFDCFF;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "DM Sans", sans-serif;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button, input, select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    h1, h2, h3, p {
+      margin-top: 0;
+    }
+
+    h1, h2, h3 {
+      font-family: "Playfair Display", serif;
+    }
+
+    /* MENU LATERAL */
+
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      width: 258px;
+      padding: 30px 19px;
+      background: var(--navy);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      z-index: 10;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 0 11px 30px;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+    }
+
+    .brand-mark {
+      width: 43px;
+      height: 43px;
+      border: 1px solid rgba(255,255,255,.35);
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      color: #DCC28F;
+      font: 25px "Playfair Display", serif;
+    }
+
+    .brand strong {
+      display: block;
+      font: 600 19px "Playfair Display", serif;
+    }
+
+    .brand small {
+      display: block;
+      margin-top: 4px;
+      color: #A9A7BE;
+      font-size: 9px;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+    }
+
+    .nav-label {
+      margin: 26px 12px 10px;
+      color: #9997B1;
+      font-size: 10px;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      margin: 2px 0;
+      border-radius: 9px;
+      color: #D3D1DF;
+      font-size: 12px;
+      transition: .2s;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      background: rgba(255,255,255,.11);
+      color: white;
+    }
+
+    .nav-link.active {
+      border-left: 3px solid #D6B779;
+    }
+
+    .nav-icon {
+      width: 21px;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      padding: 25px 12px 0;
+      color: #9997B1;
+      font-size: 10px;
+      line-height: 1.8;
+    }
+
+    /* ÁREA PRINCIPAL */
+
+    .main-area {
+      margin-left: 258px;
+      min-height: 100vh;
+    }
+
+    .topbar {
+      height: 76px;
+      padding: 0 48px;
+      background: rgba(255,255,255,.88);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .breadcrumb {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .breadcrumb strong {
+      color: var(--ink);
+    }
+
+    .browser-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+    }
+
+    .content {
+      max-width: 1500px;
+      padding: 44px 48px 70px;
+      margin: auto;
+    }
+
+    .eyebrow {
+      color: var(--gold);
+      font: 500 10px "DM Mono", monospace;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .page-heading {
+      margin-bottom: 30px;
+    }
+
+    .page-heading h1 {
+      font-size: clamp(35px, 4vw, 55px);
+      font-weight: 500;
+      letter-spacing: -1.6px;
+      margin: 13px 0;
+      line-height: 1.2;
+    }
+
+    .page-heading h1 span {
+      color: var(--gold);
+    }
+
+    .page-heading p {
+      max-width: 680px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.9;
+      margin: 0;
+    }
+
+    /* BANNER */
+
+    .hero {
+      background: var(--navy);
+      color: white;
+      border-radius: 15px;
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      min-height: 220px;
+      overflow: hidden;
+      margin-bottom: 35px;
+    }
+
+    .hero-content {
+      padding: 39px 41px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h2 {
+      font-size: clamp(27px, 3vw, 39px);
+      font-weight: 500;
+      line-height: 1.2;
+      margin: 13px 0;
+    }
+
+    .hero p {
+      max-width: 470px;
+      color: #C8C6D6;
+      font-size: 12px;
+      line-height: 1.9;
+      margin: 0;
+    }
+
+    .hero-art {
+      position: relative;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .hero-art::before,
+    .hero-art::after {
+      content: "";
+      position: absolute;
+      width: 240px;
+      height: 240px;
+      border: 1px solid rgba(214,183,121,.35);
+      border-radius: 50%;
+    }
+
+    .hero-art::after {
+      width: 155px;
+      height: 155px;
+      border-color: rgba(214,183,121,.6);
+    }
+
+    .hero-symbol {
+      position: relative;
+      z-index: 1;
+      color: #D7BE8E;
+      font: 500 105px "Playfair Display", serif;
+      line-height: 1;
+    }
+
+    /* SEÇÕES */
+
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
+      margin: 35px 0 17px;
+    }
+
+    .section-heading h2 {
+      font-size: 27px;
+      font-weight: 500;
+      margin: 7px 0 0;
+    }
+
+    .section-heading p {
+      color: var(--muted);
+      font-size: 11px;
+      margin: 0;
+    }
+
+    .painel {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 30px;
+      margin-bottom: 20px;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 15px;
+      margin-bottom: 24px;
+    }
+
+    .panel-header h3 {
+      font-size: 25px;
+      font-weight: 500;
+      margin: 8px 0;
+    }
+
+    .panel-header p {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.9;
+      margin: 0;
+    }
+
+    .panel-tag {
+      border: 1px solid var(--border);
+      background: var(--paper);
+      border-radius: 7px;
+      padding: 8px 10px;
+      color: var(--muted);
+      font: 10px "DM Mono", monospace;
+      white-space: nowrap;
+    }
+
+    /* AVISO */
+
+    .aviso {
+      display: flex;
+      align-items: start;
+      gap: 14px;
+      background: #F0F4F9;
+      border: 1px solid #DDE8F4;
+      padding: 19px 21px;
+      border-radius: 10px;
+      margin-bottom: 26px;
+    }
+
+    .aviso-icon {
+      color: #527CA8;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .aviso p {
+      color: #526477;
+      font-size: 12px;
+      line-height: 1.9;
+      margin: 0;
+    }
+
+    /* FORMULÁRIO */
+
+    .campos {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap: 18px;
+    }
+
+    .field {
+      min-width: 0;
+      margin-bottom: 20px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 9px;
+      color: #625E58;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .field input,
+    .field select {
+      display: block;
+      width: 100%;
+      min-width: 0;
+      padding: 14px 15px;
+      background: #FCFBF8;
+      color: var(--ink);
+      border: 1px solid #E4E1DA;
+      border-radius: 9px;
+      font-size: 12px;
+      outline: none;
+      transition: .2s;
+    }
+
+    .field input:focus,
+    .field select:focus {
+      border-color: #9DB8D9;
+      box-shadow: 0 0 0 3px rgba(191,220,255,.25);
+    }
+
+    .field input::placeholder {
+      color: #A5A29C;
+    }
+
+    #situacaoProduto {
+      min-height: 18px;
+      color: #716B63;
+      font-size: 12px;
+      line-height: 1.8;
+      margin: 0 0 22px;
+      overflow-wrap: anywhere;
+    }
+
+    #situacaoProduto:empty {
+      display: none;
+    }
+
+    .form-divider {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      margin: 9px 0 25px;
+    }
+
+    .form-divider span {
+      color: var(--gold);
+      font: 500 10px "DM Mono", monospace;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .form-divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .btn-submit {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      min-height: 46px;
+      padding: 13px 23px;
+      margin-top: 8px;
+      background: var(--navy);
+      color: white;
+      border: 1px solid var(--navy);
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 700;
+      transition: .2s;
+    }
+
+    .btn-submit:hover {
+      background: #242041;
+    }
+
+    .btn-submit:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+    }
+
+    /* TABELA */
+
+    .tabela {
+      overflow-x: auto;
+      margin-top: 20px;
+    }
+
+    table {
+      width: 100%;
+      min-width: 650px;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th {
+      padding: 15px 12px;
+      background: #F8F7F3;
+      color: #77736C;
+      border-bottom: 1px solid var(--border);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+    }
+
+    td {
+      padding: 16px 12px;
+      border-bottom: 1px solid #F0EEE9;
+      color: #57534D;
+      font-size: 12px;
+      line-height: 1.7;
+      vertical-align: middle;
+    }
+
+    tbody tr:hover {
+      background: #FBFAF7;
+    }
+
+    td:first-child {
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    /* ETAPAS */
+
+    .steps-grid {
+      display: grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: 15px;
+    }
+
+    .step-card {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 23px;
+    }
+
+    .step-number {
+      color: var(--gold);
+      font: 500 12px "DM Mono", monospace;
+      letter-spacing: 1px;
+    }
+
+    .step-card h3 {
+      font-size: 19px;
+      font-weight: 500;
+      margin: 13px 0 10px;
+    }
+
+    .step-card p {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.9;
+      margin: 0;
+    }
+
+    /* ACESSOS RÁPIDOS */
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: 15px;
+    }
+
+    .quick-link {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 22px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      font-size: 12px;
+      font-weight: 600;
+      transition: .2s;
+    }
+
+    .quick-link:hover {
+      transform: translateY(-2px);
+      border-color: #B9B6C2;
+    }
+
+    .quick-link span:last-child {
+      color: var(--gold);
+      font-size: 19px;
+    }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      margin-top: 38px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      color: #96928C;
+      font-size: 10px;
+    }
+
+    /* RESPONSIVIDADE */
+
+    @media (max-width: 1100px) {
+      .steps-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 850px) {
+      .sidebar {
+        position: relative;
+        width: 100%;
+        padding: 15px;
+      }
+
+      .brand {
+        padding-bottom: 15px;
+      }
+
+      .nav-label,
+      .sidebar-bottom {
+        display: none;
+      }
+
+      .sidebar nav {
+        display: flex;
+        gap: 5px;
+        overflow-x: auto;
+        margin-top: 10px;
+      }
+
+      .nav-link {
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
+      .main-area {
+        margin-left: 0;
+      }
+
+      .topbar {
+        height: 62px;
+        padding: 0 22px;
+      }
+
+      .content {
+        padding: 30px 20px 45px;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-content {
+        padding: 30px;
+      }
+
+      .hero-art {
+        display: none;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .campos,
+      .quick-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-heading,
+      .panel-header,
+      footer {
+        flex-direction: column;
+        align-items: start;
+      }
+
+      .painel {
+        padding: 19px;
+      }
+
+      .browser-status {
+        display: none;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<header>
-    <h1>Entrada de Mercadorias</h1>
-    <p>Estoque Simples — Controle de lotes</p>
-</header>
+  <!-- MENU LATERAL -->
 
-<main>
-    <p><a href="index.html">Voltar ao início</a></p>
+  <aside class="sidebar">
+    <a class="brand" href="index.html">
+      <div class="brand-mark">E.</div>
+      <div>
+        <strong>Estoque Simples</strong>
+        <small>Atelier de Gestão</small>
+      </div>
+    </a>
 
-    <section class="painel">
-        <h2>Registrar entrada</h2>
+    <nav>
+      <div class="nav-label">Principal</div>
 
-        <p class="aviso">
-            A entrada atualiza o estoque principal e o lote
-            correspondente. Se o produto já possui estoque,
-            seus lotes precisam estar conferidos antes
-            da primeira movimentação integrada.
-        </p>
+      <a class="nav-link" href="index.html">
+        <span class="nav-icon">⌂</span>
+        Página inicial
+      </a>
 
-        <form id="formEntrada">
+      <a class="nav-link" href="dashboard.html">
+        <span class="nav-icon">◫</span>
+        Dashboard Gerencial
+      </a>
 
-            <label for="produto">Produto</label>
-            <select id="produto" required>
-                <option value="">Selecione um produto</option>
-            </select>
+      <div class="nav-label">Operações</div>
 
-            <p id="situacaoProduto"></p>
+      <a class="nav-link" href="produtos.html">
+        <span class="nav-icon">▦</span>
+        Produtos
+      </a>
 
-            <label for="quantidade">Quantidade recebida</label>
-            <input
-                type="number"
-                id="quantidade"
-                min="0.001"
-                step="0.001"
-                required
-            >
+      <a class="nav-link active" href="entrada.html">
+        <span class="nav-icon">↘</span>
+        Entradas
+      </a>
 
-            <label for="data">Data da entrada</label>
-            <input type="date" id="data" required>
+      <a class="nav-link" href="saida.html">
+        <span class="nav-icon">↗</span>
+        Saídas
+      </a>
 
-            <label for="codigoLote">Código do lote</label>
-            <input
-                type="text"
-                id="codigoLote"
-                maxlength="80"
-                placeholder="Ex.: LAT001-A"
-                required
-            >
+      <a class="nav-link" href="historico.html">
+        <span class="nav-icon">≡</span>
+        Histórico
+      </a>
 
-            <label for="validade">Validade do lote</label>
-            <input type="date" id="validade" required>
+      <div class="nav-label">Monitoramento</div>
 
-            <button type="submit">Registrar entrada</button>
-        </form>
-    </section>
+      <a class="nav-link" href="alertas.html">
+        <span class="nav-icon">◇</span>
+        Alertas Inteligentes
+      </a>
 
-    <section class="painel">
-        <h2>Entradas realizadas</h2>
-        <div class="tabela">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Produto</th>
-                        <th>Lote</th>
-                        <th>Quantidade</th>
-                        <th>Data</th>
-                    </tr>
-                </thead>
-                <tbody id="listaEntradas"></tbody>
-            </table>
+      <a class="nav-link" href="inventario.html">
+        <span class="nav-icon">☷</span>
+        Inventário
+      </a>
+
+      <a class="nav-link" href="lotes.html">
+        <span class="nav-icon">▤</span>
+        Lotes
+      </a>
+
+      <a class="nav-link" href="conciliacao.html">
+        <span class="nav-icon">⇄</span>
+        Conciliação
+      </a>
+
+      <div class="nav-label">Inteligência</div>
+
+      <a class="nav-link" href="graficos.html">
+        <span class="nav-icon">▥</span>
+        Gráficos
+      </a>
+
+      <a class="nav-link" href="financeiro.html">
+        <span class="nav-icon">◈</span>
+        Financeiro
+      </a>
+
+      <a class="nav-link" href="relatorios.html">
+        <span class="nav-icon">▧</span>
+        Relatórios
+      </a>
+
+      <div class="nav-label">Administração</div>
+
+      <a class="nav-link" href="backup.html">
+        <span class="nav-icon">↥</span>
+        Backup
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      ESTOQUE SIMPLES<br>
+      Gestão e Inteligência de Estoque
+    </div>
+  </aside>
+
+  <!-- ÁREA PRINCIPAL -->
+
+  <div class="main-area">
+
+    <header class="topbar">
+      <div class="breadcrumb">
+        Estoque Simples &nbsp; / &nbsp;
+        <strong>Entrada de Mercadorias</strong>
+      </div>
+
+      <div class="browser-status">
+        <span class="status-dot"></span>
+        Dados deste navegador
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- TÍTULO -->
+
+      <section class="page-heading">
+        <div class="eyebrow">
+          Operações · Movimentação de Estoque
         </div>
-    </section>
-</main>
 
-<script src="entrada.js"></script>
+        <h1>Entrada de Mercadorias<span>.</span></h1>
+
+        <p>
+          Registre o recebimento de produtos,
+          organize os lotes e mantenha as quantidades
+          disponíveis atualizadas para garantir
+          um controle mais preciso do estoque.
+        </p>
+      </section>
+
+      <!-- BANNER -->
+
+      <section class="hero">
+        <div class="hero-content">
+          <div class="eyebrow">
+            Gestão de recebimentos
+          </div>
+
+          <h2>
+            Cada entrada registrada.<br>
+            Mais controle para seu negócio.
+          </h2>
+
+          <p>
+            Documente a chegada de mercadorias,
+            informe os lotes correspondentes
+            e acompanhe os registros de entrada
+            realizados no sistema.
+          </p>
+        </div>
+
+        <div class="hero-art" aria-hidden="true">
+          <div class="hero-symbol">↘</div>
+        </div>
+      </section>
+
+      <!-- FORMULÁRIO -->
+
+      <section>
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">01 / Registro operacional</div>
+            <h2>Registrar entrada</h2>
+          </div>
+
+          <p>
+            Informe os dados da mercadoria recebida.
+          </p>
+        </div>
+
+        <div class="painel">
+          <div class="panel-header">
+            <div>
+              <div class="eyebrow">
+                Recebimento de mercadorias
+              </div>
+
+              <h3>Nova entrada de estoque</h3>
+
+              <p>
+                Selecione o produto cadastrado,
+                informe a quantidade recebida
+                e identifique o lote correspondente.
+              </p>
+            </div>
+
+            <span class="panel-tag">ENTRADA</span>
+          </div>
+
+          <div class="aviso">
+            <span class="aviso-icon" aria-hidden="true">ⓘ</span>
+
+            <p>
+              A entrada atualiza o estoque principal
+              e o lote correspondente. Se o produto
+              já possui estoque, seus lotes precisam
+              estar conferidos antes da primeira
+              movimentação integrada.
+            </p>
+          </div>
+
+          <form id="formEntrada">
+
+            <div class="form-divider">
+              <span>Identificação do produto</span>
+            </div>
+
+            <div class="field">
+              <label for="produto">Produto</label>
+
+              <select id="produto" required>
+                <option value="">
+                  Selecione um produto
+                </option>
+              </select>
+            </div>
+
+            <!-- INFORMAÇÃO DINÂMICA DO PRODUTO -->
+
+            <p id="situacaoProduto" role="status"></p>
+
+            <div class="form-divider">
+              <span>Dados do recebimento</span>
+            </div>
+
+            <div class="campos">
+
+              <div class="field">
+                <label for="quantidade">
+                  Quantidade recebida
+                </label>
+
+                <input
+                  type="number"
+                  id="quantidade"
+                  min="0.001"
+                  step="0.001"
+                  placeholder="Ex.: 10"
+                  required
+                >
+              </div>
+
+              <div class="field">
+                <label for="data">
+                  Data da entrada
+                </label>
+
+                <input
+                  type="date"
+                  id="data"
+                  required
+                >
+              </div>
+
+            </div>
+
+            <div class="form-divider">
+              <span>Rastreabilidade do lote</span>
+            </div>
+
+            <div class="campos">
+
+              <div class="field">
+                <label for="codigoLote">
+                  Código do lote
+                </label>
+
+                <input
+                  type="text"
+                  id="codigoLote"
+                  maxlength="80"
+                  placeholder="Ex.: LAT001-A"
+                  required
+                >
+              </div>
+
+              <div class="field">
+                <label for="validade">
+                  Validade do lote
+                </label>
+
+                <input
+                  type="date"
+                  id="validade"
+                  required
+                >
+              </div>
+
+            </div>
+
+            <button type="submit" class="btn-submit">
+              ↘ &nbsp; Registrar entrada
+            </button>
+
+          </form>
+        </div>
+      </section>
+
+      <!-- HISTÓRICO DE ENTRADAS -->
+
+      <section>
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">02 / Registros</div>
+            <h2>Entradas realizadas</h2>
+          </div>
+
+          <p>
+            Consulte os recebimentos registrados.
+          </p>
+        </div>
+
+        <div class="painel">
+          <div class="panel-header">
+            <div>
+              <div class="eyebrow">
+                Histórico operacional
+              </div>
+
+              <h3>Mercadorias recebidas</h3>
+
+              <p>
+                Acompanhe os produtos, lotes,
+                quantidades e datas das entradas
+                realizadas no sistema.
+              </p>
+            </div>
+
+            <span class="panel-tag">HISTÓRICO</span>
+          </div>
+
+          <div class="tabela">
+            <table>
+              <thead>
+                <tr>
+                  <th>Produto</th>
+                  <th>Lote</th>
+                  <th>Quantidade</th>
+                  <th>Data</th>
+                </tr>
+              </thead>
+
+              <tbody id="listaEntradas"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ORIENTAÇÕES -->
+
+      <section>
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">03 / Boas práticas</div>
+            <h2>Como registrar corretamente</h2>
+          </div>
+
+          <p>
+            Etapas importantes para o recebimento.
+          </p>
+        </div>
+
+        <div class="steps-grid">
+
+          <article class="step-card">
+            <div class="step-number">ETAPA 01</div>
+
+            <h3>Identifique o produto</h3>
+
+            <p>
+              Selecione o produto previamente
+              cadastrado e confira se ele corresponde
+              à mercadoria recebida.
+            </p>
+          </article>
+
+          <article class="step-card">
+            <div class="step-number">ETAPA 02</div>
+
+            <h3>Confira o recebimento</h3>
+
+            <p>
+              Informe a quantidade efetivamente
+              recebida e a data da entrada.
+              Evite registrar quantidades
+              diferentes das conferidas.
+            </p>
+          </article>
+
+          <article class="step-card">
+            <div class="step-number">ETAPA 03</div>
+
+            <h3>Identifique o lote</h3>
+
+            <p>
+              Preencha o código do lote e sua
+              validade para facilitar a
+              rastreabilidade e o acompanhamento
+              das mercadorias.
+            </p>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- ACESSOS RÁPIDOS -->
+
+      <section>
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">04 / Navegação</div>
+            <h2>Continuar no sistema</h2>
+          </div>
+
+          <p>
+            Acesse módulos relacionados ao estoque.
+          </p>
+        </div>
+
+        <div class="quick-grid">
+
+          <a href="produtos.html" class="quick-link">
+            <span>Consultar produtos</span>
+            <span>↗</span>
+          </a>
+
+          <a href="lotes.html" class="quick-link">
+            <span>Controle de lotes</span>
+            <span>↗</span>
+          </a>
+
+          <a href="historico.html" class="quick-link">
+            <span>Histórico de movimentações</span>
+            <span>↗</span>
+          </a>
+
+        </div>
+      </section>
+
+      <footer>
+        <span>
+          Estoque Simples · Gestão e Inteligência de Estoque
+        </span>
+
+        <span>
+          Entrada de Mercadorias
+        </span>
+      </footer>
+
+    </main>
+  </div>
+
+  <!-- MANTER O JAVASCRIPT ORIGINAL -->
+
+  <script src="entrada.js"></script>
+
 </body>
 </html>
