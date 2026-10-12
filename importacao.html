@@ -1,0 +1,397 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Importação de Produtos | Estoque Simples</title>
+    <style>
+        :root {
+            --azul: #BFDCFF;
+            --marrom: #211E1B;
+            --bege: #F5F5DC;
+            --branco: #FFFFFF;
+            --marinho: #0C0A29;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            background: var(--bege);
+            color: var(--marrom);
+            font-family: Arial, sans-serif;
+        }
+
+        header {
+            padding: 22px 7%;
+            background: var(--branco);
+            border-bottom: 2px solid var(--azul);
+        }
+
+        header h1 {
+            margin: 0 0 8px;
+            color: var(--marinho);
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 16px;
+        }
+
+        nav a {
+            color: var(--marinho);
+            font-size: 13px;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        main {
+            max-width: 1200px;
+            padding: 30px 20px;
+            margin: auto;
+        }
+
+        .banner {
+            padding: 30px;
+            border-radius: 18px;
+            background: var(--marinho);
+            color: white;
+            margin-bottom: 22px;
+        }
+
+        .banner h2 { margin-top: 0; }
+        .banner p { line-height: 1.7; }
+
+        .painel {
+            background: white;
+            padding: 24px;
+            border: 1px solid var(--azul);
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+
+        .painel h2 {
+            color: var(--marinho);
+            margin-top: 0;
+        }
+
+        .painel p {
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .acoes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            align-items: center;
+        }
+
+        button {
+            padding: 13px 17px;
+            border: none;
+            border-radius: 9px;
+            background: var(--marinho);
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover { background: var(--marrom); }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        input[type="file"], select {
+            padding: 12px;
+            border: 1px solid #cccccc;
+            border-radius: 9px;
+            font-size: 14px;
+            max-width: 100%;
+        }
+
+        input[type="file"] {
+            display: block;
+            width: 100%;
+            margin: 16px 0;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .indicadores {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .indicador {
+            background: #f5f8ff;
+            border: 1px solid var(--azul);
+            padding: 17px;
+            border-radius: 11px;
+        }
+
+        .indicador span {
+            display: block;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        .indicador strong {
+            font-size: 25px;
+            color: var(--marinho);
+        }
+
+        .tabela-container { overflow-x: auto; }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            min-width: 950px;
+        }
+
+        th, td {
+            padding: 12px 10px;
+            border-bottom: 1px solid #dddddd;
+            text-align: left;
+            font-size: 12px;
+        }
+
+        th {
+            background: var(--azul);
+            color: var(--marinho);
+        }
+
+        .etiqueta {
+            display: inline-block;
+            padding: 6px 9px;
+            border-radius: 7px;
+            font-weight: bold;
+        }
+
+        .novo {
+            background: #def2df;
+            color: #206329;
+        }
+
+        .existente {
+            background: #fff0c2;
+            color: #775100;
+        }
+
+        .erro {
+            background: #ffd9d9;
+            color: #8b1616;
+        }
+
+        .mensagem {
+            margin-top: 15px;
+            line-height: 1.7;
+            font-size: 14px;
+            font-weight: bold;
+            white-space: pre-line;
+        }
+
+        .aviso {
+            background: var(--azul);
+            border-radius: 12px;
+            padding: 20px;
+            line-height: 1.7;
+            font-size: 13px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            font-size: 12px;
+        }
+
+        @media (max-width: 750px) {
+            .indicadores {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 450px) {
+            .indicadores {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Estoque Simples</h1>
+        <p>Importação Inteligente de Produtos</p>
+
+        <nav>
+            <a href="index.html">Início</a>
+            <a href="produtos.html">Produtos</a>
+            <a href="entrada.html">Entradas</a>
+            <a href="saida.html">Saídas</a>
+            <a href="historico.html">Histórico</a>
+            <a href="alertas.html">Alertas</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="backup.html">Backup</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="banner">
+            <h2>Cadastro de Produtos em Massa</h2>
+            <p>
+                Importe vários produtos de uma só vez.
+                O sistema verifica códigos, quantidades,
+                datas e possíveis duplicações antes de salvar.
+            </p>
+        </section>
+
+        <section class="painel">
+            <h2>1. Baixar planilha-modelo</h2>
+            <p>
+                Utilize o modelo para preencher os produtos
+                no Excel ou em outro editor de planilhas.
+                Não altere os nomes das colunas.
+            </p>
+
+            <button type="button" id="baixarModelo">
+                Baixar modelo CSV
+            </button>
+        </section>
+
+        <section class="painel">
+            <h2>2. Selecionar planilha</h2>
+            <p>
+                Escolha um arquivo CSV preenchido.
+                O arquivo deve conter nome, categoria,
+                código, quantidade, estoque mínimo e validade.
+            </p>
+
+            <input
+                type="file"
+                id="arquivoCSV"
+                accept=".csv,text/csv"
+            >
+
+            <div>
+                <label for="modoImportacao">
+                    Como tratar produtos já cadastrados?
+                </label>
+
+                <select id="modoImportacao">
+                    <option value="novos">
+                        Cadastrar apenas produtos novos
+                    </option>
+                    <option value="atualizar">
+                        Cadastrar novos e atualizar existentes
+                    </option>
+                </select>
+            </div>
+
+            <p>
+                Na atualização, a quantidade informada
+                na planilha será considerada o novo saldo
+                do produto. As movimentações históricas
+                serão preservadas.
+            </p>
+
+            <button type="button" id="analisarArquivo">
+                Analisar planilha
+            </button>
+
+            <p id="mensagemAnalise"
+               class="mensagem"
+               role="status"></p>
+        </section>
+
+        <section class="painel">
+            <h2>3. Conferir produtos</h2>
+
+            <div class="indicadores">
+                <div class="indicador">
+                    <span>Linhas analisadas</span>
+                    <strong id="totalLinhas">0</strong>
+                </div>
+
+                <div class="indicador">
+                    <span>Produtos novos</span>
+                    <strong id="totalNovos">0</strong>
+                </div>
+
+                <div class="indicador">
+                    <span>Já cadastrados</span>
+                    <strong id="totalExistentes">0</strong>
+                </div>
+
+                <div class="indicador">
+                    <span>Linhas inválidas</span>
+                    <strong id="totalErros">0</strong>
+                </div>
+            </div>
+
+            <div class="tabela-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Linha</th>
+                            <th>Produto</th>
+                            <th>Categoria</th>
+                            <th>Código</th>
+                            <th>Quantidade</th>
+                            <th>Mínimo</th>
+                            <th>Validade</th>
+                            <th>Situação</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="tabelaImportacao">
+                        <tr>
+                            <td colspan="8">
+                                Nenhuma planilha analisada.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div style="margin-top: 20px;">
+                <button
+                    type="button"
+                    id="confirmarImportacao"
+                    disabled>
+                    Confirmar importação
+                </button>
+            </div>
+
+            <p id="mensagemResultado"
+               class="mensagem"
+               role="status"></p>
+        </section>
+
+        <div class="aviso">
+            <strong>Importante:</strong>
+            faça um backup dos dados antes de atualizar
+            produtos existentes. A importação é salva
+            no navegador utilizado e não sincroniza
+            automaticamente com outros dispositivos.
+        </div>
+    </main>
+
+    <footer>
+        Estoque Simples | Sistema de Controle e Monitoramento
+    </footer>
+
+    <script src="importacao.js"></script>
+</body>
+</html>
