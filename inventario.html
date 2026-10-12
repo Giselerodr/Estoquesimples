@@ -2,262 +2,1334 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Inventário Físico | Estoque Simples</title>
-<style>
-:root {
-    --azul: #BFDCFF;
-    --marrom: #211E1B;
-    --bege: #F5F5DC;
-    --marinho: #0C0A29;
-}
-* { box-sizing: border-box; }
-body {
-    margin: 0;
-    background: var(--bege);
-    color: var(--marrom);
-    font-family: Arial, sans-serif;
-}
-header {
-    background: white;
-    padding: 22px 7%;
-    border-bottom: 2px solid var(--azul);
-}
-header h1 { color: var(--marinho); margin: 0 0 8px; }
-nav { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 16px; }
-nav a {
-    color: var(--marinho);
-    font-size: 13px;
-    text-decoration: none;
-    font-weight: bold;
-}
-main { max-width: 1200px; margin: auto; padding: 30px 20px; }
-.banner {
-    background: var(--marinho);
-    color: white;
-    padding: 30px;
-    border-radius: 18px;
-    margin-bottom: 20px;
-}
-.banner h2 { margin-top: 0; }
-.painel {
-    background: white;
-    border: 1px solid var(--azul);
-    border-radius: 15px;
-    padding: 23px;
-    margin-bottom: 20px;
-}
-.painel h2 { margin-top: 0; color: var(--marinho); }
-.painel p { font-size: 14px; line-height: 1.7; }
-.indicadores {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-bottom: 20px;
-}
-.indicador {
-    background: white;
-    padding: 20px;
-    border: 1px solid var(--azul);
-    border-radius: 12px;
-}
-.indicador span { display: block; font-size: 12px; margin-bottom: 12px; }
-.indicador strong { font-size: 27px; color: var(--marinho); }
-.acoes { display: flex; gap: 10px; flex-wrap: wrap; margin: 18px 0; }
-button {
-    background: var(--marinho);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 12px 17px;
-    cursor: pointer;
-}
-button:disabled { opacity: .5; cursor: not-allowed; }
-input, textarea {
-    padding: 10px;
-    border: 1px solid #cccccc;
-    border-radius: 8px;
-    font-family: inherit;
-}
-input[type="search"] { width: 100%; max-width: 420px; }
-input[type="number"] { width: 110px; }
-textarea { width: 100%; min-height: 75px; resize: vertical; }
-label { font-size: 13px; font-weight: bold; }
-.tabela-container { overflow-x: auto; }
-table { width: 100%; border-collapse: collapse; min-width: 700px; }
-th, td {
-    text-align: left;
-    border-bottom: 1px solid #dddddd;
-    padding: 12px 9px;
-    font-size: 13px;
-}
-th { background: var(--azul); color: var(--marinho); }
-.falta { color: #a31d1d; font-weight: bold; }
-.sobra { color: #16642c; font-weight: bold; }
-.igual { color: #666666; }
-.aviso {
-    background: var(--azul);
-    border-radius: 12px;
-    padding: 18px;
-    font-size: 13px;
-    line-height: 1.7;
-}
-#mensagem { white-space: pre-line; font-weight: bold; }
-footer { text-align: center; padding: 25px; font-size: 12px; }
-@media(max-width: 750px) {
-    .indicadores { grid-template-columns: repeat(2, 1fr); }
-}
-@media(max-width: 450px) {
-    .indicadores { grid-template-columns: 1fr; }
-}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Inventário Físico | Estoque Simples</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy: #0C0A29;
+      --ink: #211E1B;
+      --paper: #F8F7F2;
+      --white: #FFFFFF;
+      --gold: #B69B65;
+      --muted: #78756F;
+      --border: #E9E6DF;
+      --green: #287356;
+      --red: #AD4545;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "DM Sans", sans-serif;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button, input, textarea {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    h1, h2, h3, p {
+      margin-top: 0;
+    }
+
+    h1, h2, h3 {
+      font-family: "Playfair Display", serif;
+    }
+
+    /* MENU LATERAL */
+
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      width: 258px;
+      padding: 30px 19px;
+      background: var(--navy);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      z-index: 10;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 0 11px 30px;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+    }
+
+    .brand-mark {
+      width: 43px;
+      height: 43px;
+      border: 1px solid rgba(255,255,255,.35);
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      color: #DCC28F;
+      font: 25px "Playfair Display", serif;
+    }
+
+    .brand strong {
+      display: block;
+      font: 600 19px "Playfair Display", serif;
+    }
+
+    .brand small {
+      display: block;
+      margin-top: 4px;
+      color: #A9A7BE;
+      font-size: 9px;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+    }
+
+    .nav-label {
+      margin: 26px 12px 10px;
+      color: #9997B1;
+      font-size: 10px;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      margin: 2px 0;
+      border-radius: 9px;
+      color: #D3D1DF;
+      font-size: 12px;
+      transition: .2s;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      background: rgba(255,255,255,.11);
+      color: white;
+    }
+
+    .nav-link.active {
+      border-left: 3px solid #D6B779;
+    }
+
+    .nav-icon {
+      width: 21px;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      padding: 25px 12px 0;
+      color: #9997B1;
+      font-size: 10px;
+      line-height: 1.8;
+    }
+
+    /* ÁREA PRINCIPAL */
+
+    .main-area {
+      margin-left: 258px;
+      min-height: 100vh;
+    }
+
+    .topbar {
+      height: 76px;
+      padding: 0 48px;
+      background: rgba(255,255,255,.88);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .breadcrumb {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .breadcrumb strong {
+      color: var(--ink);
+    }
+
+    .browser-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+    }
+
+    .content {
+      max-width: 1500px;
+      padding: 44px 48px 70px;
+      margin: auto;
+    }
+
+    .eyebrow {
+      color: var(--gold);
+      font: 500 10px "DM Mono", monospace;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .page-heading {
+      margin-bottom: 30px;
+    }
+
+    .page-heading h1 {
+      font-size: clamp(35px,4vw,55px);
+      font-weight: 500;
+      letter-spacing: -1.6px;
+      margin: 13px 0;
+      line-height: 1.2;
+    }
+
+    .page-heading h1 span {
+      color: var(--gold);
+    }
+
+    .page-heading p {
+      max-width: 700px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.9;
+      margin: 0;
+    }
+
+    /* BANNER */
+
+    .hero {
+      background: var(--navy);
+      color: white;
+      border-radius: 15px;
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      min-height: 225px;
+      overflow: hidden;
+      margin-bottom: 35px;
+    }
+
+    .hero-content {
+      padding: 39px 41px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h2 {
+      font-size: clamp(27px,3vw,39px);
+      font-weight: 500;
+      line-height: 1.2;
+      margin: 13px 0;
+    }
+
+    .hero p {
+      max-width: 480px;
+      color: #C8C6D6;
+      font-size: 12px;
+      line-height: 1.9;
+      margin: 0;
+    }
+
+    .hero-art {
+      position: relative;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .hero-art::before,
+    .hero-art::after {
+      content: "";
+      position: absolute;
+      width: 240px;
+      height: 240px;
+      border: 1px solid rgba(214,183,121,.35);
+      border-radius: 50%;
+    }
+
+    .hero-art::after {
+      width: 155px;
+      height: 155px;
+      border-color: rgba(214,183,121,.6);
+    }
+
+    .hero-symbol {
+      position: relative;
+      z-index: 1;
+      color: #D7BE8E;
+      font: 500 105px "Playfair Display", serif;
+      line-height: 1;
+    }
+
+    /* TÍTULOS */
+
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
+      margin: 35px 0 17px;
+    }
+
+    .section-heading h2 {
+      font-size: 27px;
+      font-weight: 500;
+      margin: 7px 0 0;
+    }
+
+    .section-heading p {
+      color: var(--muted);
+      font-size: 11px;
+      margin: 0;
+    }
+
+    /* INDICADORES */
+
+    .indicadores {
+      display: grid;
+      grid-template-columns: repeat(4,minmax(0,1fr));
+      gap: 17px;
+    }
+
+    .indicador {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      min-width: 0;
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .indicador:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px rgba(12,10,41,.06);
+    }
+
+    .indicador-topo {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 19px;
+    }
+
+    .indicador-label {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    .indicador-icon {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      flex-shrink: 0;
+      background: #F2F5FA;
+      border-radius: 10px;
+      color: var(--navy);
+      font-size: 19px;
+    }
+
+    .indicador strong {
+      display: block;
+      color: var(--navy);
+      font: 500 clamp(26px,2.5vw,37px) "Playfair Display", serif;
+      line-height: 1.3;
+      overflow-wrap: anywhere;
+    }
+
+    .indicador small {
+      display: block;
+      margin-top: 12px;
+      color: #92908A;
+      font-size: 10px;
+      line-height: 1.7;
+    }
+
+    /* PAINÉIS */
+
+    .painel {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 30px;
+      margin-bottom: 20px;
+      min-width: 0;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 15px;
+      margin-bottom: 24px;
+    }
+
+    .panel-header h3 {
+      font-size: 25px;
+      font-weight: 500;
+      margin: 8px 0;
+    }
+
+    .panel-header p {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.9;
+      margin: 0;
+    }
+
+    .panel-tag {
+      border: 1px solid var(--border);
+      background: var(--paper);
+      border-radius: 7px;
+      padding: 8px 10px;
+      color: var(--muted);
+      font: 10px "DM Mono", monospace;
+      white-space: nowrap;
+    }
+
+    /* FORMULÁRIOS */
+
+    .field {
+      margin-bottom: 20px;
+    }
+
+    .field label {
+      display: block;
+      margin-bottom: 9px;
+      color: #625E58;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .field input,
+    .field textarea {
+      display: block;
+      width: 100%;
+      min-width: 0;
+      padding: 14px 15px;
+      background: #FCFBF8;
+      color: var(--ink);
+      border: 1px solid #E4E1DA;
+      border-radius: 9px;
+      font-size: 12px;
+      outline: none;
+      transition: .2s;
+    }
+
+    .field input:focus,
+    .field textarea:focus {
+      border-color: #9DB8D9;
+      box-shadow: 0 0 0 3px rgba(191,220,255,.25);
+    }
+
+    .field input::placeholder,
+    .field textarea::placeholder {
+      color: #A5A29C;
+    }
+
+    #pesquisa {
+      max-width: 480px;
+    }
+
+    #responsavel {
+      max-width: 560px;
+    }
+
+    #justificativa {
+      min-height: 115px;
+      resize: vertical;
+    }
+
+    .form-divider {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      margin: 0 0 23px;
+    }
+
+    .form-divider span {
+      color: var(--gold);
+      font: 500 10px "DM Mono", monospace;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .form-divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* BOTÕES */
+
+    .acoes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 11px;
+      margin: 22px 0;
+    }
+
+    button {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 9px;
+      min-height: 45px;
+      padding: 13px 20px;
+      background: var(--navy);
+      color: white;
+      border: 1px solid var(--navy);
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 700;
+      transition: .2s;
+    }
+
+    button:hover:not(:disabled) {
+      background: #242041;
+    }
+
+    button:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+    }
+
+    .botao-secundario {
+      background: white;
+      color: var(--navy);
+      border-color: #D9D5CA;
+    }
+
+    .botao-secundario:hover:not(:disabled) {
+      background: #F5F3EE;
+    }
+
+    /* TABELAS */
+
+    .tabela-container {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 20px;
+    }
+
+    table {
+      width: 100%;
+      min-width: 800px;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th {
+      padding: 15px 12px;
+      background: #F8F7F3;
+      color: #77736C;
+      border-bottom: 1px solid var(--border);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .4px;
+      text-transform: uppercase;
+    }
+
+    td {
+      padding: 16px 12px;
+      border-bottom: 1px solid #F0EEE9;
+      color: #57534D;
+      font-size: 12px;
+      line-height: 1.7;
+      vertical-align: middle;
+    }
+
+    tbody tr:hover {
+      background: #FBFAF7;
+    }
+
+    td:first-child {
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    /* INPUTS GERADOS PELO JAVASCRIPT */
+
+    td input[type="number"] {
+      width: 110px;
+      max-width: 100%;
+      padding: 10px 11px;
+      background: #FCFBF8;
+      border: 1px solid #E4E1DA;
+      border-radius: 8px;
+      font-size: 12px;
+    }
+
+    td input[type="number"]:focus {
+      outline: none;
+      border-color: #9DB8D9;
+      box-shadow: 0 0 0 3px rgba(191,220,255,.25);
+    }
+
+    /* SITUAÇÕES DO INVENTÁRIO */
+
+    .falta {
+      color: var(--red);
+      font-weight: 700;
+    }
+
+    .sobra {
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .igual {
+      color: #77736C;
+      font-weight: 600;
+    }
+
+    /* MENSAGENS */
+
+    #mensagem {
+      margin: 17px 0 0;
+      color: var(--navy);
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.8;
+      white-space: pre-line;
+      overflow-wrap: anywhere;
+    }
+
+    #mensagem:empty {
+      display: none;
+    }
+
+    /* AVISO */
+
+    .aviso {
+      display: flex;
+      align-items: start;
+      gap: 15px;
+      margin-top: 28px;
+      padding: 23px;
+      background: #F0F4F9;
+      border: 1px solid #DDE8F4;
+      border-radius: 11px;
+      color: #526477;
+      font-size: 12px;
+      line-height: 1.9;
+    }
+
+    .aviso-icon {
+      color: #527CA8;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    /* ACESSOS RÁPIDOS */
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: 15px;
+    }
+
+    .quick-link {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 22px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      font-size: 12px;
+      font-weight: 600;
+      transition: .2s;
+    }
+
+    .quick-link:hover {
+      transform: translateY(-2px);
+      border-color: #B9B6C2;
+    }
+
+    .quick-link span:last-child {
+      color: var(--gold);
+      font-size: 19px;
+    }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      margin-top: 38px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      color: #96928C;
+      font-size: 10px;
+    }
+
+    /* RESPONSIVIDADE */
+
+    @media (max-width: 1250px) {
+      .indicadores {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+      }
+    }
+
+    @media (max-width: 850px) {
+      .sidebar {
+        position: relative;
+        width: 100%;
+        padding: 15px;
+      }
+
+      .brand {
+        padding-bottom: 15px;
+      }
+
+      .nav-label,
+      .sidebar-bottom {
+        display: none;
+      }
+
+      .sidebar nav {
+        display: flex;
+        gap: 5px;
+        overflow-x: auto;
+        margin-top: 10px;
+      }
+
+      .nav-link {
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
+      .main-area {
+        margin-left: 0;
+      }
+
+      .topbar {
+        height: 62px;
+        padding: 0 22px;
+      }
+
+      .content {
+        padding: 30px 20px 45px;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-content {
+        padding: 30px;
+      }
+
+      .hero-art {
+        display: none;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .indicadores,
+      .quick-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .section-heading,
+      .panel-header,
+      footer {
+        flex-direction: column;
+        align-items: start;
+      }
+
+      .painel {
+        padding: 19px;
+      }
+
+      .browser-status {
+        display: none;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<header>
-    <h1>Estoque Simples</h1>
-    <p>Inventário Físico e Conferência de Estoque</p>
+
+  <!-- MENU LATERAL -->
+
+  <aside class="sidebar">
+    <a class="brand" href="index.html">
+      <div class="brand-mark">E.</div>
+      <div>
+        <strong>Estoque Simples</strong>
+        <small>Atelier de Gestão</small>
+      </div>
+    </a>
+
     <nav>
-        <a href="index.html">Início</a>
-        <a href="produtos.html">Produtos</a>
-        <a href="entrada.html">Entradas</a>
-        <a href="saida.html">Saídas</a>
-        <a href="historico.html">Histórico</a>
-        <a href="alertas.html">Alertas</a>
-        <a href="dashboard.html">Dashboard</a>
-        <a href="backup.html">Backup</a>
+      <div class="nav-label">Principal</div>
+
+      <a class="nav-link" href="index.html">
+        <span class="nav-icon">⌂</span>
+        Página inicial
+      </a>
+
+      <a class="nav-link" href="dashboard.html">
+        <span class="nav-icon">◫</span>
+        Dashboard Gerencial
+      </a>
+
+      <div class="nav-label">Operações</div>
+
+      <a class="nav-link" href="produtos.html">
+        <span class="nav-icon">▦</span>
+        Produtos
+      </a>
+
+      <a class="nav-link" href="entrada.html">
+        <span class="nav-icon">↘</span>
+        Entradas
+      </a>
+
+      <a class="nav-link" href="saida.html">
+        <span class="nav-icon">↗</span>
+        Saídas
+      </a>
+
+      <a class="nav-link" href="historico.html">
+        <span class="nav-icon">≡</span>
+        Histórico
+      </a>
+
+      <a class="nav-link" href="importacao.html">
+        <span class="nav-icon">⇩</span>
+        Importação
+      </a>
+
+      <div class="nav-label">Monitoramento</div>
+
+      <a class="nav-link" href="alertas.html">
+        <span class="nav-icon">◇</span>
+        Alertas Inteligentes
+      </a>
+
+      <a class="nav-link active" href="inventario.html">
+        <span class="nav-icon">☷</span>
+        Inventário
+      </a>
+
+      <a class="nav-link" href="lotes.html">
+        <span class="nav-icon">▤</span>
+        Lotes
+      </a>
+
+      <a class="nav-link" href="conciliacao.html">
+        <span class="nav-icon">⇄</span>
+        Conciliação
+      </a>
+
+      <div class="nav-label">Inteligência</div>
+
+      <a class="nav-link" href="graficos.html">
+        <span class="nav-icon">▥</span>
+        Gráficos
+      </a>
+
+      <a class="nav-link" href="financeiro.html">
+        <span class="nav-icon">◈</span>
+        Financeiro
+      </a>
+
+      <a class="nav-link" href="relatorios.html">
+        <span class="nav-icon">▧</span>
+        Relatórios
+      </a>
+
+      <div class="nav-label">Administração</div>
+
+      <a class="nav-link" href="backup.html">
+        <span class="nav-icon">↥</span>
+        Backup e Restauração
+      </a>
     </nav>
-</header>
 
-<main>
-    <section class="banner">
-        <h2>Conferência de Estoque</h2>
-        <p>
-            Registre as quantidades encontradas fisicamente,
-            identifique divergências e corrija os saldos
-            após a conferência.
-        </p>
-    </section>
-
-    <section class="indicadores">
-        <div class="indicador">
-            <span>Produtos ativos</span>
-            <strong id="totalProdutos">0</strong>
-        </div>
-        <div class="indicador">
-            <span>Produtos conferidos</span>
-            <strong id="totalConferidos">0</strong>
-        </div>
-        <div class="indicador">
-            <span>Com divergência</span>
-            <strong id="totalDivergencias">0</strong>
-        </div>
-        <div class="indicador">
-            <span>Sem divergência</span>
-            <strong id="totalCorretos">0</strong>
-        </div>
-    </section>
-
-    <section class="painel">
-        <h2>1. Realizar contagem física</h2>
-        <p>
-            Digite a quantidade encontrada para cada produto
-            que deseja conferir. Deixe o campo vazio para
-            não incluir o produto no inventário.
-        </p>
-
-        <input type="search" id="pesquisa"
-               placeholder="Pesquisar produto ou código">
-
-        <div class="acoes">
-            <button type="button" id="atualizarLista">
-                Recarregar produtos
-            </button>
-            <button type="button" id="limparContagem">
-                Limpar contagem
-            </button>
-        </div>
-
-        <div class="tabela-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Produto</th>
-                        <th>Código</th>
-                        <th>Saldo no sistema</th>
-                        <th>Contagem física</th>
-                        <th>Diferença</th>
-                        <th>Situação</th>
-                    </tr>
-                </thead>
-                <tbody id="tabelaInventario"></tbody>
-            </table>
-        </div>
-    </section>
-
-    <section class="painel">
-        <h2>2. Conferir e confirmar ajustes</h2>
-
-        <label for="responsavel">Responsável pela conferência</label>
-        <p>
-            <input id="responsavel" type="text"
-                   maxlength="100"
-                   placeholder="Nome do responsável">
-        </p>
-
-        <label for="justificativa">Justificativa das divergências</label>
-        <p>
-            <textarea id="justificativa"
-                placeholder="Ex.: contagem física, avaria ou erro de registro"></textarea>
-        </p>
-
-        <div class="acoes">
-            <button type="button" id="confirmarAjustes">
-                Confirmar inventário
-            </button>
-            <button type="button" id="exportarCSV">
-                Exportar conferência CSV
-            </button>
-        </div>
-
-        <p id="mensagem" role="status"></p>
-    </section>
-
-    <section class="painel">
-        <h2>3. Histórico de inventários</h2>
-        <p>
-            Consulte as últimas conferências realizadas,
-            incluindo o saldo anterior e o saldo confirmado.
-        </p>
-
-        <div class="tabela-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Data</th>
-                        <th>Produto</th>
-                        <th>Anterior</th>
-                        <th>Conferido</th>
-                        <th>Diferença</th>
-                        <th>Responsável</th>
-                        <th>Justificativa</th>
-                    </tr>
-                </thead>
-                <tbody id="tabelaHistorico"></tbody>
-            </table>
-        </div>
-    </section>
-
-    <div class="aviso">
-        <strong>Atenção:</strong>
-        a confirmação altera o saldo cadastrado do produto.
-        Faça um backup antes de realizar ajustes.
-        Os registros do inventário são armazenados
-        neste navegador, assim como os demais dados do sistema.
+    <div class="sidebar-bottom">
+      ESTOQUE SIMPLES<br>
+      Gestão e Inteligência de Estoque
     </div>
-</main>
+  </aside>
 
-<footer>Estoque Simples | Controle e Monitoramento de Estoque</footer>
-<script src="inventario.js"></script>
+  <!-- ÁREA PRINCIPAL -->
+
+  <div class="main-area">
+
+    <header class="topbar">
+      <div class="breadcrumb">
+        Estoque Simples &nbsp; / &nbsp;
+        <strong>Inventário Físico</strong>
+      </div>
+
+      <div class="browser-status">
+        <span class="status-dot"></span>
+        Dados deste navegador
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- TÍTULO -->
+
+      <section class="page-heading">
+        <div class="eyebrow">
+          Monitoramento · Conferência de Estoque
+        </div>
+
+        <h1>Inventário Físico<span>.</span></h1>
+
+        <p>
+          Compare as quantidades cadastradas
+          com os produtos encontrados fisicamente,
+          identifique divergências e registre
+          os ajustes necessários para manter
+          o estoque atualizado.
+        </p>
+      </section>
+
+      <!-- BANNER -->
+
+      <section class="hero">
+        <div class="hero-content">
+          <div class="eyebrow">
+            Precisão e controle operacional
+          </div>
+
+          <h2>
+            Confira os saldos.<br>
+            Identifique diferenças.
+          </h2>
+
+          <p>
+            Realize contagens físicas, compare
+            os resultados com os registros
+            do sistema e mantenha um histórico
+            organizado das conferências.
+          </p>
+        </div>
+
+        <div class="hero-art" aria-hidden="true">
+          <div class="hero-symbol">☷</div>
+        </div>
+      </section>
+
+      <!-- INDICADORES -->
+
+      <section>
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">01 / Visão geral</div>
+            <h2>Indicadores do inventário</h2>
+          </div>
+
+          <p>
+            Acompanhe o andamento da conferência.
+          </p>
+        </div>
+
+        <div class="indicadores">
+
+          <article class="indicador">
+            <div class="indicador-topo">
+              <span class="indicador-label">
+                Produtos ativos
+              </span>
+              <span class="indicador-icon">▦</span>
+            </div>
+
+            <strong id="totalProdutos">0</strong>
+
+            <small>
+              Produtos disponíveis para conferência.
+            </small>
+          </article>
+
+          <article class="indicador">
+            <div class="indicador-topo">
+              <span class="indicador-label">
+                Produtos conferidos
+              </span>
+              <span class="indicador-icon">✓</span>
+            </div>
+
+            <strong id="totalConferidos">0</strong>
+
+            <small>
+              Produtos com contagem informada.
+            </small>
+          </article>
+
+          <article class="indicador">
+            <div class="indicador-topo">
+              <span class="indicador-label">
+                Com divergência
+              </span>
+              <span class="indicador-icon">!</span>
+            </div>
+
+            <strong id="totalDivergencias">0</strong>
+
+            <small>
+              Produtos com diferença de quantidade.
+            </small>
+          </article>
+
+          <article class="indicador">
+            <div class="indicador-topo">
+              <span class="indicador-label">
+                Sem divergência
+              </span>
+              <span class="indicador-icon">≡</span>
+            </div>
+
+            <strong id="totalCorretos">0</strong>
+
+            <small>
+              Produtos com quantidades correspondentes.
+            </small>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- ETAPA 1 -->
+
+      <section>
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">02 / Contagem</div>
+            <h2>Realizar contagem física</h2>
+          </div>
+
+          <p>
+            Registre as quantidades encontradas.
+          </p>
+        </div>
+
+        <div class="painel">
+          <div class="panel-header">
+            <div>
+              <div class="eyebrow">
+                Conferência operacional
+              </div>
+
+              <h3>Contagem dos produtos</h3>
+
+              <p>
+                Digite a quantidade encontrada
+                para cada produto que deseja conferir.
+                Deixe o campo vazio para não incluir
+                o produto no inventário.
+              </p>
+            </div>
+
+            <span class="panel-tag">ETAPA 01</span>
+          </div>
+
+          <div class="form-divider">
+            <span>Localizar produtos</span>
+          </div>
+
+          <div class="field">
+            <label for="pesquisa">
+              Pesquisar produto
+            </label>
+
+            <input
+              type="search"
+              id="pesquisa"
+              placeholder="Pesquisar produto ou código"
+            >
+          </div>
+
+          <div class="acoes">
+            <button type="button" id="atualizarLista">
+              ↻ &nbsp; Recarregar produtos
+            </button>
+
+            <button
+              type="button"
+              id="limparContagem"
+              class="botao-secundario"
+            >
+              × &nbsp; Limpar contagem
+            </button>
+          </div>
+
+          <div class="form-divider">
+            <span>Conferência de quantidades</span>
+          </div>
+
+          <div class="tabela-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Produto</th>
+                  <th>Código</th>
+                  <th>Saldo no sistema</th>
+                  <th>Contagem física</th>
+                  <th>Diferença</th>
+                  <th>Situação</th>
+                </tr>
+              </thead>
+
+              <tbody id="tabelaInventario"></tbody>
+            </table>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ETAPA 2 -->
+
+      <section>
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">03 / Validação</div>
+            <h2>Conferir e confirmar ajustes</h2>
+          </div>
+
+          <p>
+            Identifique o responsável pela conferência.
+          </p>
+        </div>
+
+        <div class="painel">
+          <div class="panel-header">
+            <div>
+              <div class="eyebrow">
+                Registro de responsabilidade
+              </div>
+
+              <h3>Confirmação do inventário</h3>
+
+              <p>
+                Informe o responsável e registre
+                uma justificativa para as divergências
+                identificadas antes de confirmar.
+              </p>
+            </div>
+
+            <span class="panel-tag">ETAPA 02</span>
+          </div>
+
+          <div class="form-divider">
+            <span>Dados da conferência</span>
+          </div>
+
+          <div class="field">
+            <label for="responsavel">
+              Responsável pela conferência
+            </label>
+
+            <input
+              id="responsavel"
+              type="text"
+              maxlength="100"
+              placeholder="Nome do responsável"
+            >
+          </div>
+
+          <div class="field">
+            <label for="justificativa">
+              Justificativa das divergências
+            </label>
+
+            <textarea
+              id="justificativa"
+              placeholder="Ex.: contagem física, avaria ou erro de registro"
+            ></textarea>
+          </div>
+
+          <div class="acoes">
+            <button
+              type="button"
+              id="confirmarAjustes"
+            >
+              ✓ &nbsp; Confirmar inventário
+            </button>
+
+            <button
+              type="button"
+              id="exportarCSV"
+              class="botao-secundario"
+            >
+              ↓ &nbsp; Exportar conferência CSV
+            </button>
+          </div>
+
+          <p
+            id="mensagem"
+            role="status"
+            aria-live="polite"
+          ></p>
+
+        </div>
+      </section>
+
+      <!-- ETAPA 3 -->
+
+      <section>
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">04 / Rastreabilidade</div>
+            <h2>Histórico de inventários</h2>
+          </div>
+
+          <p>
+            Consulte conferências anteriores.
+          </p>
+        </div>
+
+        <div class="painel">
+          <div class="panel-header">
+            <div>
+              <div class="eyebrow">
+                Registro de ajustes
+              </div>
+
+              <h3>Conferências realizadas</h3>
+
+              <p>
+                Consulte as últimas conferências,
+                incluindo o saldo anterior,
+                o saldo confirmado, a diferença
+                e o responsável pelo registro.
+              </p>
+            </div>
+
+            <span class="panel-tag">ETAPA 03</span>
+          </div>
+
+          <div class="tabela-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Produto</th>
+                  <th>Anterior</th>
+                  <th>Conferido</th>
+                  <th>Diferença</th>
+                  <th>Responsável</th>
+                  <th>Justificativa</th>
+                </tr>
+              </thead>
+
+              <tbody id="tabelaHistorico"></tbody>
+            </table>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- AVISO -->
+
+      <div class="aviso">
+        <span class="aviso-icon" aria-hidden="true">ⓘ</span>
+
+        <div>
+          <strong>Atenção:</strong>
+          a confirmação do inventário altera
+          o saldo cadastrado do produto.
+          Faça um backup antes de realizar ajustes.
+          Os registros são armazenados neste
+          navegador, assim como os demais
+          dados do sistema.
+        </div>
+      </div>
+
+      <!-- ACESSOS RÁPIDOS -->
+
+      <section>
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">05 / Navegação</div>
+            <h2>Continuar no sistema</h2>
+          </div>
+
+          <p>
+            Explore módulos relacionados ao inventário.
+          </p>
+        </div>
+
+        <div class="quick-grid">
+
+          <a href="produtos.html" class="quick-link">
+            <span>Consultar produtos</span>
+            <span>↗</span>
+          </a>
+
+          <a href="conciliacao.html" class="quick-link">
+            <span>Conciliação de estoque</span>
+            <span>↗</span>
+          </a>
+
+          <a href="backup.html" class="quick-link">
+            <span>Backup e Restauração</span>
+            <span>↗</span>
+          </a>
+
+        </div>
+      </section>
+
+      <footer>
+        <span>
+          Estoque Simples · Gestão e Inteligência de Estoque
+        </span>
+
+        <span>
+          Inventário Físico
+        </span>
+      </footer>
+
+    </main>
+  </div>
+
+  <!-- JAVASCRIPT ORIGINAL -->
+
+  <script src="inventario.js"></script>
+
 </body>
 </html>
