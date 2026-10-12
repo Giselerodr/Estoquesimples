@@ -2,499 +2,1225 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controle Financeiro | Estoque Simples</title>
 
-    <title>Controle Financeiro | Estoque Simples</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
 
-    <style>
-        :root {
-            --azul-claro: #BFDCFF;
-            --marrom: #211E1B;
-            --bege: #F5F5DC;
-            --branco: #FFFFFF;
-            --marinho: #0C0A29;
-            --verde: #24784C;
-            --vermelho: #B42318;
-        }
+  <style>
+    :root {
+      --navy: #0C0A29;
+      --ink: #211E1B;
+      --paper: #F8F7F2;
+      --white: #FFFFFF;
+      --gold: #B69B65;
+      --muted: #78756F;
+      --border: #E9E6DF;
+      --green: #287356;
+      --red: #AD4545;
+    }
 
-        * {
-            box-sizing: border-box;
-        }
+    * { box-sizing: border-box; }
 
-        body {
-            margin: 0;
-            background: var(--bege);
-            color: var(--marrom);
-            font-family: Arial, Helvetica, sans-serif;
-        }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "DM Sans", sans-serif;
+    }
 
-        header {
-            background: var(--branco);
-            padding: 24px 6%;
-            border-bottom: 2px solid var(--azul-claro);
-        }
+    a { color: inherit; text-decoration: none; }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    h1, h2, h3, p { margin-top: 0; }
+    h1, h2, h3 { font-family: "Playfair Display", serif; }
 
-        .topo {
-            max-width: 1180px;
-            margin: auto;
-        }
+    /* MENU LATERAL */
 
-        h1, h2, h3 {
-            color: var(--marinho);
-        }
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      width: 258px;
+      padding: 30px 19px;
+      background: var(--navy);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      z-index: 10;
+    }
 
-        header h1 {
-            margin: 0 0 8px;
-        }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 0 11px 30px;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+    }
 
-        header p {
-            font-size: 13px;
-            margin-bottom: 20px;
-        }
+    .brand-mark {
+      width: 43px;
+      height: 43px;
+      border: 1px solid rgba(255,255,255,.35);
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      color: #DCC28F;
+      font: 25px "Playfair Display", serif;
+    }
 
-        nav {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
+    .brand strong {
+      display: block;
+      font: 600 19px "Playfair Display", serif;
+    }
 
-        nav a {
-            background: var(--azul-claro);
-            color: var(--marinho);
-            padding: 10px 13px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 12px;
-            font-weight: bold;
-        }
+    .brand small {
+      display: block;
+      margin-top: 4px;
+      color: #A9A7BE;
+      font-size: 9px;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+    }
 
-        nav a.atual {
-            background: var(--marinho);
-            color: var(--branco);
-        }
+    .nav-label {
+      margin: 26px 12px 10px;
+      color: #9997B1;
+      font-size: 10px;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+    }
 
-        main {
-            max-width: 1180px;
-            margin: auto;
-            padding: 30px 20px;
-        }
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      margin: 2px 0;
+      border-radius: 9px;
+      color: #D3D1DF;
+      font-size: 12px;
+      transition: .2s;
+    }
 
-        .banner {
-            background: var(--marinho);
-            color: var(--branco);
-            border-radius: 18px;
-            padding: 32px;
-            margin-bottom: 25px;
-        }
+    .nav-link:hover,
+    .nav-link.active {
+      background: rgba(255,255,255,.11);
+      color: white;
+    }
 
-        .banner h2 {
-            color: var(--branco);
-            margin-top: 0;
-        }
+    .nav-link.active {
+      border-left: 3px solid #D6B779;
+    }
 
-        .banner p {
-            line-height: 1.7;
-            font-size: 14px;
-        }
+    .nav-icon {
+      width: 21px;
+      text-align: center;
+      font-size: 16px;
+    }
 
-        .indicadores {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-bottom: 25px;
-        }
+    .sidebar-bottom {
+      margin-top: auto;
+      padding: 25px 12px 0;
+      color: #9997B1;
+      font-size: 10px;
+      line-height: 1.8;
+    }
 
-        .indicador {
-            background: var(--branco);
-            border: 1px solid var(--azul-claro);
-            border-radius: 14px;
-            padding: 22px;
-        }
+    /* ESTRUTURA PRINCIPAL */
 
-        .indicador p {
-            font-size: 12px;
-            line-height: 1.5;
-        }
+    .main-area {
+      margin-left: 258px;
+      min-height: 100vh;
+    }
 
-        .indicador strong {
-            display: block;
-            font-size: 23px;
-            color: var(--marinho);
-            overflow-wrap: anywhere;
-        }
+    .topbar {
+      height: 76px;
+      padding: 0 48px;
+      background: rgba(255,255,255,.88);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
 
-        .painel {
-            background: var(--branco);
-            padding: 25px;
-            border: 1px solid var(--azul-claro);
-            border-radius: 16px;
-            margin-bottom: 24px;
-        }
+    .breadcrumb {
+      font-size: 12px;
+      color: var(--muted);
+    }
 
-        .painel h2 {
-            margin-top: 0;
-            font-size: 21px;
-        }
+    .breadcrumb strong { color: var(--ink); }
 
-        .descricao {
-            font-size: 13px;
-            line-height: 1.7;
-            color: #555;
-        }
+    .browser-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 11px;
+    }
 
-        .formulario {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 17px;
-        }
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+    }
 
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 13px;
-            font-weight: bold;
-        }
+    .content {
+      max-width: 1500px;
+      padding: 44px 48px 70px;
+      margin: auto;
+    }
 
-        input, select {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #AAAAAA;
-            border-radius: 8px;
-            font-size: 14px;
-            background: white;
-        }
+    .eyebrow {
+      color: var(--gold);
+      font: 500 10px "DM Mono", monospace;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
 
-        button {
-            background: var(--marinho);
-            color: var(--branco);
-            border: 0;
-            border-radius: 8px;
-            padding: 13px 20px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: bold;
-        }
+    .page-heading { margin-bottom: 30px; }
 
-        button:hover {
-            background: var(--marrom);
-        }
+    .page-heading h1 {
+      font-size: clamp(35px,4vw,55px);
+      font-weight: 500;
+      letter-spacing: -1.6px;
+      margin: 13px 0;
+      line-height: 1.2;
+    }
 
-        .acoes {
-            margin-top: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
+    .page-heading h1 span { color: var(--gold); }
 
-        .botao-secundario {
-            background: var(--azul-claro);
-            color: var(--marinho);
-        }
+    .page-heading p {
+      max-width: 690px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.9;
+      margin: 0;
+    }
 
-        .tabela-container {
-            width: 100%;
-            overflow-x: auto;
-        }
+    /* BANNER */
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 850px;
-        }
+    .hero {
+      background: var(--navy);
+      color: white;
+      border-radius: 15px;
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      min-height: 225px;
+      overflow: hidden;
+      margin-bottom: 35px;
+    }
 
-        th, td {
-            padding: 13px;
-            text-align: left;
-            border-bottom: 1px solid #E5E5E5;
-            font-size: 12px;
-        }
+    .hero-content {
+      padding: 39px 41px;
+      position: relative;
+      z-index: 1;
+    }
 
-        th {
-            background: var(--azul-claro);
-            color: var(--marinho);
-        }
+    .hero h2 {
+      font-size: clamp(27px,3vw,39px);
+      font-weight: 500;
+      line-height: 1.2;
+      margin: 13px 0;
+    }
 
-        td strong {
-            color: var(--marinho);
-        }
+    .hero p {
+      max-width: 480px;
+      color: #C8C6D6;
+      font-size: 12px;
+      line-height: 1.9;
+      margin: 0;
+    }
 
-        .positivo {
-            color: var(--verde);
-            font-weight: bold;
-        }
+    .hero-art {
+      position: relative;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
 
-        .negativo {
-            color: var(--vermelho);
-            font-weight: bold;
-        }
+    .hero-art::before,
+    .hero-art::after {
+      content: "";
+      position: absolute;
+      width: 240px;
+      height: 240px;
+      border: 1px solid rgba(214,183,121,.35);
+      border-radius: 50%;
+    }
 
-        .aviso {
-            background: var(--azul-claro);
-            border-left: 5px solid var(--marinho);
-            padding: 18px;
-            border-radius: 10px;
-            line-height: 1.7;
-            font-size: 13px;
-        }
+    .hero-art::after {
+      width: 155px;
+      height: 155px;
+      border-color: rgba(214,183,121,.6);
+    }
 
-        #mensagem {
-            margin-top: 15px;
-            font-size: 13px;
-            font-weight: bold;
-            min-height: 18px;
-        }
+    .hero-symbol {
+      position: relative;
+      z-index: 1;
+      color: #D7BE8E;
+      font: 500 75px "Playfair Display", serif;
+    }
 
-        footer {
-            text-align: center;
-            padding: 25px;
-            font-size: 12px;
-        }
+    /* TÍTULOS */
 
-        @media (max-width: 900px) {
-            .indicadores {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
+      margin: 35px 0 17px;
+    }
 
-        @media (max-width: 600px) {
-            .indicadores,
-            .formulario {
-                grid-template-columns: 1fr;
-            }
+    .section-heading h2 {
+      font-size: 27px;
+      font-weight: 500;
+      margin: 7px 0 0;
+    }
 
-            .banner {
-                padding: 24px;
-            }
-        }
-    </style>
+    .section-heading p {
+      color: var(--muted);
+      font-size: 11px;
+      margin: 0;
+    }
+
+    /* INDICADORES */
+
+    .indicadores {
+      display: grid;
+      grid-template-columns: repeat(4,minmax(0,1fr));
+      gap: 17px;
+    }
+
+    .indicador {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      min-width: 0;
+      transition: transform .2s, box-shadow .2s;
+    }
+
+    .indicador:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px rgba(12,10,41,.06);
+    }
+
+    .indicador-topo {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 19px;
+    }
+
+    .indicador-label {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.6;
+    }
+
+    .indicador-icon {
+      display: grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      flex-shrink: 0;
+      background: #F2F5FA;
+      border-radius: 10px;
+      color: var(--navy);
+      font-size: 16px;
+    }
+
+    .indicador strong {
+      display: block;
+      color: var(--navy);
+      font: 500 clamp(22px,2.2vw,32px) "Playfair Display", serif;
+      line-height: 1.3;
+      overflow-wrap: anywhere;
+    }
+
+    .indicador small {
+      display: block;
+      color: #92908A;
+      font-size: 10px;
+      line-height: 1.7;
+      margin-top: 12px;
+    }
+
+    /* PAINÉIS */
+
+    .painel {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 30px;
+      margin-bottom: 20px;
+      min-width: 0;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .panel-header h3 {
+      font-size: 25px;
+      font-weight: 500;
+      margin: 8px 0;
+    }
+
+    .panel-header p {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.9;
+      margin: 0;
+    }
+
+    .panel-tag {
+      border: 1px solid var(--border);
+      background: var(--paper);
+      border-radius: 7px;
+      padding: 8px 10px;
+      color: var(--muted);
+      font: 10px "DM Mono", monospace;
+      white-space: nowrap;
+    }
+
+    /* FORMULÁRIOS */
+
+    .formulario {
+      display: grid;
+      grid-template-columns: repeat(2,minmax(0,1fr));
+      gap: 19px;
+    }
+
+    .field { min-width: 0; }
+
+    .field label {
+      display: block;
+      margin-bottom: 9px;
+      color: #625E58;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    input, select {
+      display: block;
+      width: 100%;
+      min-width: 0;
+      padding: 14px 15px;
+      background: #FCFBF8;
+      color: var(--ink);
+      border: 1px solid #E4E1DA;
+      border-radius: 9px;
+      font-size: 12px;
+      outline: none;
+      transition: .2s;
+    }
+
+    input:focus, select:focus {
+      border-color: #9DB8D9;
+      box-shadow: 0 0 0 3px rgba(191,220,255,.25);
+    }
+
+    input::placeholder { color: #A5A29C; }
+
+    .form-divider {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      margin: 0 0 23px;
+    }
+
+    .form-divider span {
+      color: var(--gold);
+      font: 500 10px "DM Mono", monospace;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .form-divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* BOTÕES */
+
+    .acoes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 11px;
+      margin-top: 24px;
+    }
+
+    button {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 9px;
+      min-height: 45px;
+      padding: 13px 20px;
+      background: var(--navy);
+      color: white;
+      border: 1px solid var(--navy);
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 700;
+      transition: .2s;
+    }
+
+    button:hover:not(:disabled) { background: #242041; }
+
+    button:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+    }
+
+    .botao-secundario {
+      background: white;
+      color: var(--navy);
+      border-color: #D9D5CA;
+    }
+
+    .botao-secundario:hover:not(:disabled) {
+      background: #F5F3EE;
+    }
+
+    #mensagem {
+      margin: 18px 0 0;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.8;
+      overflow-wrap: anywhere;
+    }
+
+    #mensagem:empty { display: none; }
+
+    /* RELATÓRIO */
+
+    .filtros {
+      padding: 21px;
+      background: #FAF9F5;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      margin-bottom: 23px;
+    }
+
+    .tabela-container {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 18px;
+    }
+
+    table {
+      width: 100%;
+      min-width: 900px;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th {
+      padding: 15px 12px;
+      background: #F8F7F3;
+      color: #77736C;
+      border-bottom: 1px solid var(--border);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .4px;
+      text-transform: uppercase;
+    }
+
+    td {
+      padding: 16px 12px;
+      border-bottom: 1px solid #F0EEE9;
+      color: #57534D;
+      font-size: 12px;
+      line-height: 1.7;
+      vertical-align: middle;
+    }
+
+    tbody tr:hover { background: #FBFAF7; }
+
+    td strong { color: var(--navy); }
+
+    .positivo {
+      color: var(--green);
+      font-weight: 700;
+    }
+
+    .negativo {
+      color: var(--red);
+      font-weight: 700;
+    }
+
+    /* AVISO */
+
+    .aviso {
+      display: flex;
+      align-items: start;
+      gap: 15px;
+      padding: 23px;
+      background: #F0F4F9;
+      border: 1px solid #DDE8F4;
+      border-radius: 11px;
+      color: #526477;
+      font-size: 12px;
+      line-height: 1.9;
+      margin-top: 26px;
+    }
+
+    .aviso-icon {
+      color: #527CA8;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    /* LINKS RÁPIDOS */
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: 15px;
+    }
+
+    .quick-link {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 22px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      font-size: 12px;
+      font-weight: 600;
+      transition: .2s;
+    }
+
+    .quick-link:hover {
+      transform: translateY(-2px);
+      border-color: #B9B6C2;
+    }
+
+    .quick-link span:last-child {
+      color: var(--gold);
+      font-size: 19px;
+    }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      margin-top: 38px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      color: #96928C;
+      font-size: 10px;
+    }
+
+    /* RESPONSIVIDADE */
+
+    @media (max-width: 1250px) {
+      .indicadores {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+      }
+    }
+
+    @media (max-width: 850px) {
+      .sidebar {
+        position: relative;
+        width: 100%;
+        padding: 15px;
+      }
+
+      .brand { padding-bottom: 15px; }
+
+      .nav-label, .sidebar-bottom { display: none; }
+
+      .sidebar nav {
+        display: flex;
+        gap: 5px;
+        overflow-x: auto;
+        margin-top: 10px;
+      }
+
+      .nav-link {
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
+      .main-area { margin-left: 0; }
+
+      .topbar {
+        height: 62px;
+        padding: 0 22px;
+      }
+
+      .content { padding: 30px 20px 45px; }
+
+      .hero { grid-template-columns: 1fr; }
+
+      .hero-content { padding: 30px; }
+
+      .hero-art { display: none; }
+    }
+
+    @media (max-width: 560px) {
+      .indicadores,
+      .formulario,
+      .quick-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-heading,
+      .panel-header,
+      footer {
+        flex-direction: column;
+        align-items: start;
+      }
+
+      .painel { padding: 19px; }
+
+      .browser-status { display: none; }
+    }
+  </style>
 </head>
 
 <body>
 
-    <header>
-        <div class="topo">
-            <h1>Estoque Simples</h1>
-            <p>Sistema de Controle e Monitoramento de Estoque</p>
+  <!-- MENU LATERAL -->
 
-            <nav>
-                <a href="index.html">Início</a>
-                <a href="produtos.html">Produtos</a>
-                <a href="entrada.html">Entradas</a>
-                <a href="saida.html">Saídas</a>
-                <a href="historico.html">Histórico</a>
-                <a href="graficos.html">Gráficos</a>
-                <a href="financeiro.html" class="atual">
-                    Financeiro
-                </a>
-            </nav>
-        </div>
+  <aside class="sidebar">
+    <a class="brand" href="index.html">
+      <div class="brand-mark">E.</div>
+      <div>
+        <strong>Estoque Simples</strong>
+        <small>Atelier de Gestão</small>
+      </div>
+    </a>
+
+    <nav>
+      <div class="nav-label">Principal</div>
+
+      <a class="nav-link" href="index.html">
+        <span class="nav-icon">⌂</span>
+        Página inicial
+      </a>
+
+      <a class="nav-link" href="dashboard.html">
+        <span class="nav-icon">◫</span>
+        Dashboard Gerencial
+      </a>
+
+      <div class="nav-label">Operações</div>
+
+      <a class="nav-link" href="produtos.html">
+        <span class="nav-icon">▦</span>
+        Produtos
+      </a>
+
+      <a class="nav-link" href="entrada.html">
+        <span class="nav-icon">↘</span>
+        Entradas
+      </a>
+
+      <a class="nav-link" href="saida.html">
+        <span class="nav-icon">↗</span>
+        Saídas
+      </a>
+
+      <a class="nav-link" href="historico.html">
+        <span class="nav-icon">≡</span>
+        Histórico
+      </a>
+
+      <div class="nav-label">Monitoramento</div>
+
+      <a class="nav-link" href="alertas.html">
+        <span class="nav-icon">◇</span>
+        Alertas Inteligentes
+      </a>
+
+      <a class="nav-link" href="inventario.html">
+        <span class="nav-icon">☷</span>
+        Inventário
+      </a>
+
+      <a class="nav-link" href="lotes.html">
+        <span class="nav-icon">▤</span>
+        Lotes
+      </a>
+
+      <a class="nav-link" href="conciliacao.html">
+        <span class="nav-icon">⇄</span>
+        Conciliação
+      </a>
+
+      <div class="nav-label">Inteligência</div>
+
+      <a class="nav-link" href="graficos.html">
+        <span class="nav-icon">▥</span>
+        Gráficos
+      </a>
+
+      <a class="nav-link active" href="financeiro.html">
+        <span class="nav-icon">◈</span>
+        Financeiro
+      </a>
+
+      <a class="nav-link" href="relatorios.html">
+        <span class="nav-icon">▧</span>
+        Relatórios
+      </a>
+
+      <div class="nav-label">Administração</div>
+
+      <a class="nav-link" href="backup.html">
+        <span class="nav-icon">↥</span>
+        Backup e Restauração
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      ESTOQUE SIMPLES<br>
+      Gestão e Inteligência de Estoque
+    </div>
+  </aside>
+
+  <!-- ÁREA PRINCIPAL -->
+
+  <div class="main-area">
+
+    <header class="topbar">
+      <div class="breadcrumb">
+        Estoque Simples &nbsp; / &nbsp;
+        <strong>Controle Financeiro</strong>
+      </div>
+
+      <div class="browser-status">
+        <span class="status-dot"></span>
+        Dados deste navegador
+      </div>
     </header>
 
-    <main>
+    <main class="content">
 
-        <section class="banner">
-            <h2>Controle Financeiro do Estoque</h2>
-            <p>
-                Cadastre preços de custo e venda, consulte
-                o valor das mercadorias armazenadas e acompanhe
-                indicadores financeiros estimados.
-            </p>
-        </section>
+      <!-- TÍTULO -->
 
-        <!-- INDICADORES FINANCEIROS -->
+      <section class="page-heading">
+        <div class="eyebrow">
+          Inteligência · Gestão Financeira
+        </div>
 
-        <section class="indicadores">
+        <h1>Controle Financeiro<span>.</span></h1>
 
-            <div class="indicador">
-                <p>Valor de custo em estoque</p>
-                <strong id="valorEstoque">R$ 0,00</strong>
+        <p>
+          Gerencie os preços de custo e venda,
+          acompanhe o valor financeiro das mercadorias
+          armazenadas e consulte indicadores para
+          apoiar decisões sobre seu estoque.
+        </p>
+      </section>
+
+      <!-- BANNER -->
+
+      <section class="hero">
+        <div class="hero-content">
+          <div class="eyebrow">
+            Central de análise financeira
+          </div>
+
+          <h2>
+            Mais clareza nos números.<br>
+            Mais controle nas decisões.
+          </h2>
+
+          <p>
+            Acompanhe os valores do estoque,
+            consulte margens estimadas e mantenha
+            os preços dos produtos organizados
+            em um único lugar.
+          </p>
+        </div>
+
+        <div class="hero-art" aria-hidden="true">
+          <div class="hero-symbol">R$</div>
+        </div>
+      </section>
+
+      <!-- INDICADORES -->
+
+      <section>
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">01 / Visão financeira</div>
+            <h2>Indicadores do estoque</h2>
+          </div>
+
+          <p>
+            Valores calculados a partir dos registros.
+          </p>
+        </div>
+
+        <div class="indicadores">
+
+          <article class="indicador">
+            <div class="indicador-topo">
+              <span class="indicador-label">
+                Valor de custo em estoque
+              </span>
+              <span class="indicador-icon">R$</span>
             </div>
 
-            <div class="indicador">
-                <p>Valor potencial de venda</p>
-                <strong id="valorVenda">R$ 0,00</strong>
+            <strong id="valorEstoque">R$ 0,00</strong>
+
+            <small>
+              Valor estimado das mercadorias pelo custo.
+            </small>
+          </article>
+
+          <article class="indicador">
+            <div class="indicador-topo">
+              <span class="indicador-label">
+                Valor potencial de venda
+              </span>
+              <span class="indicador-icon">↗</span>
             </div>
 
-            <div class="indicador">
-                <p>Margem bruta estimada</p>
-                <strong id="margemGeral">—</strong>
+            <strong id="valorVenda">R$ 0,00</strong>
+
+            <small>
+              Valor estimado pelo preço de venda.
+            </small>
+          </article>
+
+          <article class="indicador">
+            <div class="indicador-topo">
+              <span class="indicador-label">
+                Margem bruta estimada
+              </span>
+              <span class="indicador-icon">%</span>
             </div>
 
-            <div class="indicador">
-                <p>Custo estimado das saídas</p>
-                <strong id="custoSaidas">R$ 0,00</strong>
+            <strong id="margemGeral">—</strong>
+
+            <small>
+              Indicador estimado com os preços cadastrados.
+            </small>
+          </article>
+
+          <article class="indicador">
+            <div class="indicador-topo">
+              <span class="indicador-label">
+                Custo estimado das saídas
+              </span>
+              <span class="indicador-icon">↗</span>
             </div>
 
-        </section>
+            <strong id="custoSaidas">R$ 0,00</strong>
 
-        <!-- CADASTRO DE PREÇOS -->
+            <small>
+              Estimativa referente às saídas registradas.
+            </small>
+          </article>
 
-        <section class="painel">
+        </div>
+      </section>
 
+      <!-- CADASTRO DE PREÇOS -->
+
+      <section>
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">02 / Precificação</div>
             <h2>Cadastro de preços</h2>
+          </div>
 
-            <p class="descricao">
-                Selecione um produto já cadastrado e informe
-                o custo e o preço de venda por unidade.
-                Os preços ficam vinculados ao código do produto.
-            </p>
+          <p>
+            Atualize os valores dos produtos.
+          </p>
+        </div>
 
-            <form id="formPrecos">
+        <div class="painel">
+          <div class="panel-header">
+            <div>
+              <div class="eyebrow">
+                Configuração financeira
+              </div>
 
-                <div class="formulario">
+              <h3>Definir custo e venda</h3>
 
-                    <div>
-                        <label for="produto">
-                            Produto
-                        </label>
+              <p>
+                Selecione um produto já cadastrado
+                e informe seu custo e preço de venda
+                por unidade. Os preços ficam
+                vinculados ao código do produto.
+              </p>
+            </div>
 
-                        <select id="produto" required>
-                            <option value="">
-                                Selecione um produto
-                            </option>
-                        </select>
-                    </div>
+            <span class="panel-tag">PRECIFICAÇÃO</span>
+          </div>
 
-                    <div>
-                        <label for="custo">
-                            Preço de custo (R$)
-                        </label>
+          <form id="formPrecos">
 
-                        <input
-                            type="number"
-                            id="custo"
-                            min="0"
-                            step="0.01"
-                            placeholder="Ex.: 19.90"
-                            required>
-                    </div>
-
-                    <div>
-                        <label for="venda">
-                            Preço de venda (R$)
-                        </label>
-
-                        <input
-                            type="number"
-                            id="venda"
-                            min="0"
-                            step="0.01"
-                            placeholder="Ex.: 28.90"
-                            required>
-                    </div>
-
-                </div>
-
-                <div class="acoes">
-                    <button type="submit">
-                        Salvar preços
-                    </button>
-
-                    <button
-                        type="button"
-                        class="botao-secundario"
-                        id="limparCampos">
-                        Limpar campos
-                    </button>
-                </div>
-
-                <p id="mensagem" role="status"></p>
-
-            </form>
-        </section>
-
-        <!-- RELATÓRIO FINANCEIRO -->
-
-        <section class="painel">
-
-            <h2>Relatório financeiro dos produtos</h2>
-
-            <p class="descricao">
-                Consulte as quantidades disponíveis, os preços
-                cadastrados e o valor de custo de cada produto.
-            </p>
+            <div class="form-divider">
+              <span>Informações de precificação</span>
+            </div>
 
             <div class="formulario">
-                <div>
-                    <label for="pesquisa">
-                        Pesquisar produto
-                    </label>
 
-                    <input
-                        type="search"
-                        id="pesquisa"
-                        placeholder="Nome ou código">
-                </div>
+              <div class="field">
+                <label for="produto">
+                  Produto
+                </label>
 
-                <div>
-                    <label for="filtroSituacao">
-                        Situação
-                    </label>
+                <select id="produto" required>
+                  <option value="">
+                    Selecione um produto
+                  </option>
+                </select>
+              </div>
 
-                    <select id="filtroSituacao">
-                        <option value="ativos">
-                            Produtos ativos
-                        </option>
+              <div class="field">
+                <label for="custo">
+                  Preço de custo (R$)
+                </label>
 
-                        <option value="todos">
-                            Todos os produtos
-                        </option>
+                <input
+                  type="number"
+                  id="custo"
+                  min="0"
+                  step="0.01"
+                  placeholder="Ex.: 19.90"
+                  required
+                >
+              </div>
 
-                        <option value="inativos">
-                            Produtos inativos
-                        </option>
-                    </select>
-                </div>
-            </div>
+              <div class="field">
+                <label for="venda">
+                  Preço de venda (R$)
+                </label>
 
-            <div class="tabela-container"
-                 style="margin-top: 20px;">
-
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Produto</th>
-                            <th>Código</th>
-                            <th>Estoque</th>
-                            <th>Custo unitário</th>
-                            <th>Venda unitária</th>
-                            <th>Valor em estoque</th>
-                            <th>Margem bruta</th>
-                        </tr>
-                    </thead>
-
-                    <tbody id="tabelaFinanceira">
-                    </tbody>
-                </table>
+                <input
+                  type="number"
+                  id="venda"
+                  min="0"
+                  step="0.01"
+                  placeholder="Ex.: 28.90"
+                  required
+                >
+              </div>
 
             </div>
 
             <div class="acoes">
-                <button
-                    type="button"
-                    id="exportarCSV">
-                    Exportar relatório CSV
-                </button>
+              <button type="submit">
+                ✓ &nbsp; Salvar preços
+              </button>
+
+              <button
+                type="button"
+                class="botao-secundario"
+                id="limparCampos"
+              >
+                ↺ &nbsp; Limpar campos
+              </button>
             </div>
 
-        </section>
+            <p
+              id="mensagem"
+              role="status"
+              aria-live="polite"
+            ></p>
 
-        <div class="aviso" id="avisoFinanceiro">
-            Os indicadores são estimativas calculadas
-            com os preços cadastrados e as quantidades
-            registradas no sistema.
+          </form>
+        </div>
+      </section>
+
+      <!-- RELATÓRIO FINANCEIRO -->
+
+      <section>
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">03 / Análise detalhada</div>
+            <h2>Relatório financeiro</h2>
+          </div>
+
+          <p>
+            Consulta de preços e valores por produto.
+          </p>
         </div>
 
+        <div class="painel">
+          <div class="panel-header">
+            <div>
+              <div class="eyebrow">
+                Demonstrativo dos produtos
+              </div>
+
+              <h3>Posição financeira do estoque</h3>
+
+              <p>
+                Consulte as quantidades disponíveis,
+                os preços cadastrados, o valor de
+                custo em estoque e as margens
+                estimadas de cada produto.
+              </p>
+            </div>
+
+            <span class="panel-tag">RELATÓRIO</span>
+          </div>
+
+          <!-- FILTROS -->
+
+          <div class="filtros">
+            <div class="form-divider">
+              <span>Filtros de consulta</span>
+            </div>
+
+            <div class="formulario">
+
+              <div class="field">
+                <label for="pesquisa">
+                  Pesquisar produto
+                </label>
+
+                <input
+                  type="search"
+                  id="pesquisa"
+                  placeholder="Digite o nome ou código"
+                >
+              </div>
+
+              <div class="field">
+                <label for="filtroSituacao">
+                  Situação do produto
+                </label>
+
+                <select id="filtroSituacao">
+                  <option value="ativos">
+                    Produtos ativos
+                  </option>
+
+                  <option value="todos">
+                    Todos os produtos
+                  </option>
+
+                  <option value="inativos">
+                    Produtos inativos
+                  </option>
+                </select>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- TABELA -->
+
+          <div class="tabela-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Produto</th>
+                  <th>Código</th>
+                  <th>Estoque</th>
+                  <th>Custo unitário</th>
+                  <th>Venda unitária</th>
+                  <th>Valor em estoque</th>
+                  <th>Margem bruta</th>
+                </tr>
+              </thead>
+
+              <tbody id="tabelaFinanceira"></tbody>
+            </table>
+          </div>
+
+          <div class="acoes">
+            <button
+              type="button"
+              id="exportarCSV"
+            >
+              ↓ &nbsp; Exportar relatório CSV
+            </button>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- AVISO FINANCEIRO -->
+
+      <div class="aviso">
+        <span class="aviso-icon" aria-hidden="true">ⓘ</span>
+
+        <div id="avisoFinanceiro">
+          Os indicadores são estimativas calculadas
+          com os preços cadastrados e as quantidades
+          registradas no sistema.
+        </div>
+      </div>
+
+      <!-- ACESSOS RÁPIDOS -->
+
+      <section>
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">04 / Navegação</div>
+            <h2>Continuar no sistema</h2>
+          </div>
+
+          <p>
+            Explore outros módulos de gestão.
+          </p>
+        </div>
+
+        <div class="quick-grid">
+
+          <a href="dashboard.html" class="quick-link">
+            <span>Dashboard Gerencial</span>
+            <span>↗</span>
+          </a>
+
+          <a href="produtos.html" class="quick-link">
+            <span>Cadastro de produtos</span>
+            <span>↗</span>
+          </a>
+
+          <a href="relatorios.html" class="quick-link">
+            <span>Relatórios Gerenciais</span>
+            <span>↗</span>
+          </a>
+
+        </div>
+      </section>
+
+      <footer>
+        <span>
+          Estoque Simples · Gestão e Inteligência de Estoque
+        </span>
+
+        <span>
+          Controle Financeiro
+        </span>
+      </footer>
+
     </main>
+  </div>
 
-    <footer>
-        Estoque Simples |
-        Sistema de Controle e Monitoramento de Estoque
-    </footer>
+  <!-- JAVASCRIPT ORIGINAL -->
 
-    <script src="financeiro.js"></script>
+  <script src="financeiro.js"></script>
 
 </body>
 </html>
