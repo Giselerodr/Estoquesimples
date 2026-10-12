@@ -1,0 +1,443 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatórios Gerenciais | Estoque Simples</title>
+
+    <style>
+        :root {
+            --azul: #BFDCFF;
+            --marrom: #211E1B;
+            --bege: #F5F5DC;
+            --branco: #FFFFFF;
+            --marinho: #0C0A29;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: var(--bege);
+            color: var(--marrom);
+        }
+
+        header {
+            background: var(--branco);
+            border-bottom: 2px solid var(--azul);
+            padding: 22px 7%;
+        }
+
+        header h1 {
+            color: var(--marinho);
+            margin: 0 0 7px;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 18px;
+        }
+
+        nav a {
+            color: var(--marinho);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        main {
+            max-width: 1150px;
+            margin: auto;
+            padding: 30px 20px;
+        }
+
+        .apresentacao {
+            background: var(--marinho);
+            color: white;
+            padding: 30px;
+            border-radius: 18px;
+            margin-bottom: 22px;
+        }
+
+        .apresentacao h2 {
+            margin-top: 0;
+        }
+
+        .apresentacao p {
+            line-height: 1.7;
+        }
+
+        .acoes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        button {
+            border: none;
+            background: var(--marinho);
+            color: white;
+            border-radius: 9px;
+            padding: 13px 18px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: var(--marrom);
+        }
+
+        .documento {
+            background: white;
+            padding: 35px;
+            border: 1px solid var(--azul);
+            border-radius: 16px;
+        }
+
+        .cabecalho-relatorio {
+            border-bottom: 3px solid var(--marinho);
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+        }
+
+        .cabecalho-relatorio h2 {
+            margin: 0 0 8px;
+            color: var(--marinho);
+        }
+
+        .cabecalho-relatorio p {
+            margin: 5px 0;
+            font-size: 13px;
+        }
+
+        .secao {
+            margin-top: 30px;
+            break-inside: avoid;
+        }
+
+        .secao h3 {
+            background: var(--azul);
+            color: var(--marinho);
+            padding: 12px;
+            border-radius: 7px;
+            font-size: 16px;
+        }
+
+        .indicadores {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .indicador {
+            border: 1px solid #dddddd;
+            border-radius: 9px;
+            padding: 15px;
+        }
+
+        .indicador span {
+            display: block;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+
+        .indicador strong {
+            font-size: 21px;
+            color: var(--marinho);
+            overflow-wrap: anywhere;
+        }
+
+        .tabela-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+        }
+
+        th, td {
+            padding: 10px;
+            border: 1px solid #dddddd;
+            text-align: left;
+            font-size: 11px;
+        }
+
+        th {
+            background: #e8f2ff;
+            color: var(--marinho);
+        }
+
+        .observacao {
+            background: #f5f7fb;
+            padding: 18px;
+            border-radius: 9px;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .rodape-relatorio {
+            margin-top: 35px;
+            padding-top: 15px;
+            border-top: 1px solid #cccccc;
+            text-align: center;
+            font-size: 11px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            font-size: 12px;
+        }
+
+        @media (max-width: 700px) {
+            .documento {
+                padding: 18px;
+            }
+
+            .indicadores {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media print {
+            @page {
+                size: A4;
+                margin: 12mm;
+            }
+
+            body {
+                background: white;
+                color: black;
+            }
+
+            header,
+            .apresentacao,
+            .acoes,
+            footer {
+                display: none !important;
+            }
+
+            main {
+                max-width: none;
+                padding: 0;
+            }
+
+            .documento {
+                border: none;
+                border-radius: 0;
+                padding: 0;
+            }
+
+            .tabela-container {
+                overflow: visible;
+            }
+
+            table {
+                width: 100%;
+            }
+
+            thead {
+                display: table-header-group;
+            }
+
+            tr {
+                break-inside: avoid;
+            }
+
+            .secao h3,
+            th {
+                print-color-adjust: exact;
+                -webkit-print-color-adjust: exact;
+            }
+
+            .indicadores {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Estoque Simples</h1>
+        <p>Relatórios Gerenciais</p>
+
+        <nav>
+            <a href="index.html">Início</a>
+            <a href="produtos.html">Produtos</a>
+            <a href="entrada.html">Entradas</a>
+            <a href="saida.html">Saídas</a>
+            <a href="historico.html">Histórico</a>
+            <a href="graficos.html">Gráficos</a>
+            <a href="financeiro.html">Financeiro</a>
+            <a href="alertas.html">Alertas</a>
+            <a href="dashboard.html">Dashboard</a>
+            <a href="backup.html">Backup</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="apresentacao">
+            <h2>Relatório Gerencial do Estoque</h2>
+            <p>
+                Gere um documento com a situação atual
+                dos produtos, movimentações e indicadores
+                financeiros do estabelecimento.
+            </p>
+        </section>
+
+        <div class="acoes">
+            <button type="button" id="atualizarRelatorio">
+                Atualizar relatório
+            </button>
+
+            <button type="button" id="imprimirRelatorio">
+                Imprimir / Salvar em PDF
+            </button>
+        </div>
+
+        <article class="documento" id="documentoRelatorio">
+            <div class="cabecalho-relatorio">
+                <h2>RELATÓRIO GERENCIAL DE ESTOQUE</h2>
+                <p><strong>Sistema:</strong> Estoque Simples</p>
+                <p>
+                    <strong>Emissão:</strong>
+                    <span id="dataEmissao">-</span>
+                </p>
+                <p>
+                    <strong>Tipo:</strong>
+                    Relatório consolidado de estoque
+                </p>
+            </div>
+
+            <section class="secao">
+                <h3>1. Indicadores gerais</h3>
+
+                <div class="indicadores">
+                    <div class="indicador">
+                        <span>Produtos ativos</span>
+                        <strong id="totalProdutos">0</strong>
+                    </div>
+
+                    <div class="indicador">
+                        <span>Unidades disponíveis</span>
+                        <strong id="totalUnidades">0</strong>
+                    </div>
+
+                    <div class="indicador">
+                        <span>Produtos com estoque baixo</span>
+                        <strong id="totalBaixo">0</strong>
+                    </div>
+
+                    <div class="indicador">
+                        <span>Produtos vencidos</span>
+                        <strong id="totalVencidos">0</strong>
+                    </div>
+
+                    <div class="indicador">
+                        <span>Próximos do vencimento</span>
+                        <strong id="totalProximos">0</strong>
+                    </div>
+
+                    <div class="indicador">
+                        <span>Produtos com algum alerta</span>
+                        <strong id="totalAlertas">0</strong>
+                    </div>
+                </div>
+            </section>
+
+            <section class="secao">
+                <h3>2. Indicadores financeiros</h3>
+
+                <div class="indicadores">
+                    <div class="indicador">
+                        <span>Valor de custo em estoque</span>
+                        <strong id="valorCusto">R$ 0,00</strong>
+                    </div>
+
+                    <div class="indicador">
+                        <span>Valor potencial de venda</span>
+                        <strong id="valorVenda">R$ 0,00</strong>
+                    </div>
+
+                    <div class="indicador">
+                        <span>Diferença potencial</span>
+                        <strong id="diferencaPotencial">R$ 0,00</strong>
+                    </div>
+                </div>
+            </section>
+
+            <section class="secao">
+                <h3>3. Movimentações registradas</h3>
+
+                <div class="indicadores">
+                    <div class="indicador">
+                        <span>Registros de entrada</span>
+                        <strong id="totalEntradas">0</strong>
+                    </div>
+
+                    <div class="indicador">
+                        <span>Registros de saída</span>
+                        <strong id="totalSaidas">0</strong>
+                    </div>
+
+                    <div class="indicador">
+                        <span>Unidades movimentadas</span>
+                        <strong id="unidadesMovimentadas">0</strong>
+                    </div>
+                </div>
+            </section>
+
+            <section class="secao">
+                <h3>4. Situação detalhada dos produtos</h3>
+
+                <div class="tabela-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Código</th>
+                                <th>Estoque</th>
+                                <th>Mínimo</th>
+                                <th>Validade</th>
+                                <th>Situação</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="tabelaProdutos"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="secao">
+                <h3>5. Análise e observações</h3>
+
+                <div class="observacao" id="observacoes">
+                    Aguardando análise dos registros.
+                </div>
+            </section>
+
+            <div class="rodape-relatorio">
+                Documento gerado pelo Estoque Simples.
+                Os dados representam os registros disponíveis
+                no navegador no momento da emissão.
+            </div>
+        </article>
+    </main>
+
+    <footer>
+        Estoque Simples | Sistema de Controle e Monitoramento
+    </footer>
+
+    <script src="relatorios.js"></script>
+</body>
+</html>
