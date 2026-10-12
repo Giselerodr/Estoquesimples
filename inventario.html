@@ -1,0 +1,263 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Inventário Físico | Estoque Simples</title>
+<style>
+:root {
+    --azul: #BFDCFF;
+    --marrom: #211E1B;
+    --bege: #F5F5DC;
+    --marinho: #0C0A29;
+}
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    background: var(--bege);
+    color: var(--marrom);
+    font-family: Arial, sans-serif;
+}
+header {
+    background: white;
+    padding: 22px 7%;
+    border-bottom: 2px solid var(--azul);
+}
+header h1 { color: var(--marinho); margin: 0 0 8px; }
+nav { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 16px; }
+nav a {
+    color: var(--marinho);
+    font-size: 13px;
+    text-decoration: none;
+    font-weight: bold;
+}
+main { max-width: 1200px; margin: auto; padding: 30px 20px; }
+.banner {
+    background: var(--marinho);
+    color: white;
+    padding: 30px;
+    border-radius: 18px;
+    margin-bottom: 20px;
+}
+.banner h2 { margin-top: 0; }
+.painel {
+    background: white;
+    border: 1px solid var(--azul);
+    border-radius: 15px;
+    padding: 23px;
+    margin-bottom: 20px;
+}
+.painel h2 { margin-top: 0; color: var(--marinho); }
+.painel p { font-size: 14px; line-height: 1.7; }
+.indicadores {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+.indicador {
+    background: white;
+    padding: 20px;
+    border: 1px solid var(--azul);
+    border-radius: 12px;
+}
+.indicador span { display: block; font-size: 12px; margin-bottom: 12px; }
+.indicador strong { font-size: 27px; color: var(--marinho); }
+.acoes { display: flex; gap: 10px; flex-wrap: wrap; margin: 18px 0; }
+button {
+    background: var(--marinho);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 17px;
+    cursor: pointer;
+}
+button:disabled { opacity: .5; cursor: not-allowed; }
+input, textarea {
+    padding: 10px;
+    border: 1px solid #cccccc;
+    border-radius: 8px;
+    font-family: inherit;
+}
+input[type="search"] { width: 100%; max-width: 420px; }
+input[type="number"] { width: 110px; }
+textarea { width: 100%; min-height: 75px; resize: vertical; }
+label { font-size: 13px; font-weight: bold; }
+.tabela-container { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; min-width: 700px; }
+th, td {
+    text-align: left;
+    border-bottom: 1px solid #dddddd;
+    padding: 12px 9px;
+    font-size: 13px;
+}
+th { background: var(--azul); color: var(--marinho); }
+.falta { color: #a31d1d; font-weight: bold; }
+.sobra { color: #16642c; font-weight: bold; }
+.igual { color: #666666; }
+.aviso {
+    background: var(--azul);
+    border-radius: 12px;
+    padding: 18px;
+    font-size: 13px;
+    line-height: 1.7;
+}
+#mensagem { white-space: pre-line; font-weight: bold; }
+footer { text-align: center; padding: 25px; font-size: 12px; }
+@media(max-width: 750px) {
+    .indicadores { grid-template-columns: repeat(2, 1fr); }
+}
+@media(max-width: 450px) {
+    .indicadores { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<header>
+    <h1>Estoque Simples</h1>
+    <p>Inventário Físico e Conferência de Estoque</p>
+    <nav>
+        <a href="index.html">Início</a>
+        <a href="produtos.html">Produtos</a>
+        <a href="entrada.html">Entradas</a>
+        <a href="saida.html">Saídas</a>
+        <a href="historico.html">Histórico</a>
+        <a href="alertas.html">Alertas</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="backup.html">Backup</a>
+    </nav>
+</header>
+
+<main>
+    <section class="banner">
+        <h2>Conferência de Estoque</h2>
+        <p>
+            Registre as quantidades encontradas fisicamente,
+            identifique divergências e corrija os saldos
+            após a conferência.
+        </p>
+    </section>
+
+    <section class="indicadores">
+        <div class="indicador">
+            <span>Produtos ativos</span>
+            <strong id="totalProdutos">0</strong>
+        </div>
+        <div class="indicador">
+            <span>Produtos conferidos</span>
+            <strong id="totalConferidos">0</strong>
+        </div>
+        <div class="indicador">
+            <span>Com divergência</span>
+            <strong id="totalDivergencias">0</strong>
+        </div>
+        <div class="indicador">
+            <span>Sem divergência</span>
+            <strong id="totalCorretos">0</strong>
+        </div>
+    </section>
+
+    <section class="painel">
+        <h2>1. Realizar contagem física</h2>
+        <p>
+            Digite a quantidade encontrada para cada produto
+            que deseja conferir. Deixe o campo vazio para
+            não incluir o produto no inventário.
+        </p>
+
+        <input type="search" id="pesquisa"
+               placeholder="Pesquisar produto ou código">
+
+        <div class="acoes">
+            <button type="button" id="atualizarLista">
+                Recarregar produtos
+            </button>
+            <button type="button" id="limparContagem">
+                Limpar contagem
+            </button>
+        </div>
+
+        <div class="tabela-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Código</th>
+                        <th>Saldo no sistema</th>
+                        <th>Contagem física</th>
+                        <th>Diferença</th>
+                        <th>Situação</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelaInventario"></tbody>
+            </table>
+        </div>
+    </section>
+
+    <section class="painel">
+        <h2>2. Conferir e confirmar ajustes</h2>
+
+        <label for="responsavel">Responsável pela conferência</label>
+        <p>
+            <input id="responsavel" type="text"
+                   maxlength="100"
+                   placeholder="Nome do responsável">
+        </p>
+
+        <label for="justificativa">Justificativa das divergências</label>
+        <p>
+            <textarea id="justificativa"
+                placeholder="Ex.: contagem física, avaria ou erro de registro"></textarea>
+        </p>
+
+        <div class="acoes">
+            <button type="button" id="confirmarAjustes">
+                Confirmar inventário
+            </button>
+            <button type="button" id="exportarCSV">
+                Exportar conferência CSV
+            </button>
+        </div>
+
+        <p id="mensagem" role="status"></p>
+    </section>
+
+    <section class="painel">
+        <h2>3. Histórico de inventários</h2>
+        <p>
+            Consulte as últimas conferências realizadas,
+            incluindo o saldo anterior e o saldo confirmado.
+        </p>
+
+        <div class="tabela-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Produto</th>
+                        <th>Anterior</th>
+                        <th>Conferido</th>
+                        <th>Diferença</th>
+                        <th>Responsável</th>
+                        <th>Justificativa</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelaHistorico"></tbody>
+            </table>
+        </div>
+    </section>
+
+    <div class="aviso">
+        <strong>Atenção:</strong>
+        a confirmação altera o saldo cadastrado do produto.
+        Faça um backup antes de realizar ajustes.
+        Os registros do inventário são armazenados
+        neste navegador, assim como os demais dados do sistema.
+    </div>
+</main>
+
+<footer>Estoque Simples | Controle e Monitoramento de Estoque</footer>
+<script src="inventario.js"></script>
+</body>
+</html>
