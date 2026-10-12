@@ -1,793 +1,1347 @@
 
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Estoque Simples - Sistema de controle, monitoramento e gestão de estoque.">
+<title>Estoque Simples | Central de Gestão</title>
 
-    <title>Estoque Simples | Painel Inicial</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <style>
-        :root {
-            --azul-claro: #BFDCFF;
-            --marrom-escuro: #211E1B;
-            --bege: #F5F5DC;
-            --branco: #FFFFFF;
-            --azul-marinho: #0C0A29;
-            --preto: #000000;
-        }
+<style>
+:root {
+    --azul-claro: #BFDCFF;
+    --azul-marinho: #0C0A29;
+    --marrom: #211E1B;
+    --bege: #F5F5DC;
+    --branco: #FFFFFF;
+    --fundo: #F6F8FC;
+    --cinza: #657084;
+    --borda: #E3E8F1;
+}
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+* {
+    box-sizing: border-box;
+}
 
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background-color: var(--bege);
-            color: var(--marrom-escuro);
-            min-height: 100vh;
-        }
+html {
+    scroll-behavior: smooth;
+}
 
-        /* CABEÇALHO */
+body {
+    margin: 0;
+    font-family: 'DM Sans', Arial, sans-serif;
+    color: var(--azul-marinho);
+    background: var(--fundo);
+}
 
-        header {
-            background-color: var(--branco);
-            padding: 20px 7%;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 2px solid var(--azul-claro);
-        }
+h1, h2, h3 {
+    font-family: 'Manrope', Arial, sans-serif;
+}
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 13px;
-        }
+a {
+    text-decoration: none;
+    color: inherit;
+}
 
-        .logo-icon {
-            width: 48px;
-            height: 48px;
-            background-color: var(--azul-marinho);
-            color: var(--branco);
-            border-radius: 13px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 25px;
-            font-weight: bold;
-        }
+button {
+    font: inherit;
+}
 
-        .logo h1 {
-            color: var(--azul-marinho);
-            font-size: 21px;
-        }
+a:focus-visible {
+    outline: 3px solid #558CE0;
+    outline-offset: 4px;
+}
 
-        .logo p {
-            font-size: 12px;
-            color: var(--marrom-escuro);
-            margin-top: 5px;
-        }
+.container {
+    width: min(1200px, 92%);
+    margin: auto;
+}
 
-        .etiqueta-topo {
-            background-color: var(--azul-claro);
-            color: var(--azul-marinho);
-            padding: 10px 16px;
-            border-radius: 20px;
-            font-size: 11px;
-            font-weight: bold;
-            letter-spacing: 1px;
-        }
+/* CABEÇALHO */
 
-        /* CONTEÚDO PRINCIPAL */
+header {
+    background: var(--branco);
+    border-bottom: 1px solid var(--borda);
+}
 
-        main {
-            max-width: 1180px;
-            margin: 0 auto;
-            padding: 38px 25px;
-        }
+.cabecalho {
+    min-height: 85px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
 
-        /* BANNER DE APRESENTAÇÃO */
+.marca {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
 
-        .banner {
-            background-color: var(--azul-marinho);
-            color: var(--branco);
-            padding: 42px;
-            border-radius: 22px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 25px;
-            overflow: hidden;
-        }
+.marca-icone {
+    background: var(--azul-marinho);
+    color: white;
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: grid;
+    place-items: center;
+    font-family: Manrope, sans-serif;
+    font-weight: 800;
+    font-size: 23px;
+    box-shadow: 0 5px 0 var(--azul-claro);
+}
 
-        .banner-texto {
-            max-width: 650px;
-        }
+.marca strong {
+    display: block;
+    font-family: Manrope, sans-serif;
+    font-size: 19px;
+    letter-spacing: -.7px;
+}
 
-        .banner-legenda {
-            color: var(--azul-claro);
-            font-size: 12px;
-            font-weight: bold;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            margin-bottom: 17px;
-        }
+.marca small {
+    display: block;
+    margin-top: 3px;
+    color: var(--cinza);
+    font-size: 11px;
+}
 
-        .banner h2 {
-            font-size: 35px;
-            line-height: 1.25;
-            margin-bottom: 16px;
-        }
+.menu {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
 
-        .banner p {
-            font-size: 15px;
-            line-height: 1.8;
-            color: var(--branco);
-        }
+.menu a {
+    padding: 12px 17px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 700;
+}
 
-        .banner-ilustracao {
-            width: 175px;
-            min-width: 145px;
-        }
+.menu a:hover {
+    background: #EFF4FC;
+}
 
-        /* TÍTULOS DAS SEÇÕES */
+.menu .destaque {
+    background: var(--azul-marinho);
+    color: white;
+}
 
-        .secao-titulo {
-            margin: 38px 0 20px;
-        }
+.menu .destaque:hover {
+    background: #29264E;
+}
 
-        .secao-titulo h2 {
-            color: var(--azul-marinho);
-            font-size: 22px;
-            margin-bottom: 8px;
-        }
+/* BANNER PRINCIPAL */
 
-        .secao-titulo p {
-            font-size: 14px;
-            color: var(--marrom-escuro);
-        }
+.hero {
+    background: var(--azul-marinho);
+    color: white;
+    border-radius: 26px;
+    margin-top: 32px;
+    min-height: 380px;
+    display: grid;
+    grid-template-columns: 1.1fr .9fr;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+}
 
-        /* CARTÕES DE RESUMO */
+.hero::before {
+    content: "";
+    position: absolute;
+    width: 430px;
+    height: 430px;
+    border: 1px solid #FFFFFF20;
+    border-radius: 50%;
+    right: -120px;
+    top: -170px;
+}
 
-        .resumo {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
+.hero-texto {
+    padding: 54px;
+    position: relative;
+    z-index: 1;
+}
 
-        .resumo-card {
-            background-color: var(--branco);
-            padding: 25px;
-            border-radius: 17px;
-            border: 1px solid var(--azul-claro);
-            box-shadow: 0 4px 12px rgba(12, 10, 41, 0.04);
-        }
+.sobretitulo {
+    font-size: 11px;
+    letter-spacing: 2px;
+    font-weight: 800;
+    color: var(--azul-claro);
+    text-transform: uppercase;
+}
 
-        .resumo-icone {
-            width: 42px;
-            height: 42px;
-            background-color: var(--azul-claro);
-            color: var(--azul-marinho);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 21px;
-            margin-bottom: 18px;
-        }
+.hero h1 {
+    font-size: clamp(31px, 4vw, 49px);
+    line-height: 1.17;
+    letter-spacing: -1.8px;
+    margin: 19px 0;
+}
 
-        .resumo-card .rotulo {
-            color: var(--marrom-escuro);
-            font-size: 13px;
-            margin-bottom: 12px;
-        }
+.hero h1 span {
+    color: var(--azul-claro);
+}
 
-        .resumo-card .numero {
-            color: var(--azul-marinho);
-            font-size: 32px;
-            font-weight: bold;
-        }
+.hero p {
+    color: #E0E6F6;
+    font-size: 15px;
+    line-height: 1.85;
+    max-width: 520px;
+}
 
-        .resumo-card .detalhe {
-            color: var(--marrom-escuro);
-            font-size: 12px;
-            margin-top: 9px;
-        }
+.botoes-hero {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 28px;
+}
 
-        /* CARTÕES DE ACESSO */
+.botao {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 19px;
+    border-radius: 11px;
+    font-size: 12px;
+    font-weight: 800;
+    transition: .2s;
+}
 
-        .atalhos {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 20px;
-        }
+.botao:hover {
+    transform: translateY(-3px);
+}
 
-        .atalho {
-            background-color: var(--branco);
-            border: 1px solid var(--azul-claro);
-            border-radius: 18px;
-            padding: 26px;
-            min-height: 235px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            text-decoration: none;
-            color: var(--marrom-escuro);
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
+.botao-claro {
+    background: var(--azul-claro);
+    color: var(--azul-marinho);
+}
 
-        .atalho:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(12, 10, 41, 0.10);
-            border-color: var(--azul-marinho);
-        }
+.botao-borda {
+    color: white;
+    border: 1px solid #FFFFFF65;
+}
 
-        .atalho-icone {
-            width: 52px;
-            height: 52px;
-            background-color: var(--azul-claro);
-            color: var(--azul-marinho);
-            border-radius: 15px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 25px;
-            font-weight: bold;
-            margin-bottom: 20px;
-        }
+.hero-arte {
+    padding: 25px;
+    position: relative;
+}
 
-        .atalho h3 {
-            font-size: 17px;
-            color: var(--azul-marinho);
-            margin-bottom: 10px;
-        }
+.hero-arte svg {
+    display: block;
+    width: 100%;
+    max-width: 440px;
+    margin: auto;
+    filter: drop-shadow(0 18px 25px #00000025);
+}
 
-        .atalho p {
-            font-size: 13px;
-            line-height: 1.7;
-            margin-bottom: 22px;
-        }
+/* NAVEGAÇÃO RÁPIDA */
 
-        .atalho .acessar {
-            margin-top: auto;
-            background-color: var(--azul-marinho);
-            color: var(--branco);
-            padding: 11px 15px;
-            border-radius: 9px;
-            font-size: 12px;
-            font-weight: bold;
-            transition: background-color 0.2s;
-        }
+.navegacao {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    flex-wrap: wrap;
+    margin: 25px 0 42px;
+}
 
-        .atalho:hover .acessar {
-            background-color: var(--marrom-escuro);
-        }
+.navegacao strong {
+    color: var(--cinza);
+    font-size: 12px;
+    margin-right: 8px;
+}
 
-        /* AVISO INFORMATIVO */
+.navegacao a {
+    background: white;
+    border: 1px solid var(--borda);
+    padding: 11px 15px;
+    border-radius: 25px;
+    font-size: 12px;
+    font-weight: 700;
+}
 
-        .aviso {
-            margin-top: 30px;
-            padding: 20px 23px;
-            background-color: var(--azul-claro);
-            color: var(--azul-marinho);
-            border-left: 5px solid var(--azul-marinho);
-            border-radius: 10px;
-            font-size: 13px;
-            line-height: 1.8;
-        }
+.navegacao a:hover {
+    background: var(--azul-claro);
+}
 
-        /* RODAPÉ */
+/* TÍTULOS */
 
-        footer {
-            text-align: center;
-            padding: 25px 15px;
-            color: var(--marrom-escuro);
-            font-size: 12px;
-        }
+.titulo-secao {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 15px;
+    margin-bottom: 20px;
+}
 
-        /* ADAPTAÇÃO PARA CELULARES */
+.titulo-secao small {
+    color: #5775A0;
+    font-size: 10px;
+    letter-spacing: 2px;
+    font-weight: 800;
+}
 
-        @media (max-width: 750px) {
-            header {
-                padding: 17px 5%;
-            }
+.titulo-secao h2 {
+    margin: 7px 0;
+    font-size: 25px;
+    letter-spacing: -.8px;
+}
 
-            .etiqueta-topo {
-                display: none;
-            }
+.titulo-secao p {
+    margin: 0;
+    color: var(--cinza);
+    font-size: 13px;
+    line-height: 1.7;
+}
 
-            main {
-                padding: 25px 17px;
-            }
+.contagem {
+    color: var(--cinza);
+    font-size: 12px;
+    white-space: nowrap;
+}
 
-            .banner {
-                padding: 29px 23px;
-            }
+/* INDICADORES */
 
-            .banner h2 {
-                font-size: 27px;
-            }
+.indicadores {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
 
-            .banner-ilustracao {
-                display: none;
-            }
+.indicador {
+    background: white;
+    border: 1px solid var(--borda);
+    border-radius: 19px;
+    padding: 25px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
 
-            .resumo,
-            .atalhos {
-                grid-template-columns: 1fr;
-            }
+.indicador-icone {
+    width: 56px;
+    height: 56px;
+    background: #E8F2FF;
+    color: #284B85;
+    border-radius: 15px;
+    display: grid;
+    place-items: center;
+    font-size: 25px;
+    flex-shrink: 0;
+}
 
-            .atalho {
-                min-height: 210px;
-            }
-        }
-    </style>
+.indicador small {
+    color: var(--cinza);
+    font-size: 12px;
+}
+
+.indicador strong {
+    display: block;
+    font-family: Manrope, sans-serif;
+    font-size: 31px;
+    margin: 4px 0;
+}
+
+.indicador p {
+    color: #8490A0;
+    font-size: 11px;
+    margin: 0;
+}
+
+/* MÓDULOS */
+
+.secao-modulos {
+    margin-top: 52px;
+    scroll-margin-top: 20px;
+}
+
+.grade {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 17px;
+}
+
+.modulo {
+    background: white;
+    border: 1px solid var(--borda);
+    border-radius: 19px;
+    padding: 25px;
+    min-height: 237px;
+    display: flex;
+    flex-direction: column;
+    transition: .25s;
+}
+
+.modulo:hover {
+    transform: translateY(-5px);
+    border-color: #A7C9F4;
+    box-shadow: 0 15px 30px #0C0A2912;
+}
+
+.modulo-topo {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.icone-modulo {
+    width: 51px;
+    height: 51px;
+    display: grid;
+    place-items: center;
+    border-radius: 14px;
+    background: #EAF3FF;
+    color: #244675;
+}
+
+.icone-modulo svg {
+    width: 26px;
+    height: 26px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 1.7;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.etiqueta {
+    font-size: 10px;
+    font-weight: 700;
+    background: #F3F5F9;
+    color: #788294;
+    border-radius: 20px;
+    padding: 7px 10px;
+}
+
+.modulo h3 {
+    margin: 0 0 9px;
+    font-size: 16px;
+    letter-spacing: -.3px;
+}
+
+.modulo p {
+    margin: 0 0 22px;
+    font-size: 12.5px;
+    color: #626D80;
+    line-height: 1.75;
+}
+
+.modulo-abrir {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #244B86;
+    font-weight: 800;
+    font-size: 12px;
+}
+
+.modulo-abrir span {
+    font-size: 20px;
+}
+
+/* DESTAQUE INFERIOR */
+
+.aviso {
+    margin: 55px 0;
+    background: #E9F2FC;
+    border: 1px solid #D5E5F7;
+    border-radius: 22px;
+    padding: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 25px;
+}
+
+.aviso small {
+    color: #54749B;
+    letter-spacing: 2px;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.aviso h2 {
+    font-size: 21px;
+    margin: 10px 0;
+}
+
+.aviso p {
+    font-size: 13px;
+    line-height: 1.8;
+    color: #43536C;
+    margin: 0;
+    max-width: 700px;
+}
+
+.aviso a {
+    background: var(--azul-marinho);
+    color: white;
+    border-radius: 11px;
+    padding: 14px 19px;
+    font-size: 12px;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+/* RODAPÉ */
+
+footer {
+    background: white;
+    border-top: 1px solid var(--borda);
+    padding: 29px 0;
+    font-size: 12px;
+    color: var(--cinza);
+}
+
+.rodape {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.rodape strong {
+    color: var(--azul-marinho);
+}
+
+/* CELULARES */
+
+@media (max-width: 950px) {
+    .grade {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .hero-texto {
+        padding: 35px;
+    }
+}
+
+@media (max-width: 700px) {
+    .cabecalho {
+        min-height: 76px;
+    }
+
+    .marca strong {
+        font-size: 16px;
+    }
+
+    .marca small {
+        font-size: 10px;
+    }
+
+    .menu a:not(.destaque) {
+        display: none;
+    }
+
+    .menu .destaque {
+        font-size: 10px;
+        padding: 10px;
+    }
+
+    .hero {
+        grid-template-columns: 1fr;
+        margin-top: 18px;
+    }
+
+    .hero-texto {
+        padding: 35px 25px 15px;
+    }
+
+    .hero h1 {
+        font-size: 33px;
+    }
+
+    .hero-arte {
+        padding: 0 25px 25px;
+        max-height: 250px;
+    }
+
+    .hero-arte svg {
+        max-width: 290px;
+    }
+
+    .indicadores,
+    .grade {
+        grid-template-columns: 1fr;
+    }
+
+    .indicador {
+        padding: 20px;
+    }
+
+    .titulo-secao h2 {
+        font-size: 22px;
+    }
+
+    .contagem {
+        display: none;
+    }
+
+    .navegacao strong {
+        width: 100%;
+    }
+
+    .aviso {
+        flex-direction: column;
+        align-items: start;
+        padding: 25px;
+    }
+
+    .rodape {
+        flex-direction: column;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+
+    .modulo,
+    .botao {
+        transition: none;
+    }
+}
+</style>
 </head>
 
 <body>
 
-    <header>
-        <div class="logo">
-            <div class="logo-icon">E</div>
+<header>
+    <div class="container cabecalho">
 
+        <a href="index.html" class="marca">
+            <div class="marca-icone">E.</div>
             <div>
-                <h1>Estoque Simples</h1>
-                <p>Sistema de controle de estoque</p>
+                <strong>Estoque Simples</strong>
+                <small>Controle e monitoramento inteligente</small>
             </div>
+        </a>
+
+        <nav class="menu">
+            <a href="historico.html">Histórico</a>
+            <a href="dashboard.html" class="destaque">
+                Abrir dashboard ↗
+            </a>
+        </nav>
+
+    </div>
+</header>
+
+<main class="container">
+
+    <!-- APRESENTAÇÃO -->
+
+    <section class="hero">
+
+        <div class="hero-texto">
+
+            <div class="sobretitulo">
+                Central de gestão inteligente
+            </div>
+
+            <h1>
+                Seu estoque em ordem.<br>
+                <span>Suas decisões em foco.</span>
+            </h1>
+
+            <p>
+                Da entrada de mercadorias à análise dos resultados:
+                acompanhe produtos, identifique prioridades e organize
+                sua operação em um único ambiente.
+            </p>
+
+            <div class="botoes-hero">
+                <a href="produtos.html" class="botao botao-claro">
+                    Gerenciar produtos ↗
+                </a>
+
+                <a href="alertas.html" class="botao botao-borda">
+                    Consultar alertas →
+                </a>
+            </div>
+
         </div>
 
-        <div class="etiqueta-topo">
-            PAINEL DE CONTROLE
+        <!-- ILUSTRAÇÃO VETORIAL -->
+
+        <div class="hero-arte" aria-hidden="true">
+
+            <svg viewBox="0 0 440 330"
+                 xmlns="http://www.w3.org/2000/svg">
+
+                <circle cx="220" cy="165" r="145"
+                        fill="#FFFFFF08"
+                        stroke="#FFFFFF22"/>
+
+                <circle cx="220" cy="165" r="115"
+                        fill="none"
+                        stroke="#FFFFFF28"
+                        stroke-dasharray="6 9"/>
+
+                <!-- JANELA -->
+
+                <rect x="57" y="50" width="326" height="238"
+                      rx="20" fill="#FFFFFF"/>
+
+                <rect x="57" y="50" width="326" height="45"
+                      rx="20" fill="#BFDCFF"/>
+
+                <rect x="57" y="76" width="326" height="19"
+                      fill="#BFDCFF"/>
+
+                <circle cx="81" cy="73" r="5" fill="#0C0A29"/>
+                <circle cx="98" cy="73" r="5" fill="#7296C5"/>
+                <circle cx="115" cy="73" r="5" fill="#FFFFFF"/>
+
+                <!-- MENU LATERAL -->
+
+                <rect x="72" y="110" width="75" height="162"
+                      rx="10" fill="#EDF4FF"/>
+
+                <rect x="84" y="126" width="50" height="8"
+                      rx="4" fill="#0C0A29"/>
+
+                <rect x="84" y="148" width="42" height="6"
+                      rx="3" fill="#9DB7D9"/>
+
+                <rect x="84" y="165" width="46" height="6"
+                      rx="3" fill="#9DB7D9"/>
+
+                <rect x="84" y="182" width="37" height="6"
+                      rx="3" fill="#9DB7D9"/>
+
+                <rect x="84" y="211" width="50" height="36"
+                      rx="7" fill="#BFDCFF"/>
+
+                <!-- INDICADORES -->
+
+                <rect x="161" y="110" width="95" height="65"
+                      rx="11" fill="#EDF4FF"/>
+
+                <rect x="267" y="110" width="100" height="65"
+                      rx="11" fill="#F5F5DC"/>
+
+                <rect x="174" y="123" width="44" height="6"
+                      rx="3" fill="#9DB7D9"/>
+
+                <rect x="174" y="140" width="55" height="18"
+                      rx="5" fill="#0C0A29"/>
+
+                <rect x="280" y="123" width="51" height="6"
+                      rx="3" fill="#B7B6A6"/>
+
+                <rect x="280" y="140" width="57" height="18"
+                      rx="5" fill="#0C0A29"/>
+
+                <!-- GRÁFICO -->
+
+                <rect x="161" y="187" width="206" height="85"
+                      rx="11" fill="#F6F8FC"/>
+
+                <path d="M177 252H350"
+                      stroke="#D6DEEB" stroke-width="2"/>
+
+                <rect x="184" y="226" width="17" height="26"
+                      rx="4" fill="#BFDCFF"/>
+
+                <rect x="210" y="215" width="17" height="37"
+                      rx="4" fill="#7DA9E3"/>
+
+                <rect x="236" y="230" width="17" height="22"
+                      rx="4" fill="#BFDCFF"/>
+
+                <rect x="262" y="204" width="17" height="48"
+                      rx="4" fill="#0C0A29"/>
+
+                <rect x="288" y="219" width="17" height="33"
+                      rx="4" fill="#7DA9E3"/>
+
+                <rect x="314" y="197" width="17" height="55"
+                      rx="4" fill="#0C0A29"/>
+
+                <!-- SELO FLUTUANTE -->
+
+                <circle cx="366" cy="65" r="30"
+                        fill="#BFDCFF"/>
+
+                <path d="M352 65L362 75L380 55"
+                      fill="none"
+                      stroke="#0C0A29"
+                      stroke-width="5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"/>
+
+            </svg>
+
         </div>
-    </header>
 
-    <main>
+    </section>
 
-        <!-- BANNER INICIAL -->
+    <!-- ACESSOS RÁPIDOS -->
 
-        <section class="banner">
-            <div class="banner-texto">
-                <div class="banner-legenda">
-                    Organização e praticidade
-                </div>
+    <nav class="navegacao" aria-label="Navegação por áreas">
+        <strong>Explorar áreas:</strong>
 
-                <h2>Seu estoque organizado em um só lugar.</h2>
+        <a href="#operacoes">Operações</a>
+        <a href="#monitoramento">Monitoramento</a>
+        <a href="#inteligencia">Inteligência e resultados</a>
+        <a href="#administracao">Administração</a>
+    </nav>
 
+    <!-- VISÃO GERAL -->
+
+    <section>
+
+        <div class="titulo-secao">
+            <div>
+                <small>VISÃO EM TEMPO REAL</small>
+                <h2>Panorama do estoque</h2>
                 <p>
-                    Gerencie seus produtos, registre entradas e saídas
-                    e acompanhe as quantidades disponíveis. Tudo de forma
-                    simples, visual e organizada.
+                    Indicadores calculados a partir dos registros
+                    armazenados neste navegador.
                 </p>
             </div>
-
-            <div class="banner-ilustracao">
-                <svg viewBox="0 0 180 180"
-                     xmlns="http://www.w3.org/2000/svg"
-                     fill="none">
-
-                    <rect x="15" y="78" width="67" height="65"
-                          rx="8" fill="#BFDCFF"/>
-
-                    <path d="M15 96 L48 113 L82 96"
-                          stroke="#0C0A29" stroke-width="3"/>
-
-                    <path d="M48 113 V143"
-                          stroke="#0C0A29" stroke-width="3"/>
-
-                    <rect x="89" y="52" width="73" height="91"
-                          rx="8" fill="#F5F5DC"/>
-
-                    <path d="M89 72 L125 91 L162 72"
-                          stroke="#211E1B" stroke-width="3"/>
-
-                    <path d="M125 91 V143"
-                          stroke="#211E1B" stroke-width="3"/>
-
-                    <rect x="48" y="32" width="44" height="46"
-                          rx="6" fill="#FFFFFF"/>
-
-                    <path d="M48 49 L70 61 L92 49"
-                          stroke="#0C0A29" stroke-width="2.5"/>
-
-                    <path d="M70 61 V78"
-                          stroke="#0C0A29" stroke-width="2.5"/>
-
-                    <circle cx="142" cy="32" r="18"
-                            fill="#BFDCFF"/>
-
-                    <path d="M133 32 L140 39 L151 26"
-                          stroke="#0C0A29" stroke-width="3.5"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"/>
-                </svg>
-            </div>
-        </section>
-
-        <!-- VISÃO GERAL -->
-
-        <section>
-            <div class="secao-titulo">
-                <h2>Visão geral</h2>
-                <p>Confira os principais números do seu estoque.</p>
-            </div>
-
-            <div class="resumo">
-
-                <div class="resumo-card">
-                    <div class="resumo-icone">▤</div>
-                    <p class="rotulo">Produtos cadastrados</p>
-                    <p class="numero" id="totalProdutos">0</p>
-                    <p class="detalhe">Produtos registrados no sistema</p>
-                </div>
-
-                <div class="resumo-card">
-                    <div class="resumo-icone">▦</div>
-                    <p class="rotulo">Unidades disponíveis</p>
-                    <p class="numero" id="totalUnidades">0</p>
-                    <p class="detalhe">Soma das quantidades em estoque</p>
-                </div>
-
-                <div class="resumo-card">
-                    <div class="resumo-icone">!</div>
-                    <p class="rotulo">Alertas de estoque</p>
-                    <p class="numero" id="totalAlertas">0</p>
-                    <p class="detalhe">Produtos que precisam de atenção</p>
-                </div>
-
-            </div>
-        </section>
-
-        <!-- GERENCIAR ESTOQUE -->
-
-        <section>
-            <div class="secao-titulo">
-                <h2>Gerenciar estoque</h2>
-                <p>Selecione uma opção para continuar.</p>
-            </div>
-
-            <div class="atalhos">
-
-                <!-- CADASTRO DE PRODUTOS -->
-
-                <a href="produtos.html" class="atalho">
-                    <div class="atalho-icone">▤</div>
-
-                    <h3>Cadastro de produtos</h3>
-
-                    <p>
-                        Cadastre produtos, categorias, códigos,
-                        quantidades, estoque mínimo e validade.
-                    </p>
-
-                    <span class="acessar">Acessar produtos →</span>
-                </a>
-
-                <!-- ENTRADA DE MERCADORIAS -->
-
-                <a href="entrada.html" class="atalho">
-                    <div class="atalho-icone">↓</div>
-
-                    <h3>Entrada de mercadorias</h3>
-
-                    <p>
-                        Registre os produtos recebidos e atualize
-                        as quantidades disponíveis no estoque.
-                    </p>
-
-                    <span class="acessar">Registrar entrada →</span>
-                </a>
-
-                <!-- SAÍDA DE MERCADORIAS -->
-
-                <a href="saida.html" class="atalho">
-                    <div class="atalho-icone">↑</div>
-
-                    <h3>Saída de mercadorias</h3>
-
-                    <p>
-                        Registre retiradas de produtos e acompanhe
-                        as quantidades restantes.
-                    </p>
-
-                    <span class="acessar">Registrar saída →</span>
-                </a>
-
-                <!-- NOVO: HISTÓRICO DE MOVIMENTAÇÕES -->
-
-                <a href="historico.html" class="atalho">
-                    <div class="atalho-icone">▦</div>
-
-                    <h3>Histórico de Movimentações</h3>
-
-                    <p>
-                        Consulte todas as entradas e saídas
-                        registradas no estoque, pesquise produtos,
-                        filtre por datas e exporte relatórios.
-                    </p>
-
-                    <span class="acessar">Consultar histórico →</span>
-                </a>
-                
-
-  <!-- GRÁFICOS E RELATÓRIOS -->
-
-                <a href="graficos.html" class="atalho">
-                    <div class="atalho-icone">▥</div>
-
-                    <h3>Gráficos e Relatórios</h3>
-
-                    <p>
-                        Visualize entradas e saídas por período,
-                        acompanhe os produtos mais movimentados
-                        e analise o desempenho do estoque.
-                    </p>
-
-                    <span class="acessar">Visualizar gráficos →</span>
-                </a>
-
-                <!-- CONTROLE FINANCEIRO -->
-
-                <a href="financeiro.html" class="atalho">
-                    <div class="atalho-icone">R$</div>
-
-                    <h3>Controle Financeiro</h3>
-
-                    <p>
-                        Cadastre preços de custo e venda,
-                        consulte o valor total do estoque,
-                        acompanhe margens estimadas
-                        e exporte relatórios financeiros.
-                    </p>
-
-                    <span class="acessar">
-                        Acessar financeiro →
-                    </span>
-                </a>
-                
-                <!-- CENTRAL DE ALERTAS -->
-
-                <a href="alertas.html" class="atalho">
-                    <div class="atalho-icone">!</div>
-
-                    <h3>Central de Alertas</h3>
-
-                    <p>
-                        Identifique produtos com estoque crítico,
-                        acompanhe mercadorias próximas do vencimento
-                        e consulte sugestões de reposição
-                        organizadas por prioridade.
-                    </p>
-
-                    <span class="acessar">
-                        Consultar alertas →
-                    </span>
-                </a>
-
-
-                <!-- ALERTAS INTELIGENTES -->
-
-                <a href="alertas.html" class="atalho">
-                    <div class="atalho-icone">!</div>
-
-                    <h3>Alertas Inteligentes</h3>
-
-                    <p>
-                        Identifique produtos com estoque baixo,
-                        acompanhe mercadorias próximas do vencimento
-                        e consulte sugestões de reposição.
-                    </p>
-
-                    <span class="acessar">
-                        Consultar alertas →
-                    </span>
-                </a>
-
-                <!-- BACKUP E RESTAURAÇÃO -->
-
-                <a href="backup.html" class="atalho">
-                    <div class="atalho-icone">↻</div>
-
-                    <h3>Backup e Restauração</h3>
-
-                    <p>
-                        Faça cópias de segurança dos produtos,
-                        movimentações e informações financeiras.
-                        Restaure seus dados quando necessário.
-                    </p>
-
-                    <span class="acessar">
-                        Gerenciar backups →
-                    </span>
-                </a>
-
-                <!-- DASHBOARD GERENCIAL -->
-
-                <a href="dashboard.html" class="atalho">
-                    <div class="atalho-icone">▥</div>
-
-                    <h3>Dashboard Gerencial</h3>
-
-                    <p>
-                        Acompanhe os indicadores gerais do estoque,
-                        visualize movimentações, valores financeiros
-                        e produtos que precisam de atenção.
-                    </p>
-
-                    <span class="acessar">
-                        Acessar dashboard →
-                    </span>
-                </a>
-
-                <!-- RELATÓRIOS GERENCIAIS -->
-
-                <a href="relatorios.html" class="atalho">
-                    <div class="atalho-icone">▤</div>
-
-                    <h3>Relatórios Gerenciais</h3>
-
-                    <p>
-                        Gere relatórios completos com indicadores
-                        de estoque, movimentações, informações
-                        financeiras e análise dos produtos.
-                        Imprima ou salve em PDF.
-                    </p>
-
-                    <span class="acessar">
-                        Gerar relatório →
-                    </span>
-                </a>
-
-                <!-- IMPORTAÇÃO DE PRODUTOS -->
-
-                <a href="importacao.html" class="atalho">
-                    <div class="atalho-icone">+</div>
-
-                    <h3>Importação de Produtos</h3>
-
-                    <p>
-                        Cadastre vários produtos de uma só vez
-                        utilizando uma planilha CSV.
-                        Identifique duplicações, valide os dados
-                        e atualize produtos existentes.
-                    </p>
-
-                    <span class="acessar">
-                        Importar produtos →
-                    </span>
-                </a>
-
-                <!-- INVENTÁRIO FÍSICO -->
-
-                <a href="inventario.html" class="atalho">
-                    <div class="atalho-icone">✓</div>
-
-                    <h3>Inventário Físico</h3>
-
-                    <p>
-                        Confira as quantidades reais dos produtos,
-                        identifique faltas e sobras, registre
-                        divergências e ajuste os saldos do estoque.
-                    </p>
-
-                    <span class="acessar">
-                        Realizar inventário →
-                    </span>
-                </a>
-
-                <!-- GESTÃO DE LOTES -->
-
-                <a href="lotes.html" class="atalho">
-                    <div class="atalho-icone">▦</div>
-
-                    <h3>Gestão de Lotes e Validades</h3>
-
-                    <p>
-                        Controle diferentes lotes de um mesmo
-                        produto, acompanhe quantidades e datas
-                        de validade e identifique mercadorias
-                        que precisam de atenção.
-                    </p>
-
-                    <span class="acessar">
-                        Gerenciar lotes →
-                    </span>
-                </a>
-
-<!-- CONFERÊNCIA E CONCILIAÇÃO DOS LOTES -->
-
-<a href="conciliacao.html" class="atalho">
-    <div class="atalho-icone">✓</div>
-
-    <h3>Conferência e Conciliação dos Lotes</h3>
-
-    <p>
-        Compare o estoque principal com as quantidades
-        registradas nos lotes, identifique divergências
-        e registre correções após conferência física,
-        mantendo um histórico das conciliações.
-    </p>
-
-    <span class="acessar">
-        Conferir e conciliar lotes →
-    </span>
-</a>
-
-                <!-- FIM DOS CARTÕES -->
-
-            </div>
-        </section>
-
-        <!-- AVISO INFORMATIVO -->
-
-        <div class="aviso">
-            <strong>Dica de organização:</strong>
-            mantenha os produtos e as movimentações atualizados
-            para acompanhar o estoque e identificar quando for
-            necessário realizar uma reposição.
         </div>
 
-    </main>
+        <div class="indicadores">
 
-    <!-- RODAPÉ -->
+            <div class="indicador">
+                <div class="indicador-icone">▤</div>
+                <div>
+                    <small>Produtos cadastrados</small>
+                    <strong id="totalProdutos">0</strong>
+                    <p>Itens registrados</p>
+                </div>
+            </div>
 
-    <footer>
-        Estoque Simples | Sistema de Controle e Monitoramento de Estoque
-    </footer>
+            <div class="indicador">
+                <div class="indicador-icone">▥</div>
+                <div>
+                    <small>Unidades disponíveis</small>
+                    <strong id="totalUnidades">0</strong>
+                    <p>Quantidade total calculada</p>
+                </div>
+            </div>
 
-    <!-- ATUALIZAÇÃO DOS INDICADORES -->
+            <div class="indicador">
+                <div class="indicador-icone">!</div>
+                <div>
+                    <small>Alertas de estoque</small>
+                    <strong id="totalAlertas">0</strong>
+                    <p>Produtos no limite mínimo ou abaixo</p>
+                </div>
+            </div>
 
-    <script>
-        function atualizarResumo() {
+        </div>
 
-            const produtos =
-                JSON.parse(localStorage.getItem("produtos")) || [];
+    </section>
 
-            let totalUnidades = 0;
-            let totalAlertas = 0;
+    <!-- OPERAÇÕES -->
 
-            produtos.forEach(function(produto) {
+    <section class="secao-modulos" id="operacoes">
 
-                const estoqueInicial = Number(
-                    produto.estoqueInicial ??
-                    produto.quantidade ??
-                    0
-                );
+        <div class="titulo-secao">
+            <div>
+                <small>ÁREA 01 · CONTROLE OPERACIONAL</small>
+                <h2>Operações do estoque</h2>
+                <p>
+                    Organize os produtos e acompanhe cada movimentação.
+                </p>
+            </div>
+            <span class="contagem">05 módulos</span>
+        </div>
 
-                const entradas =
-                    Number(produto.totalEntradas || 0);
+        <div class="grade">
 
-                const saidas =
-                    Number(produto.totalSaidas || 0);
+            <a class="modulo" href="produtos.html">
+                <div class="modulo-topo">
+                    <div class="icone-modulo">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="3" y="4" width="18" height="16" rx="2"/>
+                            <path d="M3 10h18M9 10v10M7 7h2"/>
+                        </svg>
+                    </div>
+                    <span class="etiqueta">Cadastro</span>
+                </div>
+                <h3>Cadastro de produtos</h3>
+                <p>
+                    Organize mercadorias por nome, categoria, código,
+                    quantidade, estoque mínimo e validade.
+                </p>
+                <div class="modulo-abrir">
+                    Gerenciar produtos <span>↗</span>
+                </div>
+            </a>
 
-                const quantidadeDisponivel =
-                    estoqueInicial + entradas - saidas;
+            <a class="modulo" href="entrada.html">
+                <div class="modulo-topo">
+                    <div class="icone-modulo">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 3v14m-5-5 5 5 5-5M4 21h16"/>
+                        </svg>
+                    </div>
+                    <span class="etiqueta">Recebimento</span>
+                </div>
+                <h3>Entrada de mercadorias</h3>
+                <p>
+                    Registre os produtos recebidos e mantenha
+                    os saldos disponíveis atualizados.
+                </p>
+                <div class="modulo-abrir">
+                    Registrar entrada <span>↗</span>
+                </div>
+            </a>
 
-                const estoqueMinimo =
-                    Number(produto.estoqueMinimo || 0);
+            <a class="modulo" href="saida.html">
+                <div class="modulo-topo">
+                    <div class="icone-modulo">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 18V4m-5 5 5-5 5 5M4 21h16"/>
+                        </svg>
+                    </div>
+                    <span class="etiqueta">Movimentação</span>
+                </div>
+                <h3>Saída de mercadorias</h3>
+                <p>
+                    Controle retiradas, acompanhe o consumo
+                    e consulte as quantidades restantes.
+                </p>
+                <div class="modulo-abrir">
+                    Registrar saída <span>↗</span>
+                </div>
+            </a>
+
+            <a class="modulo" href="historico.html">
+                <div class="modulo-topo">
+                    <div class="icone-modulo">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M3 12a9 9 0 1 0 3-7M3 3v5h5M12 7v5l3 2"/>
+                        </svg>
+                    </div>
+                    <span class="etiqueta">Rastreio</span>
+                </div>
+                <h3>Histórico de movimentações</h3>
+                <p>
+                    Consulte entradas e saídas, pesquise operações
+                    e acompanhe os registros anteriores.
+                </p>
+                <div class="modulo-abrir">
+                    Consultar histórico <span>↗</span>
+                </div>
+            </a>
+
+            <a class="modulo" href="importacao.html">
+                <div class="modulo-topo">
+                    <div class="icone-modulo">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/>
+                            <path d="M13 2v7h7M12 18v-7m-3 3 3-3 3 3"/>
+                        </svg>
+                    </div>
+                    <span class="etiqueta">Produtividade</span>
+                </div>
+                <h3>Importação de produtos</h3>
+                <p>
+                    Cadastre vários produtos por arquivo CSV,
+                    com conferência de informações e duplicidades.
+                </p>
+                <div class="modulo-abrir">
+                    Importar produtos <span>↗</span>
+                </div>
+            </a>
+
+        </div>
+
+    </section>
+
+    <!-- MONITORAMENTO -->
+
+    <section class="secao-modulos" id="monitoramento">
+
+        <div class="titulo-secao">
+            <div>
+                <small>ÁREA 02 · PREVENÇÃO E RASTREABILIDADE</small>
+                <h2>Monitoramento e conferência</h2>
+                <p>
+                    Identifique riscos, acompanhe lotes
+                    e verifique divergências.
+                </p>
+            </div>
+            <span class="contagem">04 módulos</span>
+        </div>
+
+        <div class="grade">
+
+            <a class="modulo" href="alertas.html">
+                <div class="modulo-topo">
+                    <div class="icone-modulo">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"/>
+                            <path d="M10 21h4"/>
+                        </svg>
+                    </div>
+                    <span class="etiqueta">Prevenção</span>
+                </div>
+                <h3>Central de alertas</h3>
+                <p>
+                    Identifique estoque crítico, mercadorias próximas
+                    do vencimento e necessidades de reposição.
+                </p>
+                <div class="modulo-abrir">
+                    Consultar alertas <span>↗</span>
+                </div>
+            </a>
+
+            <a class="modulo" href="lotes.html">
+                <div class="modulo-topo">
+                    <div class="icone-modulo">
+                        <svg viewBox="0 0 24 24">
+                            <path d="m12 3 9 5-9 5-9-5 9-5z"/>
+                            <path d="m3 12 9 5 9-5M3 16l9 5 9-5"/>
+                        </svg>
+                    </div>
+                    <span class="etiqueta">Rastreabilidade</span>
+                </div>
+                <h3>Gestão de lotes e validades</h3>
+                <p>
+                    Acompanhe lotes de um mesmo produto,
+                    quantidades individuais e prazos de validade.
+                </p>
+                <div class="modulo-abrir">
+                    Gerenciar lotes <span>↗</span>
+                </div>
+            </a>
+
+            <a class="modulo" href="inventario.html">
+                <div class="modulo-topo">
+                    <div class="icone-modulo">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="5" y="4" width="14" height="18" rx="2"/>
+                            <path d="M9 4V2h6v2M9 14l2 2 4-4"/>
+                        </svg>
+                    </div>
+                    <span class="etiqueta">Conferência</span>
+                </div>
+                <h3>Inventário físico</h3>
+                <p>
+                    Compare a contagem real das mercadorias
+                    com os saldos registrados no sistema.
+                </p>
+                <div class="modulo-abrir">
+                    Realizar inventário <span>↗</span>
+                </div>
+            </a>
+
+            <a class="modulo" href="conciliacao.html">
+                <div class="modulo-topo">
+                    <div class="icone-modulo">
+                        <svg viewBox="0 0 24 24">
+                            <circle cx="6" cy="5" r="2"/>
+                            <circle cx="18" cy="19" r="2"/>
+                            <path d="M6 7v10a2 2 0 0 0 2 2h8"/>
+                            <path d="M18 17V7a2 2 0 0 0-2-2H8"/>
+                        </svg>
+                    </div>
+                    <span class="etiqueta">Integridade</span>
+                </div>
+                <h3>Conciliação dos lotes</h3>
+                <p>
+                    Compare o estoque principal com os lotes,
+                    identifique diferenças e consulte as conferências.
+                </p>
+                <div class="modulo-abrir">
+                    Conferir lotes <span>↗</span>
+                </div>
+            </a>
+
+        </div>
+
+    </section>
+
+    <!-- INTELIGÊNCIA -->
+
+    <section class="secao-modulos" id="inteligencia">
+
+        <div class="titulo-secao">
+            <div>
+                <small>ÁREA 03 · ANÁLISE E DESEMPENHO</small>
+                <h2>Inteligência e resultados</h2>
+                <p>
+                    Transforme registros operacionais
+                    em informações para a gestão.
+                </p>
+            </div>
+            <span class="contagem">04 módulos</span>
+        </div>
+
+        <div class="grade">
+
+            <a class="modulo" href="dashboard.html">
+                <div class="modulo-topo">
+                    <div class="icone-modulo">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="3" y="3" width="7" height="9" rx="1"/>
+                            <rect x="14" y="3" width="7" height="5" rx="1"/>
+                            <rect x="14" y="12" width="7" height="9" rx="1"/>
+                            <rect x="3" y="16" width="7" height="5" rx="1"/>
+                        </svg>
+                    </div>
+                    <span class="etiqueta">Indicadores</span>
+                </div>
+                <h3>Dashboard gerencial</h3>
+                <p>
+                    Visualize os principais indicadores
+                    e acompanhe a situação geral do estoque.
+                </p>
+                <div class="modulo-abrir">
+                    Abrir dashboard <span>↗</span>
+                </div>
+            </a>
+
+            <a class="modulo" href="graficos.html">
+                <div class="modulo-topo">
+                    <div class="icone-modulo">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M3 3v18h18"/>
+                            <path d="M7 16l4-5 4 3 5-8"/>
+                            <path d="M16 6h4v4"/>
+                        </svg>
+                    </div>
+                    <span class="etiqueta">Visualização</span>
+                </div>
+                <h3>Gráficos e análises</h3>
+                <p>
+                    Explore movimentações por período
+                    e identifique os produtos mais movimentados.
+                </p>
+                <div class="modulo-abrir">
+                    Visualizar gráficos <span>↗</span>
+                </div>
+            </a>
+
+            <a class="modulo" href="financeiro.html">
+                <div class="modulo-topo">
+                    <div class="icone-modulo">
+                        <svg viewBox="0 0 24 24">
+                            <rect x="3" y="6" width="18" height="15" rx="2"/>
+                            <path d="M3 10V5a2 2 0 0 1 2-2h13"/>
+                            <path d="M16 15h5"/>
+                        </svg>
+                    </div>
+                    <span class="etiqueta">Financeiro</span>
+                </div>
+                <h3>Controle financeiro</h3>
+                <p>
+                    Acompanhe preços de custo e venda,
+                    valores do estoque e margens estimadas.
+                </p>
+                <div class="modulo-abrir">
+                    Acessar financeiro <span>↗</span>
+                </div>
+            </a>
+
+            <a class="modulo" href="relatorios.html">
+                <div class="modulo-topo">
+                    <div class="icone-modulo">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/>
+                            <path d="M13 2v7h7"/>
+                            <path d="M9 18v-4m3 4v-7m3 7v-3"/>
+                        </svg>
+                    </div>
+                    <span class="etiqueta">Documentação</span>
+                </div>
+                <h3>Relatórios gerenciais</h3>
+                <p>
+                    Gere relatórios de estoque,
+                    movimentações e informações financeiras.
+                </p>
+                <div class="modulo-abrir">
+                    Gerar relatórios <span>↗</span>
+                </div>
+            </a>
+
+        </div>
+
+    </section>
+
+    <!-- ADMINISTRAÇÃO -->
+
+    <section class="secao-modulos" id="administracao">
+
+        <div class="titulo-secao">
+            <div>
+                <small>ÁREA 04 · ORGANIZAÇÃO E SEGURANÇA</small>
+                <h2>Administração de dados</h2>
+                <p>
+                    Preserve os registros e mantenha
+                    suas informações organizadas.
+                </p>
+            </div>
+            <span class="contagem">01 módulo</span>
+        </div>
+
+        <div class="grade">
+
+            <a class="modulo" href="backup.html">
+                <div class="modulo-topo">
+                    <div class="icone-modulo">
+                        <svg viewBox="0 0 24 24">
+                            <ellipse cx="12" cy="5" rx="9" ry="3"/>
+                            <path d="M3 5v7c0 2 4 3 9 3"/>
+                            <path d="M21 5v7"/>
+                            <path d="M3 12v7c0 2 4 3 9 3"/>
+                            <path d="M15 19h7m-3-3 3 3-3 3"/>
+                        </svg>
+                    </div>
+                    <span class="etiqueta">Segurança</span>
+                </div>
+                <h3>Backup e restauração</h3>
+                <p>
+                    Faça cópias de segurança,
+                    exporte informações e restaure
+                    os registros quando necessário.
+                </p>
+                <div class="modulo-abrir">
+                    Gerenciar backups <span>↗</span>
+                </div>
+            </a>
+
+        </div>
+
+    </section>
+
+    <!-- AVISO -->
+
+    <aside class="aviso">
+
+        <div>
+            <small>BOA PRÁTICA DE GESTÃO</small>
+
+            <h2>
+                Dados confiáveis começam com registros consistentes.
+            </h2>
+
+            <p>
+                Mantenha as movimentações atualizadas,
+                confira periodicamente as quantidades físicas
+                e realize cópias de segurança.
+                Os dados armazenados no LocalStorage dependem
+                do navegador e dispositivo utilizados.
+            </p>
+        </div>
+
+        <a href="backup.html">
+            Gerenciar backup ↗
+        </a>
+
+    </aside>
+
+</main>
+
+<footer>
+    <div class="container rodape">
+
+        <span>
+            <strong>Estoque Simples</strong>
+            · Sistema de Controle e Monitoramento de Estoque
+        </span>
+
+        <span>
+            Projeto acadêmico · Análise e Desenvolvimento de Sistemas
+        </span>
+
+    </div>
+</footer>
+
+<!-- INDICADORES: MANTÉM A LEITURA DOS DADOS EXISTENTES -->
+
+<script>
+"use strict";
+
+function atualizarResumo() {
+
+    try {
+
+        const dados = JSON.parse(
+            localStorage.getItem("produtos") || "[]"
+        );
+
+        const produtos = Array.isArray(dados) ? dados : [];
+
+        let totalUnidades = 0;
+        let totalAlertas = 0;
+
+        produtos.forEach(function(produto) {
+
+            if (!produto || typeof produto !== "object") {
+                return;
+            }
+
+            const estoqueInicial = Number(
+                produto.estoqueInicial ??
+                produto.quantidade ??
+                0
+            );
+
+            const entradas = Number(
+                produto.totalEntradas || 0
+            );
+
+            const saidas = Number(
+                produto.totalSaidas || 0
+            );
+
+            const quantidadeDisponivel =
+                estoqueInicial + entradas - saidas;
+
+            const estoqueMinimo = Number(
+                produto.estoqueMinimo || 0
+            );
+
+            if (Number.isFinite(quantidadeDisponivel)) {
 
                 totalUnidades += quantidadeDisponivel;
 
                 if (quantidadeDisponivel <= estoqueMinimo) {
                     totalAlertas++;
                 }
+
+            }
+
+        });
+
+        document.getElementById("totalProdutos").textContent =
+            produtos.length.toLocaleString("pt-BR");
+
+        document.getElementById("totalUnidades").textContent =
+            totalUnidades.toLocaleString("pt-BR", {
+                maximumFractionDigits: 3
             });
 
-            document.getElementById("totalProdutos").textContent =
-                produtos.length;
+        document.getElementById("totalAlertas").textContent =
+            totalAlertas.toLocaleString("pt-BR");
 
-            document.getElementById("totalUnidades").textContent =
-                totalUnidades;
+    } catch (erro) {
 
-            document.getElementById("totalAlertas").textContent =
-                totalAlertas;
-        }
+        console.error(
+            "Erro ao atualizar os indicadores:",
+            erro
+        );
 
-        atualizarResumo();
-    </script>
+    }
+
+}
+
+atualizarResumo();
+</script>
 
 </body>
 </html>
