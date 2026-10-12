@@ -2,140 +2,1111 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Saída de Mercadorias | Estoque Simples</title>
-    <style>
-        * { box-sizing: border-box; }
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            background: #F5F5DC;
-            color: #211E1B;
-        }
-        header {
-            background: #0C0A29;
-            color: white;
-            padding: 22px;
-        }
-        main {
-            max-width: 960px;
-            margin: 25px auto;
-            padding: 0 16px;
-        }
-        .painel {
-            background: white;
-            padding: 24px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-        }
-        label {
-            display: block;
-            margin: 15px 0 6px;
-            font-weight: bold;
-        }
-        input, select, button {
-            width: 100%;
-            padding: 12px;
-            border-radius: 7px;
-            font-size: 15px;
-        }
-        input, select { border: 1px solid #aaa; }
-        button {
-            background: #0C0A29;
-            color: white;
-            border: none;
-            margin-top: 20px;
-            cursor: pointer;
-        }
-        button:hover { background: #211E1B; }
-        a { color: #0C0A29; }
-        .aviso {
-            background: #BFDCFF;
-            padding: 14px;
-            border-radius: 8px;
-            line-height: 1.5;
-        }
-        .tabela { overflow-x: auto; }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 11px;
-            border-bottom: 1px solid #ddd;
-            text-align: left;
-        }
-        th { background: #BFDCFF; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Saída de Mercadorias | Estoque Simples</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --navy: #0C0A29;
+      --ink: #211E1B;
+      --paper: #F8F7F2;
+      --white: #FFFFFF;
+      --gold: #B69B65;
+      --muted: #78756F;
+      --border: #E9E6DF;
+      --green: #287356;
+      --red: #AD4545;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "DM Sans", sans-serif;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    button, input, select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    h1, h2, h3, p {
+      margin-top: 0;
+    }
+
+    h1, h2, h3 {
+      font-family: "Playfair Display", serif;
+    }
+
+    /* MENU LATERAL */
+
+    .sidebar {
+      position: fixed;
+      inset: 0 auto 0 0;
+      width: 258px;
+      padding: 30px 19px;
+      background: var(--navy);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      z-index: 10;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 0 11px 30px;
+      border-bottom: 1px solid rgba(255,255,255,.12);
+    }
+
+    .brand-mark {
+      width: 43px;
+      height: 43px;
+      border: 1px solid rgba(255,255,255,.35);
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      color: #DCC28F;
+      font: 25px "Playfair Display", serif;
+    }
+
+    .brand strong {
+      display: block;
+      font: 600 19px "Playfair Display", serif;
+    }
+
+    .brand small {
+      display: block;
+      margin-top: 4px;
+      color: #A9A7BE;
+      font-size: 9px;
+      letter-spacing: 1.6px;
+      text-transform: uppercase;
+    }
+
+    .nav-label {
+      margin: 26px 12px 10px;
+      color: #9997B1;
+      font-size: 10px;
+      letter-spacing: 1.8px;
+      text-transform: uppercase;
+    }
+
+    .nav-link {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 14px;
+      margin: 2px 0;
+      border-radius: 9px;
+      color: #D3D1DF;
+      font-size: 12px;
+      transition: .2s;
+    }
+
+    .nav-link:hover,
+    .nav-link.active {
+      background: rgba(255,255,255,.11);
+      color: white;
+    }
+
+    .nav-link.active {
+      border-left: 3px solid #D6B779;
+    }
+
+    .nav-icon {
+      width: 21px;
+      text-align: center;
+      font-size: 16px;
+    }
+
+    .sidebar-bottom {
+      margin-top: auto;
+      padding: 25px 12px 0;
+      color: #9997B1;
+      font-size: 10px;
+      line-height: 1.8;
+    }
+
+    /* ÁREA PRINCIPAL */
+
+    .main-area {
+      margin-left: 258px;
+      min-height: 100vh;
+    }
+
+    .topbar {
+      height: 76px;
+      padding: 0 48px;
+      background: rgba(255,255,255,.88);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .breadcrumb {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .breadcrumb strong {
+      color: var(--ink);
+    }
+
+    .browser-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+    }
+
+    .content {
+      max-width: 1500px;
+      padding: 44px 48px 70px;
+      margin: auto;
+    }
+
+    .eyebrow {
+      color: var(--gold);
+      font: 500 10px "DM Mono", monospace;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    .page-heading {
+      margin-bottom: 30px;
+    }
+
+    .page-heading h1 {
+      font-size: clamp(35px,4vw,55px);
+      font-weight: 500;
+      letter-spacing: -1.6px;
+      margin: 13px 0;
+      line-height: 1.2;
+    }
+
+    .page-heading h1 span {
+      color: var(--gold);
+    }
+
+    .page-heading p {
+      max-width: 700px;
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.9;
+      margin: 0;
+    }
+
+    /* BANNER */
+
+    .hero {
+      background: var(--navy);
+      color: white;
+      border-radius: 15px;
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      min-height: 225px;
+      overflow: hidden;
+      margin-bottom: 35px;
+    }
+
+    .hero-content {
+      padding: 39px 41px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero h2 {
+      font-size: clamp(27px,3vw,39px);
+      font-weight: 500;
+      line-height: 1.2;
+      margin: 13px 0;
+    }
+
+    .hero p {
+      max-width: 480px;
+      color: #C8C6D6;
+      font-size: 12px;
+      line-height: 1.9;
+      margin: 0;
+    }
+
+    .hero-art {
+      position: relative;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+    }
+
+    .hero-art::before,
+    .hero-art::after {
+      content: "";
+      position: absolute;
+      width: 240px;
+      height: 240px;
+      border: 1px solid rgba(214,183,121,.35);
+      border-radius: 50%;
+    }
+
+    .hero-art::after {
+      width: 155px;
+      height: 155px;
+      border-color: rgba(214,183,121,.6);
+    }
+
+    .hero-symbol {
+      position: relative;
+      z-index: 1;
+      color: #D7BE8E;
+      font: 500 105px "Playfair Display", serif;
+      line-height: 1;
+    }
+
+    /* TÍTULOS */
+
+    .section-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
+      margin: 35px 0 17px;
+    }
+
+    .section-heading h2 {
+      font-size: 27px;
+      font-weight: 500;
+      margin: 7px 0 0;
+    }
+
+    .section-heading p {
+      color: var(--muted);
+      font-size: 11px;
+      margin: 0;
+    }
+
+    /* PAINÉIS */
+
+    .painel {
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 30px;
+      margin-bottom: 20px;
+      min-width: 0;
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      gap: 15px;
+      margin-bottom: 24px;
+    }
+
+    .panel-header h3 {
+      font-size: 25px;
+      font-weight: 500;
+      margin: 8px 0;
+    }
+
+    .panel-header p {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.9;
+      margin: 0;
+    }
+
+    .panel-tag {
+      border: 1px solid var(--border);
+      background: var(--paper);
+      border-radius: 7px;
+      padding: 8px 10px;
+      color: var(--muted);
+      font: 10px "DM Mono", monospace;
+      white-space: nowrap;
+    }
+
+    /* FORMULÁRIO */
+
+    .formulario {
+      display: grid;
+      grid-template-columns: repeat(2,minmax(0,1fr));
+      gap: 19px;
+    }
+
+    .campo {
+      min-width: 0;
+    }
+
+    .campo-full {
+      grid-column: 1 / -1;
+    }
+
+    .campo label {
+      display: block;
+      margin-bottom: 9px;
+      color: #625E58;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .campo input,
+    .campo select {
+      display: block;
+      width: 100%;
+      min-width: 0;
+      padding: 14px 15px;
+      background: #FCFBF8;
+      color: var(--ink);
+      border: 1px solid #E4E1DA;
+      border-radius: 9px;
+      font-size: 12px;
+      outline: none;
+      transition: .2s;
+    }
+
+    .campo input:focus,
+    .campo select:focus {
+      border-color: #9DB8D9;
+      box-shadow: 0 0 0 3px rgba(191,220,255,.25);
+    }
+
+    .form-divider {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      margin: 0 0 23px;
+    }
+
+    .form-divider span {
+      color: var(--gold);
+      font: 500 10px "DM Mono", monospace;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    .form-divider::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    /* AVISO FEFO */
+
+    .aviso {
+      display: flex;
+      align-items: start;
+      gap: 15px;
+      margin-bottom: 27px;
+      padding: 22px;
+      background: #F0F4F9;
+      border: 1px solid #DDE8F4;
+      border-radius: 11px;
+      color: #526477;
+      font-size: 12px;
+      line-height: 1.9;
+    }
+
+    .aviso-icon {
+      color: #527CA8;
+      font-size: 22px;
+      flex-shrink: 0;
+    }
+
+    .aviso strong {
+      color: var(--navy);
+    }
+
+    /* SITUAÇÃO DO PRODUTO */
+
+    #situacaoProduto {
+      margin: 14px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.8;
+      white-space: pre-line;
+      overflow-wrap: anywhere;
+    }
+
+    #situacaoProduto:empty {
+      display: none;
+    }
+
+    /* PRÉVIA DE LOTES */
+
+    .previa-box {
+      margin-top: 27px;
+      padding: 23px;
+      background: #FCFBF8;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+    }
+
+    .previa-box h3 {
+      margin: 0 0 13px;
+      color: var(--navy);
+      font-size: 22px;
+      font-weight: 500;
+    }
+
+    #previaLotes {
+      margin: 0;
+      color: #68645E;
+      font-size: 12px;
+      line-height: 1.9;
+      white-space: pre-line;
+      overflow-wrap: anywhere;
+    }
+
+    /* ESTILOS PARA CONTEÚDO GERADO PELO JS */
+
+    #previaLotes table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 12px;
+    }
+
+    #previaLotes th,
+    #previaLotes td {
+      padding: 11px;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      font-size: 11px;
+    }
+
+    /* BOTÕES */
+
+    .acoes {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 11px;
+      margin-top: 25px;
+    }
+
+    button {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 9px;
+      min-height: 45px;
+      padding: 13px 22px;
+      background: var(--navy);
+      color: white;
+      border: 1px solid var(--navy);
+      border-radius: 9px;
+      font-size: 12px;
+      font-weight: 700;
+      transition: .2s;
+    }
+
+    button:hover:not(:disabled) {
+      background: #242041;
+    }
+
+    button:disabled {
+      opacity: .45;
+      cursor: not-allowed;
+    }
+
+    /* TABELA */
+
+    .tabela {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 20px;
+    }
+
+    table {
+      width: 100%;
+      min-width: 600px;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th {
+      padding: 15px 12px;
+      background: #F8F7F3;
+      color: #77736C;
+      border-bottom: 1px solid var(--border);
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .4px;
+      text-transform: uppercase;
+    }
+
+    td {
+      padding: 16px 12px;
+      border-bottom: 1px solid #F0EEE9;
+      color: #57534D;
+      font-size: 12px;
+      line-height: 1.7;
+      vertical-align: middle;
+    }
+
+    tbody tr:hover {
+      background: #FBFAF7;
+    }
+
+    td:first-child {
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    /* ACESSOS RÁPIDOS */
+
+    .quick-grid {
+      display: grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: 15px;
+    }
+
+    .quick-link {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      padding: 22px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      font-size: 12px;
+      font-weight: 600;
+      transition: .2s;
+    }
+
+    .quick-link:hover {
+      transform: translateY(-2px);
+      border-color: #B9B6C2;
+    }
+
+    .quick-link span:last-child {
+      color: var(--gold);
+      font-size: 19px;
+    }
+
+    footer {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      margin-top: 38px;
+      padding-top: 20px;
+      border-top: 1px solid var(--border);
+      color: #96928C;
+      font-size: 10px;
+    }
+
+    /* RESPONSIVIDADE */
+
+    @media (max-width: 850px) {
+      .sidebar {
+        position: relative;
+        width: 100%;
+        padding: 15px;
+      }
+
+      .brand {
+        padding-bottom: 15px;
+      }
+
+      .nav-label,
+      .sidebar-bottom {
+        display: none;
+      }
+
+      .sidebar nav {
+        display: flex;
+        gap: 5px;
+        overflow-x: auto;
+        margin-top: 10px;
+      }
+
+      .nav-link {
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+
+      .main-area {
+        margin-left: 0;
+      }
+
+      .topbar {
+        height: 62px;
+        padding: 0 22px;
+      }
+
+      .content {
+        padding: 30px 20px 45px;
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-content {
+        padding: 30px;
+      }
+
+      .hero-art {
+        display: none;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .formulario,
+      .quick-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .campo-full {
+        grid-column: auto;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .section-heading,
+      .panel-header,
+      footer {
+        flex-direction: column;
+        align-items: start;
+      }
+
+      .painel {
+        padding: 19px;
+      }
+
+      .browser-status {
+        display: none;
+      }
+
+      .acoes button {
+        width: 100%;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<header>
-    <h1>Saída de Mercadorias</h1>
-    <p>Estoque Simples — Retirada por validade (FEFO)</p>
-</header>
+  <!-- MENU LATERAL -->
 
-<main>
-    <p><a href="index.html">Voltar ao início</a></p>
+  <aside class="sidebar">
+    <a class="brand" href="index.html">
+      <div class="brand-mark">E.</div>
+      <div>
+        <strong>Estoque Simples</strong>
+        <small>Atelier de Gestão</small>
+      </div>
+    </a>
 
-    <section class="painel">
-        <h2>Registrar saída</h2>
+    <nav>
+      <div class="nav-label">Principal</div>
 
-        <p class="aviso">
-            O sistema retira primeiro as unidades dos lotes
-            com vencimento mais próximo. Lotes vencidos
-            não serão utilizados automaticamente.
-        </p>
+      <a class="nav-link" href="index.html">
+        <span class="nav-icon">⌂</span>
+        Página inicial
+      </a>
 
-        <form id="formSaida">
+      <a class="nav-link" href="dashboard.html">
+        <span class="nav-icon">◫</span>
+        Dashboard Gerencial
+      </a>
 
-            <label for="produto">Produto</label>
-            <select id="produto" required>
-                <option value="">Selecione um produto</option>
-            </select>
+      <div class="nav-label">Operações</div>
 
-            <p id="situacaoProduto"></p>
+      <a class="nav-link" href="produtos.html">
+        <span class="nav-icon">▦</span>
+        Produtos
+      </a>
 
-            <label for="quantidade">Quantidade de saída</label>
-            <input
-                type="number"
-                id="quantidade"
-                min="0.001"
-                step="0.001"
-                required
-            >
+      <a class="nav-link" href="entrada.html">
+        <span class="nav-icon">↘</span>
+        Entradas
+      </a>
 
-            <label for="data">Data da saída</label>
-            <input type="date" id="data" required>
+      <a class="nav-link active" href="saida.html">
+        <span class="nav-icon">↗</span>
+        Saídas
+      </a>
 
-            <h3>Prévia dos lotes utilizados</h3>
-            <p id="previaLotes">
-                Selecione um produto e informe a quantidade.
-            </p>
+      <a class="nav-link" href="historico.html">
+        <span class="nav-icon">≡</span>
+        Histórico
+      </a>
 
-            <button type="submit">Registrar saída</button>
-        </form>
-    </section>
+      <a class="nav-link" href="importacao.html">
+        <span class="nav-icon">⇩</span>
+        Importação
+      </a>
 
-    <section class="painel">
-        <h2>Saídas realizadas</h2>
-        <div class="tabela">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Produto</th>
-                        <th>Lote(s)</th>
-                        <th>Quantidade</th>
-                        <th>Data</th>
-                    </tr>
-                </thead>
-                <tbody id="listaSaidas"></tbody>
-            </table>
+      <div class="nav-label">Monitoramento</div>
+
+      <a class="nav-link" href="alertas.html">
+        <span class="nav-icon">◇</span>
+        Alertas Inteligentes
+      </a>
+
+      <a class="nav-link" href="inventario.html">
+        <span class="nav-icon">☷</span>
+        Inventário
+      </a>
+
+      <a class="nav-link" href="lotes.html">
+        <span class="nav-icon">▤</span>
+        Lotes
+      </a>
+
+      <a class="nav-link" href="conciliacao.html">
+        <span class="nav-icon">⇄</span>
+        Conciliação
+      </a>
+
+      <div class="nav-label">Inteligência</div>
+
+      <a class="nav-link" href="graficos.html">
+        <span class="nav-icon">▥</span>
+        Gráficos
+      </a>
+
+      <a class="nav-link" href="financeiro.html">
+        <span class="nav-icon">◈</span>
+        Financeiro
+      </a>
+
+      <a class="nav-link" href="relatorios.html">
+        <span class="nav-icon">▧</span>
+        Relatórios
+      </a>
+
+      <div class="nav-label">Administração</div>
+
+      <a class="nav-link" href="backup.html">
+        <span class="nav-icon">↥</span>
+        Backup e Restauração
+      </a>
+    </nav>
+
+    <div class="sidebar-bottom">
+      ESTOQUE SIMPLES<br>
+      Gestão e Inteligência de Estoque
+    </div>
+  </aside>
+
+  <!-- ÁREA PRINCIPAL -->
+
+  <div class="main-area">
+
+    <header class="topbar">
+      <div class="breadcrumb">
+        Estoque Simples &nbsp; / &nbsp;
+        <strong>Saída de Mercadorias</strong>
+      </div>
+
+      <div class="browser-status">
+        <span class="status-dot"></span>
+        Dados deste navegador
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- TÍTULO -->
+
+      <section class="page-heading">
+        <div class="eyebrow">
+          Operações · Movimentação de Estoque
         </div>
-    </section>
-</main>
 
-<script src="saida.js"></script>
+        <h1>Saída de Mercadorias<span>.</span></h1>
+
+        <p>
+          Registre a retirada de produtos,
+          acompanhe a distribuição das quantidades
+          entre os lotes disponíveis e mantenha
+          um histórico organizado das saídas.
+        </p>
+      </section>
+
+      <!-- BANNER -->
+
+      <section class="hero">
+        <div class="hero-content">
+          <div class="eyebrow">
+            Movimentação inteligente · FEFO
+          </div>
+
+          <h2>
+            Controle cada retirada.<br>
+            Priorize a validade.
+          </h2>
+
+          <p>
+            O sistema utiliza o critério FEFO
+            para priorizar os lotes com vencimento
+            mais próximo durante o registro
+            das saídas de mercadorias.
+          </p>
+        </div>
+
+        <div class="hero-art" aria-hidden="true">
+          <div class="hero-symbol">↗</div>
+        </div>
+      </section>
+
+      <!-- REGISTRO DE SAÍDA -->
+
+      <section>
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">01 / Movimentação</div>
+            <h2>Registrar saída</h2>
+          </div>
+
+          <p>
+            Informe o produto e a quantidade retirada.
+          </p>
+        </div>
+
+        <div class="painel">
+          <div class="panel-header">
+            <div>
+              <div class="eyebrow">
+                Registro de mercadorias
+              </div>
+
+              <h3>Nova saída de estoque</h3>
+
+              <p>
+                Selecione um produto, informe
+                a quantidade e confira os lotes
+                que serão utilizados na operação.
+              </p>
+            </div>
+
+            <span class="panel-tag">NOVA SAÍDA</span>
+          </div>
+
+          <!-- AVISO FEFO -->
+
+          <div class="aviso">
+            <span class="aviso-icon" aria-hidden="true">ⓘ</span>
+
+            <div>
+              <strong>Critério FEFO:</strong>
+              o sistema retira primeiro as unidades
+              dos lotes com vencimento mais próximo.
+              Lotes vencidos não serão utilizados
+              automaticamente.
+            </div>
+          </div>
+
+          <div class="form-divider">
+            <span>Dados da movimentação</span>
+          </div>
+
+          <form id="formSaida">
+
+            <div class="formulario">
+
+              <div class="campo campo-full">
+                <label for="produto">
+                  Produto
+                </label>
+
+                <select id="produto" required>
+                  <option value="">
+                    Selecione um produto
+                  </option>
+                </select>
+
+                <p id="situacaoProduto"></p>
+              </div>
+
+              <div class="campo">
+                <label for="quantidade">
+                  Quantidade de saída
+                </label>
+
+                <input
+                  type="number"
+                  id="quantidade"
+                  min="0.001"
+                  step="0.001"
+                  placeholder="0,000"
+                  required
+                >
+              </div>
+
+              <div class="campo">
+                <label for="data">
+                  Data da saída
+                </label>
+
+                <input
+                  type="date"
+                  id="data"
+                  required
+                >
+              </div>
+
+            </div>
+
+            <!-- PRÉVIA DOS LOTES -->
+
+            <div class="previa-box">
+              <div class="eyebrow" style="margin-bottom: 10px;">
+                Conferência antes da saída
+              </div>
+
+              <h3>Prévia dos lotes utilizados</h3>
+
+              <p id="previaLotes">
+                Selecione um produto e informe a quantidade.
+              </p>
+            </div>
+
+            <div class="acoes">
+              <button type="submit">
+                ↗ &nbsp; Registrar saída
+              </button>
+            </div>
+
+          </form>
+        </div>
+      </section>
+
+      <!-- HISTÓRICO -->
+
+      <section>
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">02 / Histórico</div>
+            <h2>Saídas realizadas</h2>
+          </div>
+
+          <p>
+            Consulte as movimentações registradas.
+          </p>
+        </div>
+
+        <div class="painel">
+          <div class="panel-header">
+            <div>
+              <div class="eyebrow">
+                Rastreabilidade operacional
+              </div>
+
+              <h3>Registro de saídas</h3>
+
+              <p>
+                Acompanhe os produtos retirados,
+                os lotes utilizados, as quantidades
+                movimentadas e as respectivas datas.
+              </p>
+            </div>
+
+            <span class="panel-tag">HISTÓRICO</span>
+          </div>
+
+          <div class="tabela">
+            <table>
+              <thead>
+                <tr>
+                  <th>Produto</th>
+                  <th>Lote(s)</th>
+                  <th>Quantidade</th>
+                  <th>Data</th>
+                </tr>
+              </thead>
+
+              <tbody id="listaSaidas"></tbody>
+            </table>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- ACESSOS RÁPIDOS -->
+
+      <section>
+        <div class="section-heading">
+          <div>
+            <div class="eyebrow">03 / Navegação</div>
+            <h2>Continuar no sistema</h2>
+          </div>
+
+          <p>
+            Acesse módulos relacionados às movimentações.
+          </p>
+        </div>
+
+        <div class="quick-grid">
+
+          <a href="entrada.html" class="quick-link">
+            <span>Registrar entradas</span>
+            <span>↗</span>
+          </a>
+
+          <a href="lotes.html" class="quick-link">
+            <span>Consultar lotes</span>
+            <span>↗</span>
+          </a>
+
+          <a href="historico.html" class="quick-link">
+            <span>Histórico de movimentações</span>
+            <span>↗</span>
+          </a>
+
+        </div>
+      </section>
+
+      <footer>
+        <span>
+          Estoque Simples · Gestão e Inteligência de Estoque
+        </span>
+
+        <span>
+          Saída de Mercadorias
+        </span>
+      </footer>
+
+    </main>
+  </div>
+
+  <!-- JAVASCRIPT ORIGINAL -->
+
+  <script src="saida.js"></script>
+
 </body>
 </html>
