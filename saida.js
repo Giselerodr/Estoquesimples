@@ -1,245 +1,399 @@
 
-let produtos =
-    JSON.parse(localStorage.getItem("produtos")) || [];
+"use strict";
 
-const produtoSelect =
-    document.querySelector("#produto");
+const produtoSelect = document.querySelector("#produto");
+const formulario = document.querySelector("#formSaida");
+const listaSaidas = document.querySelector("#listaSaidas");
+const situacaoProduto = document.querySelector("#situacaoProduto");
+const previaLotes = document.querySelector("#previaLotes");
+const campoQuantidade = document.querySelector("#quantidade");
+const campoData = document.querySelector("#data");
 
-const formulario =
-    document.querySelector("#formSaida");
-
-const listaSaidas =
-    document.querySelector("#listaSaidas");
-
-let saidas =
-    JSON.parse(localStorage.getItem("saidas")) || [];
-
-
-// Verificar se o produto está ativo
-function produtoAtivo(produto) {
-    return produto.ativo !== false;
+function lerLista(chave) {
+    const dados = JSON.parse(localStorage.getItem(chave) || "[]");
+    if (!Array.isArray(dados)) {
+        throw new Error("Dados inválidos: " + chave);
+    }
+    return dados;
 }
 
+function numero(valor) {
+    return Number(valor ?? 0);
+}
 
-// Calcular a quantidade disponível
-function calcularEstoque(produto) {
+function arredondar(valor) {
+    return Math.round((valor + Number.EPSILON) * 1000) / 1000;
+}
 
-    const estoqueInicial = Number(
-        produto.estoqueInicial ??
-        produto.quantidade ??
-        0
+function normalizar(valor) {
+    return String(valor ?? "").trim().toLowerCase();
+}
+
+function dataValida(valor) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(valor)) return false;
+    const data = new Date(valor + "T12:00:00");
+    return !Number.isNaN(data.getTime()) &&
+        data.getFullYear() === Number(valor.slice(0, 4)) &&
+        data.getMonth() + 1 === Number(valor.slice(5, 7)) &&
+        data.getDate() === Number(valor.slice(8, 10));
+}
+
+function hojeLocal() {
+    const agora = new Date();
+    const ano = agora.getFullYear();
+    const mes = String(agora.getMonth() + 1).padStart(2, "0");
+    const dia = String(agora.getDate()).padStart(2, "0");
+    return ano + "-" + mes + "-" + dia;
+}
+
+function estoqueAtual(produto) {
+    return arredondar(
+        numero(produto.estoqueInicial ?? produto.quantidade) +
+        numero(produto.totalEntradas) -
+        numero(produto.totalSaidas)
+    );
+}
+
+function conferirLotes(produto, lotes) {
+    const saldo = estoqueAtual(produto);
+
+    const lotesProduto = lotes.filter(lote =>
+        normalizar(lote.codigoProduto) ===
+        normalizar(produto.codigo)
     );
 
-    const totalEntradas =
-        Number(produto.totalEntradas || 0);
+    const total = arredondar(
+        lotesProduto.reduce(
+            (soma, lote) => soma + numero(lote.quantidade), 0
+        )
+    );
 
-    const totalSaidas =
-        Number(produto.totalSaidas || 0);
-
-    return estoqueInicial +
-           totalEntradas -
-           totalSaidas;
+    return {
+        saldo,
+        total,
+        correto: Number.isFinite(saldo) &&
+            saldo >= 0 &&
+            lotesProduto.every(lote =>
+                Number.isFinite(numero(lote.quantidade)) &&
+                numero(lote.quantidade) >= 0
+            ) &&
+            Math.abs(saldo - total) < 0.0005
+    };
 }
 
+function selecionarLotes(lotes, codigoProduto, quantidade, data) {
+    if (!dataValida(data)) {
+        throw new Error("Informe uma data válida.");
+    }
 
-// Carregar produtos ativos
+    if (!Number.isFinite(quantidade) || quantidade <= 0) {
+        throw new Error("Informe uma quantidade válida.");
+    }
+
+    const disponiveis = lotes
+        .filter(lote =>
+            normalizar(lote.codigoProduto) ===
+                normalizar(codigoProduto) &&
+            numero(lote.quantidade) > 0 &&
+            dataValida(lote.validade) &&
+            lote.validade >= data
+        )
+        .sort((a, b) =>
+            a.validade.localeCompare(b.validade) ||
+            String(a.dataEntrada || "").localeCompare(
+                String(b.dataEntrada || "")
+            )
+        );
+
+    let restante = quantidade;
+    const retiradas = [];
+
+    for (const lote of disponiveis) {
+        if (restante <= 0) break;
+
+        const retirar = arredondar(
+            Math.min(restante, numero(lote.quantidade))
+        );
+
+        if (retirar > 0) {
+            retiradas.push({
+                id: lote.id,
+                codigoLote: lote.codigoLote,
+                quantidade: retirar,
+                validade: lote.validade
+            });
+
+            restante = arredondar(restante - retirar);
+        }
+    }
+
+    if (restante > 0.0005) {
+        throw new Error(
+            "Quantidade insuficiente nos lotes não vencidos. " +
+            "Faltam " + restante + " unidade(s)."
+        );
+    }
+
+    return retiradas;
+}
+
+function salvarConjunto(alteracoes) {
+    const anteriores = {};
+
+    for (const chave of Object.keys(alteracoes)) {
+        anteriores[chave] = localStorage.getItem(chave);
+    }
+
+    try {
+        for (const [chave, valor] of Object.entries(alteracoes)) {
+            localStorage.setItem(chave, JSON.stringify(valor));
+        }
+    } catch (erro) {
+        for (const [chave, valor] of Object.entries(anteriores)) {
+            if (valor === null) {
+                localStorage.removeItem(chave);
+            } else {
+                localStorage.setItem(chave, valor);
+            }
+        }
+        throw erro;
+    }
+}
+
 function atualizarProdutos() {
+    const produtos = lerLista("produtos");
 
-    produtos =
-        JSON.parse(localStorage.getItem("produtos")) || [];
+    produtoSelect.innerHTML =
+        '<option value="">Selecione um produto</option>';
 
-    produtoSelect.innerHTML = "";
+    produtos.forEach((produto, indice) => {
+        if (produto.ativo === false) return;
 
-    const opcaoInicial =
-        document.createElement("option");
+        const opcao = document.createElement("option");
+        opcao.value = indice;
+        opcao.textContent =
+            produto.nome + " - Estoque: " + estoqueAtual(produto);
+        produtoSelect.appendChild(opcao);
+    });
 
-    opcaoInicial.value = "";
-    opcaoInicial.textContent = "Selecione um produto";
+    situacaoProduto.textContent = "";
+    previaLotes.textContent =
+        "Selecione um produto e informe a quantidade.";
+}
 
-    produtoSelect.appendChild(opcaoInicial);
+function mostrarPrevia() {
+    try {
+        const produtos = lerLista("produtos");
+        const lotes = lerLista("lotes");
 
-    produtos.forEach(function(produto, index) {
-
-        if (!produtoAtivo(produto)) {
+        if (produtoSelect.value === "") {
+            situacaoProduto.textContent = "";
+            previaLotes.textContent = "Selecione um produto.";
             return;
         }
 
-        const opcao =
-            document.createElement("option");
+        const produto = produtos[Number(produtoSelect.value)];
 
-        opcao.value = index;
+        if (!produto) {
+            previaLotes.textContent = "Produto não encontrado.";
+            return;
+        }
 
-        opcao.textContent =
-            produto.nome +
-            " - Estoque: " +
-            calcularEstoque(produto);
+        const conferencia = conferirLotes(produto, lotes);
 
-        produtoSelect.appendChild(opcao);
+        situacaoProduto.textContent =
+            "Estoque principal: " + conferencia.saldo +
+            " | Total nos lotes: " + conferencia.total;
 
-    });
+        if (!conferencia.correto) {
+            previaLotes.textContent =
+                "Saldos divergentes. Confira os lotes antes " +
+                "de registrar uma saída.";
+            return;
+        }
 
+        const quantidade = Number(campoQuantidade.value);
+        const data = campoData.value;
+
+        if (!campoQuantidade.value || !data) {
+            previaLotes.textContent =
+                "Informe a quantidade e a data da saída.";
+            return;
+        }
+
+        if (
+            !Number.isFinite(quantidade) ||
+            quantidade <= 0 ||
+            Math.abs(quantidade * 1000 -
+                Math.round(quantidade * 1000)) > 0.000001
+        ) {
+            previaLotes.textContent = "Quantidade inválida.";
+            return;
+        }
+
+        if (quantidade > conferencia.saldo) {
+            previaLotes.textContent =
+                "Quantidade superior ao estoque principal.";
+            return;
+        }
+
+        const retiradas = selecionarLotes(
+            lotes, produto.codigo, quantidade, data
+        );
+
+        previaLotes.textContent = retiradas.map(item =>
+            item.codigoLote + ": " + item.quantidade +
+            " unidade(s), validade " + item.validade
+        ).join(" | ");
+
+    } catch (erro) {
+        previaLotes.textContent = erro.message;
+    }
 }
 
+formulario.addEventListener("submit", function(evento) {
+    evento.preventDefault();
 
-// Registrar saída
-formulario.addEventListener("submit", function(event) {
+    try {
+        const produtos = lerLista("produtos");
+        const saidas = lerLista("saidas");
+        const lotes = lerLista("lotes");
 
-    event.preventDefault();
+        if (produtoSelect.value === "") {
+            alert("Selecione um produto.");
+            return;
+        }
 
-    // Buscar os dados mais recentes
-    produtos =
-        JSON.parse(localStorage.getItem("produtos")) || [];
+        const produto = produtos[Number(produtoSelect.value)];
+        const quantidade = Number(campoQuantidade.value);
+        const data = campoData.value;
 
-    saidas =
-        JSON.parse(localStorage.getItem("saidas")) || [];
+        if (
+            !produto ||
+            produto.ativo === false ||
+            !Number.isFinite(quantidade) ||
+            quantidade <= 0 ||
+            Math.abs(quantidade * 1000 -
+                Math.round(quantidade * 1000)) > 0.000001 ||
+            !dataValida(data)
+        ) {
+            alert("Preencha os campos corretamente.");
+            return;
+        }
 
-    const indiceProduto = produtoSelect.value;
+        if (data < hojeLocal()) {
+            alert(
+                "A data da saída não pode ser anterior à data " +
+                "atual nesta versão do controle por lotes."
+            );
+            return;
+        }
 
-    const quantidade = Number(
-        document.querySelector("#quantidade").value
-    );
+        const conferencia = conferirLotes(produto, lotes);
 
-    const data =
-        document.querySelector("#data").value;
+        if (!conferencia.correto) {
+            alert(
+                "Saída bloqueada: estoque principal = " +
+                conferencia.saldo + ", total dos lotes = " +
+                conferencia.total + ". Confira os saldos."
+            );
+            return;
+        }
 
-    if (
-        indiceProduto === "" ||
-        !Number.isFinite(quantidade) ||
-        quantidade <= 0 ||
-        data === ""
-    ) {
+        if (quantidade > conferencia.saldo) {
+            alert(
+                "Estoque insuficiente. Disponível: " +
+                conferencia.saldo
+            );
+            return;
+        }
 
-        alert("Preencha todos os campos corretamente.");
-        return;
-
-    }
-
-    const produto = produtos[Number(indiceProduto)];
-
-    if (!produto) {
-        alert("Produto não encontrado.");
-        atualizarProdutos();
-        return;
-    }
-
-    if (!produtoAtivo(produto)) {
-
-        alert(
-            "Este produto está desativado e " +
-            "não pode receber novas saídas."
+        const retiradas = selecionarLotes(
+            lotes, produto.codigo, quantidade, data
         );
 
-        atualizarProdutos();
-        return;
-    }
+        for (const retirada of retiradas) {
+            const lote = lotes.find(item =>
+                item.id === retirada.id
+            );
 
-    // Preservar estoque inicial de produtos antigos
-    if (
-        produto.estoqueInicial === undefined ||
-        produto.estoqueInicial === null
-    ) {
+            if (!lote) {
+                throw new Error("Lote não encontrado.");
+            }
 
-        const estoqueAtual =
-            Number(produto.quantidade || 0);
+            lote.quantidade = arredondar(
+                numero(lote.quantidade) - retirada.quantidade
+            );
+        }
 
-        const entradasAnteriores =
-            Number(produto.totalEntradas || 0);
+        if (produto.estoqueInicial == null) {
+            produto.estoqueInicial =
+                numero(produto.quantidade) -
+                numero(produto.totalEntradas) +
+                numero(produto.totalSaidas);
+        }
 
-        const saidasAnteriores =
-            Number(produto.totalSaidas || 0);
-
-        produto.estoqueInicial =
-            estoqueAtual -
-            entradasAnteriores +
-            saidasAnteriores;
-
-    }
-
-    const estoqueAtual = calcularEstoque(produto);
-
-    // Impedir estoque negativo
-    if (quantidade > estoqueAtual) {
-
-        alert(
-            "Quantidade insuficiente em estoque. " +
-            "Disponível: " + estoqueAtual
+        produto.totalSaidas = arredondar(
+            numero(produto.totalSaidas) + quantidade
         );
 
-        return;
+        produto.quantidade = estoqueAtual(produto);
+
+        saidas.push({
+            produto: produto.nome,
+            codigo: produto.codigo,
+            quantidade: quantidade,
+            data: data,
+            codigoLote: retiradas
+                .map(item => item.codigoLote).join(", "),
+            lotesUtilizados: retiradas
+        });
+
+        salvarConjunto({
+            produtos: produtos,
+            saidas: saidas,
+            lotes: lotes
+        });
+
+        alert("Saída registrada e lotes atualizados!");
+
+        formulario.reset();
+        atualizarProdutos();
+        mostrarSaidas();
+
+    } catch (erro) {
+        alert("Não foi possível registrar a saída: " + erro.message);
     }
-
-    // Atualizar total de saídas
-    produto.totalSaidas =
-        Number(produto.totalSaidas || 0) + quantidade;
-
-    // Atualizar campo de compatibilidade
-    produto.quantidade = calcularEstoque(produto);
-
-    // Registrar movimentação
-    const saida = {
-        produto: produto.nome,
-        codigo: produto.codigo,
-        quantidade: quantidade,
-        data: data
-    };
-
-    saidas.push(saida);
-
-    // Salvar alterações
-    localStorage.setItem(
-        "produtos",
-        JSON.stringify(produtos)
-    );
-
-    localStorage.setItem(
-        "saidas",
-        JSON.stringify(saidas)
-    );
-
-    alert("Saída registrada com sucesso!");
-
-    formulario.reset();
-
-    atualizarProdutos();
-    mostrarSaidas();
-
 });
 
-
-// Mostrar histórico de saídas
 function mostrarSaidas() {
-
     listaSaidas.innerHTML = "";
 
-    saidas.forEach(function(saida) {
+    lerLista("saidas").forEach(saida => {
+        const linha = document.createElement("tr");
 
-        const linha =
-            document.createElement("tr");
-
-        const nome =
-            document.createElement("td");
-
-        const quantidade =
-            document.createElement("td");
-
-        const data =
-            document.createElement("td");
-
-        nome.textContent = saida.produto;
-        quantidade.textContent = saida.quantidade;
-        data.textContent = saida.data;
-
-        linha.appendChild(nome);
-        linha.appendChild(quantidade);
-        linha.appendChild(data);
+        [
+            saida.produto,
+            saida.codigoLote || "Não informado",
+            saida.quantidade,
+            saida.data
+        ].forEach(valor => {
+            const celula = document.createElement("td");
+            celula.textContent = valor ?? "";
+            linha.appendChild(celula);
+        });
 
         listaSaidas.appendChild(linha);
-
     });
-
 }
 
+produtoSelect.addEventListener("change", mostrarPrevia);
+campoQuantidade.addEventListener("input", mostrarPrevia);
+campoData.addEventListener("change", mostrarPrevia);
 
-// Iniciar página
-atualizarProdutos();
-mostrarSaidas();
+try {
+    atualizarProdutos();
+    mostrarSaidas();
+} catch (erro) {
+    alert("Erro ao carregar a página: " + erro.message);
+}
