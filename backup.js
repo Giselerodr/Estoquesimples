@@ -5,7 +5,8 @@ const CHAVES = [
     "produtos",
     "entradas",
     "saidas",
-    "precosFinanceiros"
+    "precosFinanceiros",
+    "inventarios"
 ];
 
 let backupValidado = null;
@@ -13,11 +14,11 @@ let backupValidado = null;
 function lerDados(chave) {
     const texto = localStorage.getItem(chave);
 
-    if (texto === null) {
-        return chave === "precosFinanceiros" ? {} : [];
-    }
+  if (texto === null) {
+    return chave === "precosFinanceiros" ? {} : [];
+}
 
-    return JSON.parse(texto);
+return JSON.parse(texto);
 }
 
 function atualizarResumo() {
@@ -131,7 +132,11 @@ function validarBackup(backup) {
     if (!objetoSimples(backup.dados)) {
         throw new Error("Os dados do backup estão ausentes.");
     }
-
+if (!Object.prototype.hasOwnProperty.call(
+    backup.dados, "inventarios"
+)) {
+    backup.dados.inventarios = [];
+}
     for (const chave of CHAVES) {
         if (!Object.prototype.hasOwnProperty.call(
             backup.dados, chave
@@ -142,11 +147,12 @@ function validarBackup(backup) {
         }
     }
 
-    for (const chave of [
-        "produtos",
-        "entradas",
-        "saidas"
-    ]) {
+   for (const chave of [
+    "produtos",
+    "entradas",
+    "saidas",
+    "inventarios"
+]) {
         const lista = backup.dados[chave];
 
         if (!Array.isArray(lista)) {
@@ -236,14 +242,17 @@ async function verificarArquivo() {
         const totalMovimentacoes =
             dados.entradas.length + dados.saidas.length;
 
-        informacoes.textContent =
-            "Backup criado em: " +
-            new Date(backup.criadoEm)
-                .toLocaleString("pt-BR") +
-            "\nProdutos: " + dados.produtos.length +
-            "\nMovimentações: " + totalMovimentacoes +
-            "\nPreços cadastrados: " +
-            Object.keys(dados.precosFinanceiros).length;
+        
+informacoes.textContent =
+    "Backup criado em: " +
+    new Date(backup.criadoEm)
+        .toLocaleString("pt-BR") +
+    "\nProdutos: " + dados.produtos.length +
+    "\nMovimentações: " + totalMovimentacoes +
+    "\nInventários registrados: " +
+    dados.inventarios.length +
+    "\nPreços cadastrados: " +
+    Object.keys(dados.precosFinanceiros).length;
 
         informacoes.style.whiteSpace = "pre-line";
         informacoes.hidden = false;
