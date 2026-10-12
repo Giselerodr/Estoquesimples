@@ -1,93 +1,141 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <title>Saída de Mercadorias</title>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Saída de Mercadorias | Estoque Simples</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background: #F5F5DC;
+            color: #211E1B;
+        }
+        header {
+            background: #0C0A29;
+            color: white;
+            padding: 22px;
+        }
+        main {
+            max-width: 960px;
+            margin: 25px auto;
+            padding: 0 16px;
+        }
+        .painel {
+            background: white;
+            padding: 24px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin: 15px 0 6px;
+            font-weight: bold;
+        }
+        input, select, button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 7px;
+            font-size: 15px;
+        }
+        input, select { border: 1px solid #aaa; }
+        button {
+            background: #0C0A29;
+            color: white;
+            border: none;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+        button:hover { background: #211E1B; }
+        a { color: #0C0A29; }
+        .aviso {
+            background: #BFDCFF;
+            padding: 14px;
+            border-radius: 8px;
+            line-height: 1.5;
+        }
+        .tabela { overflow-x: auto; }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 11px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        th { background: #BFDCFF; }
+    </style>
 </head>
-
 <body>
 
+<header>
     <h1>Saída de Mercadorias</h1>
+    <p>Estoque Simples — Retirada por validade (FEFO)</p>
+</header>
 
+<main>
+    <p><a href="index.html">Voltar ao início</a></p>
 
-    <form id="formSaida">
+    <section class="painel">
+        <h2>Registrar saída</h2>
 
-        <label>Produto:</label><br>
+        <p class="aviso">
+            O sistema retira primeiro as unidades dos lotes
+            com vencimento mais próximo. Lotes vencidos
+            não serão utilizados automaticamente.
+        </p>
 
+        <form id="formSaida">
 
-        <select id="produto">
+            <label for="produto">Produto</label>
+            <select id="produto" required>
+                <option value="">Selecione um produto</option>
+            </select>
 
-            <option value="">
-                Selecione um produto
-            </option>
+            <p id="situacaoProduto"></p>
 
-        </select>
+            <label for="quantidade">Quantidade de saída</label>
+            <input
+                type="number"
+                id="quantidade"
+                min="0.001"
+                step="0.001"
+                required
+            >
 
-        <br><br>
+            <label for="data">Data da saída</label>
+            <input type="date" id="data" required>
 
+            <h3>Prévia dos lotes utilizados</h3>
+            <p id="previaLotes">
+                Selecione um produto e informe a quantidade.
+            </p>
 
-        <label>Quantidade de saída:</label><br>
+            <button type="submit">Registrar saída</button>
+        </form>
+    </section>
 
+    <section class="painel">
+        <h2>Saídas realizadas</h2>
+        <div class="tabela">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Lote(s)</th>
+                        <th>Quantidade</th>
+                        <th>Data</th>
+                    </tr>
+                </thead>
+                <tbody id="listaSaidas"></tbody>
+            </table>
+        </div>
+    </section>
+</main>
 
-        <input
-            type="number"
-            id="quantidade"
-            min="1"
-        >
-
-        <br><br>
-
-
-        <label>Data da saída:</label><br>
-
-
-        <input
-            type="date"
-            id="data"
-        >
-
-        <br><br>
-
-
-        <button type="submit">
-            Registrar saída
-        </button>
-
-    </form>
-
-
-    <h2>Saídas realizadas</h2>
-
-
-    <table border="1">
-
-        <thead>
-
-            <tr>
-
-                <th>Produto</th>
-
-                <th>Quantidade</th>
-
-                <th>Data</th>
-
-            </tr>
-
-        </thead>
-
-
-        <tbody id="listaSaidas">
-        </tbody>
-
-    </table>
-
-
-    <script src="saida.js"></script>
-
+<script src="saida.js"></script>
 </body>
-
 </html>
