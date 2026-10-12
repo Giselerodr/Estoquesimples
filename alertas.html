@@ -1,507 +1,324 @@
 
-"use strict";
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alertas Inteligentes | Estoque Simples</title>
 
-// CENTRAL DE ALERTAS - ESTOQUE SIMPLES
-
-const tabela = document.getElementById("tabelaAlertas");
-const pesquisa = document.getElementById("pesquisa");
-const filtro = document.getElementById("filtro");
-const ordenacao = document.getElementById("ordenacao");
-const seguranca = document.getElementById("seguranca");
-
-const totalCriticos = document.getElementById("totalCriticos");
-const totalVencidos = document.getElementById("totalVencidos");
-const totalProximos = document.getElementById("totalProximos");
-const totalRegulares = document.getElementById("totalRegulares");
-
-let resultados = [];
-
-// LER PRODUTOS EXISTENTES
-
-function obterProdutos() {
-    try {
-        const dados = JSON.parse(
-            localStorage.getItem("produtos") || "[]"
-        );
-
-        return Array.isArray(dados) ? dados : [];
-
-    } catch (erro) {
-        console.error("Erro ao carregar produtos:", erro);
-        return [];
-    }
-}
-
-// CALCULAR ESTOQUE ATUAL
-
-function estoqueAtual(produto) {
-    const inicial = Number(
-        produto.estoqueInicial ??
-        produto.quantidade ??
-        0
-    );
-
-    const entradas = Number(produto.totalEntradas || 0);
-    const saidas = Number(produto.totalSaidas || 0);
-
-    return inicial + entradas - saidas;
-}
-
-// CONVERTER DATA SEM PROBLEMAS DE FUSO HORÁRIO
-
-function converterData(valor) {
-    if (!valor) {
-        return null;
-    }
-
-    const texto = String(valor).trim();
-
-    let ano, mes, dia;
-
-    if (/^\d{4}-\d{2}-\d{2}/.test(texto)) {
-        const partes = texto.substring(0, 10).split("-");
-
-        ano = Number(partes[0]);
-        mes = Number(partes[1]);
-        dia = Number(partes[2]);
-
-    } else if (/^\d{2}\/\d{2}\/\d{4}$/.test(texto)) {
-        const partes = texto.split("/");
-
-        dia = Number(partes[0]);
-        mes = Number(partes[1]);
-        ano = Number(partes[2]);
-
-    } else {
-        return null;
-    }
-
-    const data = new Date(ano, mes - 1, dia);
-
-    if (
-        data.getFullYear() !== ano ||
-        data.getMonth() !== mes - 1 ||
-        data.getDate() !== dia
-    ) {
-        return null;
-    }
-
-    data.setHours(0, 0, 0, 0);
-
-    return data;
-}
-
-function hojeSemHorario() {
-    const hoje = new Date();
-    hoje.setHours(0, 0, 0, 0);
-    return hoje;
-}
-
-function diferencaDias(data) {
-    const hoje = hojeSemHorario();
-
-    // Utilizar UTC para comparar apenas datas civis.
-    const atualUTC = Date.UTC(
-        hoje.getFullYear(),
-        hoje.getMonth(),
-        hoje.getDate()
-    );
-
-    const validadeUTC = Date.UTC(
-        data.getFullYear(),
-        data.getMonth(),
-        data.getDate()
-    );
-
-    return Math.round(
-        (validadeUTC - atualUTC) / 86400000
-    );
-}
-
-function formatarData(data) {
-    if (!data) {
-        return "Não informada";
-    }
-
-    return String(data.getDate()).padStart(2, "0") + "/" +
-        String(data.getMonth() + 1).padStart(2, "0") + "/" +
-        data.getFullYear();
-}
-
-function formatarNumero(valor) {
-    return Number(valor).toLocaleString("pt-BR", {
-        maximumFractionDigits: 3
-    });
-}
-
-// CLASSIFICAR CADA PRODUTO
-
-function analisarProduto(produto) {
-    const quantidade = estoqueAtual(produto);
-    const minimo = Number(produto.estoqueMinimo || 0);
-    const validade = converterData(produto.validade);
-
-    const dias = validade === null
-        ? null
-        : diferencaDias(validade);
-
-    const critico = quantidade <= minimo;
-
-    // Produtos sem unidades disponíveis não
-    // são contados como mercadorias vencidas.
-    const possuiEstoque = quantidade > 0;
-
-    const vencido = possuiEstoque &&
-        dias !== null &&
-        dias < 0;
-
-    const proximo = possuiEstoque &&
-        dias !== null &&
-        dias >= 0 &&
-        dias <= 7;
-
-    const regular = !critico && !vencido && !proximo;
-
-    const adicional = Math.max(
-        0,
-        Math.floor(Number(seguranca.value) || 0)
-    );
-
-    const reposicao = critico
-        ? Math.max(
-            0,
-            Math.ceil(minimo + adicional - quantidade)
-        )
-        : 0;
-
-    let prioridade = "Baixa";
-    let ordem = 3;
-
-    if (vencido) {
-        prioridade = "Alta";
-        ordem = 0;
-    } else if (critico) {
-        prioridade = "Alta";
-        ordem = 1;
-    } else if (proximo) {
-        prioridade = "Média";
-        ordem = 2;
-    }
-
-    const situacoes = [];
-
-    if (critico) {
-        situacoes.push({
-            nome: "Estoque crítico",
-            classe: "critico"
-        });
-    }
-
-    if (vencido) {
-        situacoes.push({
-            nome: "Vencido",
-            classe: "vencido"
-        });
-    }
-
-    if (proximo) {
-        situacoes.push({
-            nome: "Próximo do vencimento",
-            classe: "proximo"
-        });
-    }
-
-    if (regular) {
-        situacoes.push({
-            nome: "Regular",
-            classe: "regular"
-        });
-    }
-
-    return {
-        nome: String(produto.nome || "Sem nome"),
-        codigo: String(produto.codigo || ""),
-        quantidade: quantidade,
-        minimo: minimo,
-        validade: validade,
-        critico: critico,
-        vencido: vencido,
-        proximo: proximo,
-        regular: regular,
-        prioridade: prioridade,
-        ordem: ordem,
-        reposicao: reposicao,
-        situacoes: situacoes
-    };
-}
-
-// ANALISAR TODOS OS PRODUTOS ATIVOS
-
-function atualizarAnalise() {
-    const produtos = obterProdutos().filter(
-        function(produto) {
-            return produto.ativo !== false;
-        }
-    );
-
-    resultados = produtos.map(analisarProduto);
-
-    totalCriticos.textContent = resultados.filter(
-        item => item.critico
-    ).length;
-
-    totalVencidos.textContent = resultados.filter(
-        item => item.vencido
-    ).length;
-
-    totalProximos.textContent = resultados.filter(
-        item => item.proximo
-    ).length;
-
-    totalRegulares.textContent = resultados.filter(
-        item => item.regular
-    ).length;
-
-    atualizarTabela();
-}
-
-// FILTRAR E ORDENAR
-
-function obterResultadosFiltrados() {
-    const termo = pesquisa.value.trim().toLowerCase();
-    const tipo = filtro.value;
-    const ordemEscolhida = ordenacao.value;
-
-    const lista = resultados.filter(function(item) {
-        const texto = (
-            item.nome + " " + item.codigo
-        ).toLowerCase();
-
-        if (!texto.includes(termo)) {
-            return false;
+    <style>
+        :root {
+            --azul-claro: #BFDCFF;
+            --marrom: #211E1B;
+            --bege: #F5F5DC;
+            --branco: #FFFFFF;
+            --marinho: #0C0A29;
         }
 
-        if (tipo === "critico") {
-            return item.critico;
+        * {
+            box-sizing: border-box;
         }
 
-        if (tipo === "vencido") {
-            return item.vencido;
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: var(--bege);
+            color: var(--marrom);
         }
 
-        if (tipo === "proximo") {
-            return item.proximo;
+        header {
+            background: var(--branco);
+            padding: 22px 7%;
+            border-bottom: 2px solid var(--azul-claro);
         }
 
-        if (tipo === "regular") {
-            return item.regular;
+        header h1 {
+            margin: 0 0 8px;
+            color: var(--marinho);
         }
 
-        return true;
-    });
-
-    lista.sort(function(a, b) {
-        if (ordemEscolhida === "nome") {
-            return a.nome.localeCompare(b.nome, "pt-BR");
+        nav {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 15px;
         }
 
-        if (ordemEscolhida === "validade") {
-            const dataA = a.validade
-                ? a.validade.getTime()
-                : Infinity;
-
-            const dataB = b.validade
-                ? b.validade.getTime()
-                : Infinity;
-
-            return dataA - dataB;
+        nav a {
+            color: var(--marinho);
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 13px;
         }
 
-        return a.ordem - b.ordem ||
-            a.nome.localeCompare(b.nome, "pt-BR");
-    });
+        main {
+            max-width: 1200px;
+            margin: auto;
+            padding: 30px 20px;
+        }
 
-    return lista;
-}
+        .apresentacao {
+            background: var(--marinho);
+            color: white;
+            padding: 30px;
+            border-radius: 18px;
+            margin-bottom: 25px;
+        }
 
-// ADICIONAR CÉLULA DE FORMA SEGURA
+        .apresentacao h2 {
+            margin-top: 0;
+        }
 
-function adicionarCelula(linha, texto) {
-    const celula = document.createElement("td");
-    celula.textContent = texto;
-    linha.appendChild(celula);
-    return celula;
-}
+        .indicadores {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
 
-// DESENHAR TABELA
+        .indicador, .painel {
+            background: white;
+            padding: 22px;
+            border-radius: 15px;
+            border: 1px solid var(--azul-claro);
+        }
 
-function atualizarTabela() {
-    tabela.innerHTML = "";
+        .indicador p {
+            font-size: 13px;
+            margin: 0 0 12px;
+        }
 
-    const lista = obterResultadosFiltrados();
+        .indicador strong {
+            font-size: 30px;
+            color: var(--marinho);
+        }
 
-    if (lista.length === 0) {
-        const linha = document.createElement("tr");
-        const celula = document.createElement("td");
+        .painel {
+            margin-bottom: 22px;
+        }
 
-        celula.colSpan = 8;
-        celula.textContent =
-            "Nenhum produto encontrado.";
+        .painel h2 {
+            color: var(--marinho);
+            margin-top: 0;
+        }
 
-        linha.appendChild(celula);
-        tabela.appendChild(linha);
-        return;
-    }
+        .filtros {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
 
-    lista.forEach(function(item) {
-        const linha = document.createElement("tr");
+        input, select, button {
+            padding: 12px;
+            border-radius: 9px;
+            border: 1px solid #cccccc;
+            font-size: 14px;
+        }
 
-        adicionarCelula(linha, item.nome);
-        adicionarCelula(linha, item.codigo);
-        adicionarCelula(
-            linha,
-            formatarNumero(item.quantidade)
-        );
+        input {
+            flex: 2;
+            min-width: 200px;
+        }
 
-        adicionarCelula(
-            linha,
-            formatarNumero(item.minimo)
-        );
+        select {
+            flex: 1;
+            min-width: 180px;
+        }
 
-        adicionarCelula(
-            linha,
-            formatarData(item.validade)
-        );
+        button {
+            background: var(--marinho);
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
 
-        const situacao = document.createElement("td");
+        button:hover {
+            background: var(--marrom);
+        }
 
-        item.situacoes.forEach(function(alerta) {
-            const etiqueta = document.createElement("span");
+        .tabela-container {
+            overflow-x: auto;
+        }
 
-            etiqueta.className =
-                "etiqueta " + alerta.classe;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 780px;
+        }
 
-            etiqueta.textContent = alerta.nome;
+        th, td {
+            text-align: left;
+            padding: 14px 10px;
+            border-bottom: 1px solid #dddddd;
+            font-size: 13px;
+        }
 
-            etiqueta.style.marginRight = "5px";
-            etiqueta.style.marginBottom = "5px";
+        th {
+            background: var(--azul-claro);
+            color: var(--marinho);
+        }
 
-            situacao.appendChild(etiqueta);
-        });
+        .situacao {
+            display: inline-block;
+            padding: 7px 10px;
+            border-radius: 8px;
+            font-weight: bold;
+            font-size: 12px;
+        }
 
-        linha.appendChild(situacao);
+        .critico {
+            background: #ffd9d9;
+            color: #8b1616;
+        }
 
-        const prioridade = adicionarCelula(
-            linha,
-            item.prioridade
-        );
+        .atencao {
+            background: #fff0c2;
+            color: #775100;
+        }
 
-        prioridade.className = "prioridade " + (
-            item.prioridade === "Alta"
-                ? "alta"
-                : item.prioridade === "Média"
-                    ? "media"
-                    : "baixa"
-        );
+        .normal {
+            background: #def2df;
+            color: #206329;
+        }
 
-        adicionarCelula(
-            linha,
-            item.reposicao > 0
-                ? formatarNumero(item.reposicao) + " un."
-                : "Não necessária"
-        );
+        .aviso {
+            background: var(--azul-claro);
+            padding: 20px;
+            border-radius: 12px;
+            line-height: 1.7;
+            font-size: 14px;
+        }
 
-        tabela.appendChild(linha);
-    });
-}
+        footer {
+            text-align: center;
+            padding: 25px;
+            font-size: 12px;
+        }
 
-// EVENTOS
+        @media (max-width: 800px) {
+            .indicadores {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
 
-pesquisa.addEventListener("input", atualizarTabela);
-filtro.addEventListener("change", atualizarTabela);
-ordenacao.addEventListener("change", atualizarTabela);
+        @media (max-width: 480px) {
+            .indicadores {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
 
-document.getElementById("atualizar")
-    .addEventListener("click", function() {
-        atualizarAnalise();
-    });
+<body>
+    <header>
+        <h1>Estoque Simples</h1>
+        <p>Central de Alertas Inteligentes e Reposição</p>
 
-seguranca.addEventListener("change", atualizarAnalise);
+        <nav>
+            <a href="index.html">Início</a>
+            <a href="produtos.html">Produtos</a>
+            <a href="entrada.html">Entradas</a>
+            <a href="saida.html">Saídas</a>
+            <a href="historico.html">Histórico</a>
+            <a href="graficos.html">Gráficos</a>
+            <a href="financeiro.html">Financeiro</a>
+        </nav>
+    </header>
 
-// EXPORTAR CSV
+    <main>
+        <section class="apresentacao">
+            <h2>Alertas Inteligentes</h2>
+            <p>
+                Acompanhe produtos com estoque insuficiente,
+                mercadorias vencidas e itens próximos do
+                vencimento. Consulte também as quantidades
+                sugeridas para reposição.
+            </p>
+        </section>
 
-function protegerCSV(valor) {
-    const texto = String(valor ?? "");
+        <section class="indicadores">
+            <div class="indicador">
+                <p>Estoque baixo</p>
+                <strong id="totalBaixo">0</strong>
+            </div>
 
-    if (/^\s*[=+\-@\t\r]/.test(texto)) {
-        return "'" + texto;
-    }
+            <div class="indicador">
+                <p>Produtos vencidos</p>
+                <strong id="totalVencidos">0</strong>
+            </div>
 
-    return texto;
-}
+            <div class="indicador">
+                <p>Próximos do vencimento</p>
+                <strong id="totalProximos">0</strong>
+            </div>
 
-function celulaCSV(valor) {
-    return '"' +
-        protegerCSV(valor).replace(/"/g, '""') +
-        '"';
-}
+            <div class="indicador">
+                <p>Produtos com alertas</p>
+                <strong id="totalAlertas">0</strong>
+            </div>
+        </section>
 
-document.getElementById("exportar")
-    .addEventListener("click", function() {
+        <section class="painel">
+            <h2>Pesquisar e filtrar produtos</h2>
 
-        const cabecalho = [
-            "Produto",
-            "Código",
-            "Estoque atual",
-            "Estoque mínimo",
-            "Validade",
-            "Situação",
-            "Prioridade",
-            "Reposição sugerida"
-        ];
+            <div class="filtros">
+                <input
+                    type="search"
+                    id="pesquisa"
+                    placeholder="Pesquisar nome, categoria ou código"
+                >
 
-        const linhas = [cabecalho];
+                <select id="filtroSituacao">
+                    <option value="todos">Todos os produtos</option>
+                    <option value="baixo">Estoque baixo</option>
+                    <option value="vencido">Vencidos</option>
+                    <option value="proximo">Próximos do vencimento</option>
+                    <option value="normal">Sem alertas</option>
+                </select>
 
-        obterResultadosFiltrados().forEach(function(item) {
-            linhas.push([
-                item.nome,
-                item.codigo,
-                item.quantidade,
-                item.minimo,
-                formatarData(item.validade),
-                item.situacoes.map(
-                    alerta => alerta.nome
-                ).join(" / "),
-                item.prioridade,
-                item.reposicao
-            ]);
-        });
+                <button type="button" id="exportarCSV">
+                    Exportar CSV
+                </button>
+            </div>
+        </section>
 
-        const csv = "\uFEFF" + linhas.map(
-            linha => linha.map(celulaCSV).join(";")
-        ).join("\r\n");
+        <section class="painel">
+            <h2>Central de acompanhamento</h2>
 
-        const arquivo = new Blob([csv], {
-            type: "text/csv;charset=utf-8;"
-        });
+            <div class="tabela-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Produto</th>
+                            <th>Código</th>
+                            <th>Quantidade</th>
+                            <th>Estoque mínimo</th>
+                            <th>Validade</th>
+                            <th>Reposição sugerida</th>
+                            <th>Situação</th>
+                        </tr>
+                    </thead>
 
-        const url = URL.createObjectURL(arquivo);
-        const link = document.createElement("a");
+                    <tbody id="tabelaAlertas"></tbody>
+                </table>
+            </div>
+        </section>
 
-        link.href = url;
-        link.download = "relatorio_alertas.csv";
+        <div class="aviso">
+            <strong>Como funciona a reposição sugerida?</strong>
+            O sistema calcula quantas unidades faltam
+            para alcançar o estoque mínimo cadastrado.
+            Essa quantidade é uma referência inicial,
+            não uma previsão automática de demanda.
+            Produtos vencidos devem ser avaliados
+            separadamente e não devem ser comercializados.
+        </div>
+    </main>
 
-        document.body.appendChild(link);
-        link.click();
-        link.remove();
+    <footer>
+        Estoque Simples | Controle e Monitoramento de Estoque
+    </footer>
 
-        URL.revokeObjectURL(url);
-    });
-
-// ATUALIZAR AO RETORNAR PARA A PÁGINA
-
-window.addEventListener("pageshow", atualizarAnalise);
-
-// INICIAR
-
-atualizarAnalise();
+    <script src="alertas.js"></script>
+</body>
+</html>
