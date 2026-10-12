@@ -134,11 +134,19 @@ function validarBackup(backup) {
     if (!objetoSimples(backup.dados)) {
         throw new Error("Os dados do backup estão ausentes.");
     }
+
 if (!Object.prototype.hasOwnProperty.call(
     backup.dados, "inventarios"
 )) {
     backup.dados.inventarios = [];
 }
+
+if (!Object.prototype.hasOwnProperty.call(
+    backup.dados, "lotes"
+)) {
+    backup.dados.lotes = [];
+}
+
     for (const chave of CHAVES) {
         if (!Object.prototype.hasOwnProperty.call(
             backup.dados, chave
@@ -149,12 +157,15 @@ if (!Object.prototype.hasOwnProperty.call(
         }
     }
 
-   for (const chave of [
+  
+for (const chave of [
     "produtos",
     "entradas",
     "saidas",
-    "inventarios"
+    "inventarios",
+    "lotes"
 ]) {
+
         const lista = backup.dados[chave];
 
         if (!Array.isArray(lista)) {
@@ -245,16 +256,19 @@ async function verificarArquivo() {
             dados.entradas.length + dados.saidas.length;
 
         
-informacoes.textContent =
-    "Backup criado em: " +
-    new Date(backup.criadoEm)
-        .toLocaleString("pt-BR") +
-    "\nProdutos: " + dados.produtos.length +
-    "\nMovimentações: " + totalMovimentacoes +
-    "\nInventários registrados: " +
-    dados.inventarios.length +
-    "\nPreços cadastrados: " +
-    Object.keys(dados.precosFinanceiros).length;
+
+        informacoes.textContent =
+            "Backup criado em: " +
+            new Date(backup.criadoEm).toLocaleString("pt-BR") +
+            "\nProdutos: " + dados.produtos.length +
+            "\nMovimentações: " + totalMovimentacoes +
+            "\nInventários registrados: " +
+            dados.inventarios.length +
+            "\nLotes cadastrados: " +
+            dados.lotes.length +
+            "\nPreços cadastrados: " +
+            Object.keys(dados.precosFinanceiros).length;
+
 
         informacoes.style.whiteSpace = "pre-line";
         informacoes.hidden = false;
