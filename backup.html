@@ -1,0 +1,285 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Backup e Restauração | Estoque Simples</title>
+
+    <style>
+        :root {
+            --azul-claro: #BFDCFF;
+            --marrom: #211E1B;
+            --bege: #F5F5DC;
+            --branco: #FFFFFF;
+            --marinho: #0C0A29;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: var(--bege);
+            color: var(--marrom);
+        }
+
+        header {
+            background: var(--branco);
+            padding: 22px 7%;
+            border-bottom: 2px solid var(--azul-claro);
+        }
+
+        header h1 {
+            color: var(--marinho);
+            margin: 0 0 8px;
+        }
+
+        nav {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 18px;
+        }
+
+        nav a {
+            color: var(--marinho);
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        main {
+            max-width: 1050px;
+            margin: auto;
+            padding: 30px 20px;
+        }
+
+        .banner {
+            background: var(--marinho);
+            color: white;
+            padding: 30px;
+            border-radius: 18px;
+            margin-bottom: 25px;
+        }
+
+        .banner h2 {
+            margin-top: 0;
+        }
+
+        .grade {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .painel {
+            background: white;
+            padding: 25px;
+            border: 1px solid var(--azul-claro);
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+
+        .painel h2 {
+            color: var(--marinho);
+            margin-top: 0;
+        }
+
+        .painel p {
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .numero {
+            color: var(--marinho);
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+        button {
+            background: var(--marinho);
+            color: white;
+            border: none;
+            border-radius: 9px;
+            padding: 13px 18px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background: var(--marrom);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        input[type="file"] {
+            display: block;
+            width: 100%;
+            margin: 18px 0;
+            padding: 12px;
+            border: 1px solid #cccccc;
+            border-radius: 9px;
+        }
+
+        .informacoes {
+            background: #f3f7ff;
+            padding: 16px;
+            border-radius: 10px;
+            margin: 18px 0;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .mensagem {
+            margin-top: 18px;
+            font-size: 14px;
+            font-weight: bold;
+            line-height: 1.6;
+        }
+
+        .sucesso {
+            color: #206329;
+        }
+
+        .erro {
+            color: #9b2020;
+        }
+
+        .aviso {
+            background: var(--azul-claro);
+            padding: 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            font-size: 12px;
+        }
+
+        @media (max-width: 700px) {
+            .grade {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Estoque Simples</h1>
+        <p>Backup e Restauração de Dados</p>
+
+        <nav>
+            <a href="index.html">Início</a>
+            <a href="produtos.html">Produtos</a>
+            <a href="entrada.html">Entradas</a>
+            <a href="saida.html">Saídas</a>
+            <a href="historico.html">Histórico</a>
+            <a href="graficos.html">Gráficos</a>
+            <a href="financeiro.html">Financeiro</a>
+            <a href="alertas.html">Alertas</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="banner">
+            <h2>Central de Backup</h2>
+            <p>
+                Proteja os registros do seu estoque.
+                Exporte uma cópia de segurança e restaure
+                suas informações quando necessário.
+            </p>
+        </section>
+
+        <section class="grade">
+            <div class="painel">
+                <h2>Produtos cadastrados</h2>
+                <div class="numero" id="totalProdutos">0</div>
+                <p>Registros encontrados neste navegador.</p>
+            </div>
+
+            <div class="painel">
+                <h2>Movimentações registradas</h2>
+                <div class="numero" id="totalMovimentacoes">0</div>
+                <p>Total de entradas e saídas armazenadas.</p>
+            </div>
+        </section>
+
+        <section class="painel">
+            <h2>1. Exportar backup</h2>
+
+            <p>
+                Salve os dados atuais do sistema em um
+                arquivo JSON que poderá ser guardado
+                no seu computador.
+            </p>
+
+            <button type="button" id="baixarBackup">
+                Baixar backup completo
+            </button>
+
+            <p id="mensagemExportacao"
+               class="mensagem"
+               role="status"></p>
+        </section>
+
+        <section class="painel">
+            <h2>2. Restaurar backup</h2>
+
+            <p>
+                Selecione um arquivo JSON gerado
+                anteriormente pelo Estoque Simples.
+            </p>
+
+            <input
+                type="file"
+                id="arquivoBackup"
+                accept=".json,application/json"
+            >
+
+            <button type="button" id="verificarBackup">
+                Verificar arquivo
+            </button>
+
+            <div id="informacoesBackup"
+                 class="informacoes"
+                 hidden></div>
+
+            <button
+                type="button"
+                id="restaurarBackup"
+                disabled>
+                Restaurar dados
+            </button>
+
+            <p id="mensagemRestauracao"
+               class="mensagem"
+               role="status"></p>
+        </section>
+
+        <div class="aviso">
+            <strong>Atenção:</strong>
+            a restauração substituirá os dados atuais
+            de produtos, entradas, saídas e preços
+            financeiros pelos dados do arquivo.
+            Antes de restaurar, faça um backup
+            dos registros existentes.
+        </div>
+    </main>
+
+    <footer>
+        Estoque Simples | Sistema de Controle e Monitoramento
+    </footer>
+
+    <script src="backup.js"></script>
+</body>
+</html>
