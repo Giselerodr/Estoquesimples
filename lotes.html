@@ -1,0 +1,352 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gestão de Lotes | Estoque Simples</title>
+<style>
+:root {
+    --azul: #BFDCFF;
+    --marrom: #211E1B;
+    --bege: #F5F5DC;
+    --marinho: #0C0A29;
+}
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    background: var(--bege);
+    color: var(--marrom);
+    font-family: Arial, sans-serif;
+}
+header {
+    background: white;
+    padding: 22px 7%;
+    border-bottom: 2px solid var(--azul);
+}
+header h1 { color: var(--marinho); margin: 0 0 8px; }
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    margin-top: 17px;
+}
+nav a {
+    color: var(--marinho);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: bold;
+}
+main {
+    max-width: 1200px;
+    margin: auto;
+    padding: 30px 20px;
+}
+.banner {
+    background: var(--marinho);
+    color: white;
+    border-radius: 18px;
+    padding: 30px;
+    margin-bottom: 20px;
+}
+.banner h2 { margin-top: 0; }
+.banner p { line-height: 1.7; }
+.painel {
+    background: white;
+    border: 1px solid var(--azul);
+    border-radius: 15px;
+    padding: 24px;
+    margin-bottom: 20px;
+}
+.painel h2 {
+    margin-top: 0;
+    color: var(--marinho);
+}
+.painel p {
+    font-size: 14px;
+    line-height: 1.7;
+}
+.formulario {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 17px;
+}
+.campo label {
+    display: block;
+    font-weight: bold;
+    font-size: 13px;
+    margin-bottom: 8px;
+}
+.campo input, .campo select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cccccc;
+    border-radius: 8px;
+    background: white;
+}
+button {
+    padding: 12px 17px;
+    background: var(--marinho);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+button:hover { background: var(--marrom); }
+button:disabled { opacity: .5; cursor: not-allowed; }
+.acoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 20px;
+}
+.indicadores {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 20px;
+}
+.indicador {
+    background: white;
+    border: 1px solid var(--azul);
+    border-radius: 12px;
+    padding: 18px;
+}
+.indicador span {
+    display: block;
+    font-size: 12px;
+    margin-bottom: 10px;
+}
+.indicador strong {
+    font-size: 25px;
+    color: var(--marinho);
+}
+.tabela-container { overflow-x: auto; }
+table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 900px;
+}
+th, td {
+    padding: 12px 9px;
+    border-bottom: 1px solid #dddddd;
+    text-align: left;
+    font-size: 12px;
+}
+th {
+    background: var(--azul);
+    color: var(--marinho);
+}
+.etiqueta {
+    display: inline-block;
+    padding: 6px 9px;
+    border-radius: 7px;
+    font-weight: bold;
+}
+.vencido {
+    background: #ffdada;
+    color: #971717;
+}
+.proximo {
+    background: #fff0c2;
+    color: #785000;
+}
+.normal {
+    background: #def2df;
+    color: #176029;
+}
+.sem-estoque {
+    background: #eeeeee;
+    color: #555555;
+}
+.filtros {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.filtros input, .filtros select {
+    padding: 11px;
+    border: 1px solid #cccccc;
+    border-radius: 8px;
+    max-width: 100%;
+}
+.filtros input { flex: 1; min-width: 190px; }
+.mensagem {
+    font-size: 14px;
+    font-weight: bold;
+    white-space: pre-line;
+    margin-top: 15px;
+}
+.aviso {
+    background: var(--azul);
+    padding: 18px;
+    border-radius: 12px;
+    font-size: 13px;
+    line-height: 1.7;
+}
+footer {
+    padding: 25px;
+    text-align: center;
+    font-size: 12px;
+}
+@media (max-width: 750px) {
+    .formulario, .indicadores {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+</head>
+<body>
+<header>
+    <h1>Estoque Simples</h1>
+    <p>Gestão de Lotes e Validades</p>
+    <nav>
+        <a href="index.html">Início</a>
+        <a href="produtos.html">Produtos</a>
+        <a href="entrada.html">Entradas</a>
+        <a href="saida.html">Saídas</a>
+        <a href="historico.html">Histórico</a>
+        <a href="alertas.html">Alertas</a>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="inventario.html">Inventário</a>
+        <a href="backup.html">Backup</a>
+    </nav>
+</header>
+
+<main>
+    <section class="banner">
+        <h2>Controle de Lotes</h2>
+        <p>
+            Organize mercadorias por lote, quantidade
+            e data de validade. Identifique os produtos
+            que precisam de atenção prioritária.
+        </p>
+    </section>
+
+    <section class="indicadores">
+        <div class="indicador">
+            <span>Lotes cadastrados</span>
+            <strong id="totalLotes">0</strong>
+        </div>
+        <div class="indicador">
+            <span>Lotes vencidos</span>
+            <strong id="totalVencidos">0</strong>
+        </div>
+        <div class="indicador">
+            <span>Próximos do vencimento</span>
+            <strong id="totalProximos">0</strong>
+        </div>
+        <div class="indicador">
+            <span>Quantidade total nos lotes</span>
+            <strong id="totalUnidades">0</strong>
+        </div>
+    </section>
+
+    <section class="painel">
+        <h2>1. Cadastrar novo lote</h2>
+        <p>
+            Selecione um produto já cadastrado e informe
+            os dados do lote. Este registro não altera
+            o estoque principal.
+        </p>
+
+        <form id="formLote">
+            <div class="formulario">
+                <div class="campo">
+                    <label for="produto">Produto</label>
+                    <select id="produto" required>
+                        <option value="">Selecione um produto</option>
+                    </select>
+                </div>
+
+                <div class="campo">
+                    <label for="codigoLote">Código do lote</label>
+                    <input id="codigoLote" type="text"
+                           maxlength="80" required
+                           placeholder="Ex.: LAT001-A">
+                </div>
+
+                <div class="campo">
+                    <label for="quantidade">Quantidade do lote</label>
+                    <input id="quantidade" type="number"
+                           min="0" step="any" required>
+                </div>
+
+                <div class="campo">
+                    <label for="dataEntrada">Data de entrada</label>
+                    <input id="dataEntrada" type="date" required>
+                </div>
+
+                <div class="campo">
+                    <label for="validade">Data de validade</label>
+                    <input id="validade" type="date" required>
+                </div>
+            </div>
+
+            <div class="acoes">
+                <button type="submit">Cadastrar lote</button>
+                <button type="reset">Limpar campos</button>
+            </div>
+        </form>
+
+        <p class="mensagem" id="mensagemCadastro" role="status"></p>
+    </section>
+
+    <section class="painel">
+        <h2>2. Consultar lotes</h2>
+
+        <div class="filtros">
+            <input id="pesquisa" type="search"
+                   placeholder="Pesquisar produto, código ou lote">
+
+            <select id="filtroSituacao">
+                <option value="todos">Todas as situações</option>
+                <option value="vencido">Vencidos</option>
+                <option value="proximo">Próximos do vencimento</option>
+                <option value="normal">Dentro da validade</option>
+                <option value="sem-estoque">Sem quantidade</option>
+            </select>
+        </div>
+
+        <div class="acoes">
+            <button type="button" id="exportarCSV">
+                Exportar lotes CSV
+            </button>
+            <button type="button" id="atualizarLista">
+                Atualizar lista
+            </button>
+        </div>
+
+        <div class="tabela-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Produto</th>
+                        <th>Lote</th>
+                        <th>Quantidade</th>
+                        <th>Entrada</th>
+                        <th>Validade</th>
+                        <th>Situação</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelaLotes"></tbody>
+            </table>
+        </div>
+        <p class="mensagem" id="mensagemLista" role="status"></p>
+    </section>
+
+    <div class="aviso">
+        <strong>Importante:</strong>
+        nesta versão, os lotes são registros auxiliares.
+        Suas quantidades não são somadas automaticamente
+        ao estoque principal. As saídas também não descontam
+        automaticamente as quantidades dos lotes.
+        Faça backup antes de excluir registros.
+    </div>
+</main>
+
+<footer>Estoque Simples | Controle e Monitoramento de Estoque</footer>
+<script src="lotes.js"></script>
+</body>
+</html>
