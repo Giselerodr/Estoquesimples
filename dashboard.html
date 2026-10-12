@@ -1,0 +1,382 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Gerencial | Estoque Simples</title>
+
+    <style>
+        :root {
+            --azul: #BFDCFF;
+            --marrom: #211E1B;
+            --bege: #F5F5DC;
+            --branco: #FFFFFF;
+            --marinho: #0C0A29;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: var(--bege);
+            color: var(--marrom);
+        }
+
+        header {
+            background: var(--branco);
+            border-bottom: 2px solid var(--azul);
+            padding: 22px 6%;
+        }
+
+        header h1 {
+            margin: 0 0 7px;
+            color: var(--marinho);
+        }
+
+        nav {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 18px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--marinho);
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        main {
+            max-width: 1250px;
+            margin: auto;
+            padding: 28px 20px;
+        }
+
+        .banner {
+            background: var(--marinho);
+            color: var(--branco);
+            border-radius: 18px;
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .banner h2 {
+            margin-top: 0;
+        }
+
+        .banner p {
+            line-height: 1.7;
+        }
+
+        button {
+            border: none;
+            background: var(--azul);
+            color: var(--marinho);
+            padding: 13px 18px;
+            border-radius: 9px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: var(--branco);
+        }
+
+        .titulo {
+            margin: 30px 0 18px;
+            color: var(--marinho);
+        }
+
+        .indicadores {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .cartao, .painel {
+            background: var(--branco);
+            border: 1px solid var(--azul);
+            border-radius: 15px;
+            padding: 22px;
+        }
+
+        .cartao p {
+            font-size: 13px;
+            margin: 0 0 14px;
+        }
+
+        .cartao strong {
+            display: block;
+            color: var(--marinho);
+            font-size: 28px;
+            overflow-wrap: anywhere;
+        }
+
+        .cartao small {
+            display: block;
+            margin-top: 12px;
+            line-height: 1.5;
+        }
+
+        .grade {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 22px;
+        }
+
+        .painel h3 {
+            color: var(--marinho);
+            margin-top: 0;
+        }
+
+        .painel p {
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .barra-item {
+            margin: 20px 0;
+        }
+
+        .barra-topo {
+            display: flex;
+            justify-content: space-between;
+            gap: 12px;
+            font-size: 13px;
+            margin-bottom: 9px;
+        }
+
+        .barra-fundo {
+            height: 13px;
+            background: #e9e9e9;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .barra-preenchimento {
+            height: 100%;
+            background: var(--marinho);
+            border-radius: 20px;
+        }
+
+        .tabela-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 480px;
+        }
+
+        th, td {
+            padding: 13px 10px;
+            border-bottom: 1px solid #dddddd;
+            text-align: left;
+            font-size: 12px;
+        }
+
+        th {
+            background: var(--azul);
+            color: var(--marinho);
+        }
+
+        .etiqueta {
+            padding: 6px 9px;
+            border-radius: 7px;
+            font-weight: bold;
+            display: inline-block;
+        }
+
+        .critico {
+            background: #ffdada;
+            color: #922222;
+        }
+
+        .atencao {
+            background: #fff0c4;
+            color: #795600;
+        }
+
+        .vazio {
+            color: #666666;
+            font-size: 13px;
+            padding: 12px 0;
+        }
+
+        .aviso {
+            background: var(--azul);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 25px;
+            line-height: 1.7;
+            font-size: 13px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 25px;
+            font-size: 12px;
+        }
+
+        @media (max-width: 950px) {
+            .indicadores {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 650px) {
+            .indicadores, .grade {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Estoque Simples</h1>
+        <p>Painel de Gestão e Monitoramento</p>
+
+        <nav>
+            <a href="index.html">Início</a>
+            <a href="produtos.html">Produtos</a>
+            <a href="entrada.html">Entradas</a>
+            <a href="saida.html">Saídas</a>
+            <a href="historico.html">Histórico</a>
+            <a href="graficos.html">Gráficos</a>
+            <a href="financeiro.html">Financeiro</a>
+            <a href="alertas.html">Alertas</a>
+            <a href="backup.html">Backup</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="banner">
+            <div>
+                <h2>Dashboard Gerencial</h2>
+                <p>
+                    Uma visão integrada da situação atual
+                    do estoque, das movimentações e
+                    dos indicadores financeiros.
+                </p>
+                <p id="ultimaAtualizacao"></p>
+            </div>
+
+            <button type="button" id="atualizarPainel">
+                Atualizar indicadores
+            </button>
+        </section>
+
+        <h2 class="titulo">Visão geral do estoque</h2>
+
+        <section class="indicadores">
+            <div class="cartao">
+                <p>Produtos ativos</p>
+                <strong id="totalProdutos">0</strong>
+                <small>Itens cadastrados e ativos</small>
+            </div>
+
+            <div class="cartao">
+                <p>Unidades disponíveis</p>
+                <strong id="totalUnidades">0</strong>
+                <small>Quantidade atual em estoque</small>
+            </div>
+
+            <div class="cartao">
+                <p>Produtos com estoque baixo</p>
+                <strong id="totalBaixo">0</strong>
+                <small>Itens que precisam de reposição</small>
+            </div>
+
+            <div class="cartao">
+                <p>Produtos com alerta de validade</p>
+                <strong id="totalValidade">0</strong>
+                <small>Vencidos ou próximos do vencimento</small>
+            </div>
+        </section>
+
+        <h2 class="titulo">Indicadores financeiros</h2>
+
+        <section class="indicadores">
+            <div class="cartao">
+                <p>Valor de custo em estoque</p>
+                <strong id="valorCusto">R$ 0,00</strong>
+                <small>Produtos com custo cadastrado</small>
+            </div>
+
+            <div class="cartao">
+                <p>Valor potencial de venda</p>
+                <strong id="valorVenda">R$ 0,00</strong>
+                <small>Produtos com venda cadastrada</small>
+            </div>
+
+            <div class="cartao">
+                <p>Entradas registradas</p>
+                <strong id="totalEntradas">0</strong>
+                <small>Registros no histórico</small>
+            </div>
+
+            <div class="cartao">
+                <p>Saídas registradas</p>
+                <strong id="totalSaidas">0</strong>
+                <small>Registros no histórico</small>
+            </div>
+        </section>
+
+        <section class="grade">
+            <div class="painel">
+                <h3>Produtos mais movimentados</h3>
+                <p>
+                    Soma das unidades movimentadas
+                    em entradas e saídas.
+                </p>
+
+                <div id="graficoMovimentacoes"></div>
+            </div>
+
+            <div class="painel">
+                <h3>Prioridades de atenção</h3>
+                <p>
+                    Produtos vencidos, próximos do vencimento
+                    ou com quantidade insuficiente.
+                </p>
+
+                <div class="tabela-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Produto</th>
+                                <th>Quantidade</th>
+                                <th>Situação</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabelaPrioridades"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <div class="aviso" id="avisoPainel">
+            Os indicadores são calculados com base nos
+            registros disponíveis neste navegador.
+        </div>
+    </main>
+
+    <footer>
+        Estoque Simples | Dashboard Gerencial
+    </footer>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
